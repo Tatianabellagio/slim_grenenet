@@ -1,0 +1,39 @@
+// set up a simple neutral simulation
+initialize() {
+	initializeMutationRate(1e-7);
+	
+	// m1 mutation type: neutral
+	initializeMutationType("m1", 0.5, "f", 0.0);
+	initializeMutationType("m2", 0.1, "e", 0.1);
+	initializeMutationType("m3", 0.2, "g", -0.03, 0.2);
+	// three types of mutation, neutral, beneficial and deleterious 
+	// g1 genomic element type: uses m1 for all mutations
+	
+	// element with only neutral mutations 
+	initializeGenomicElementType("g1", m1, 1.0);
+	
+	// element with thre three types of mutation in different proportions 
+	initializeGenomicElementType("g2", c(m1, m2, m3), c(100, 1, 10));
+	
+	// we basically just defined the two types of elements i the genome, the ones
+	// that undergo only neutral mutations (non-coding regions) and the ones that undergo the 3 types (coding regions) 
+	
+	// uniform chromosome of length 100 kb with uniform recombination
+	initializeGenomicElement(g1, 0, 19999);
+	//separating the genome so different parts have the different types of mutations 
+	initializeGenomicElement(g2, 20000, 29999);
+	initializeGenomicElement(g1, 30000, 59999);
+	initializeGenomicElement(g2, 60000, 79999);
+	initializeGenomicElement(g1, 80000, 99999);
+	initializeRecombinationRate(1e-8);
+}
+
+// create a population of 500 individuals
+1 early() {
+	sim.addSubpop("p1", 500);
+}
+
+// output samples of 10 genomes periodically, all fixed mutations at end
+1000 late() { p1.outputSample(10); }
+2000 late() { p1.outputSample(10); }
+20000 late() { sim.outputFixedMutations(); }

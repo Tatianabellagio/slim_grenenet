@@ -1,0 +1,9 @@
+*.vcf
+*.vcf.gz
+*.bed
+*.
+*.vcf.gz.tbi
+*.fas
+*.fas.fai
+*.fasta
+*.fasta.fai

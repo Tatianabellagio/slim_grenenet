@@ -1,0 +1,47 @@
+initialize() {
+	initializeMutationRate(1e-7);
+	initializeMutationType("m1", 0.5, "f", 0.0);
+	initializeMutationType("m2", 1.0, "f", 0.5);  // introduced mutation
+	// fitness effect fo mutaiton 2 is 0.5  and it is fully dominant 
+	initializeGenomicElementType("g1", m1, 1.0);
+	initializeGenomicElement(g1, 0, 99999);
+	initializeRecombinationRate(1e-8);
+}
+1 early() { sim.addSubpop("p1", 500); }
+100000 late() {
+	catn("TIME EXPIRED");
+	sim.simulationFinished();
+}
+
+
+// basically even though we defined m2 before, we are introducing it here
+// we are introducing a new mutation 
+
+
+1000 late() {
+	target = sample(p1.genomes, 1); // first we chose a target genome in which 
+	// to introduce the mutation. Taking a sample of size 1 from p1.genomes
+	// aka taking only 1 genome. intrducing it only in one genome of 1 individual
+	target.addNewDrawnMutation(m2, 10000);  // add that mutation in position 1000 
+	// instead of stating the position rdunif() could be used to select a random 
+	// position in the genome 
+}
+
+
+// Note that it is important that this is done in a late() event; to see why, look at the WF tick cycle diagram on the SLiM reference sheet. Since it is introduced in a late() event, its fitness effect is evaluated by SLiM immediately after, in the fitness calculation phase, and so it will have the correct effect during the next offspring generation phase. If it were introduced in an early() event instead, SLiM would not recalculate fitness values prior to offspring generation, and so the carrier of the sweep mutation would not receive the fitness benefit it ought to in the first round of mating after introduction. This would make it much more likely that the introduced mutation would immediately be lost due to drift. Indeed, this is so likely to represent a bug that SLiM will emit a warning message if you add a new mutation in an early() event in a WF model.
+
+
+1000:100000 late() {
+	sweep = sim.mutationsOfType(m2);
+	if (size(sweep) == 0)
+	{
+		fixed = (sum(sim.substitutions.mutationType == m2) == 1);
+		catn(sim.cycle + ": " + (fixed ? "FIXED" else "LOST"));
+		sim.simulationFinished();
+	}
+	else
+	{
+		freq = sim.mutationFrequencies(NULL, sweep);
+		catn(sim.cycle + ": " + freq);
+	}
+}

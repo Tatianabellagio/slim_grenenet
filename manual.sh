@@ -117,9 +117,11 @@ bgzip chr1_grenenet_ecotypes_subset.vcf
 
 ## ok this might be weird, but im gonna create 4 files including the position for the 4 parts of my chromosome
 
+
+### something is bad here but var2 and qtl2 were overlapping 
 bcftools query -f '%CHROM\t%POS\n' chr1_grenenet_ecotypes_subset.vcf.gz | grep -v '^#' | head -n 4920 > pos_qtl1.txt
-bcftools query -f '%CHROM\t%POS\n' chr1_grenenet_ecotypes_subset.vcf.gz | grep -v '^#' | tail -n +4921 | head -n 9840 > pos_inv1.txt
-bcftools query -f '%CHROM\t%POS\n' chr1_grenenet_ecotypes_subset.vcf.gz | grep -v '^#' | tail -n +9841 | head -n 14760 > pos_qtl2.txt
+bcftools query -f '%CHROM\t%POS\n' chr1_grenenet_ecotypes_subset.vcf.gz | grep -v '^#' | tail -n +4921 | head -n 4920 > pos_inv1.txt
+bcftools query -f '%CHROM\t%POS\n' chr1_grenenet_ecotypes_subset.vcf.gz | grep -v '^#' | tail -n +9841 | head -n 4920 > pos_qtl2.txt
 bcftools query -f '%CHROM\t%POS\n' chr1_grenenet_ecotypes_subset.vcf.gz | grep -v '^#' | tail -n 4920 > pos_inv2.txt
 
 
@@ -151,15 +153,59 @@ echo "scale=0; 4920 * 0.8" | bc  ## 3936
 
 # Shuffle the lines randomly
 shuf pos_qtl1.txt > shuffled_pos_qtl1.txt
-
+shuf pos_qtl2.txt > shuffled_pos_qtl2.txt
 # Extract the first file
 head -n 984 shuffled_pos_qtl1.txt > qtl1_contrib.txt
+head -n 984 shuffled_pos_qtl2.txt > qtl2_contrib.txt
 
 # Extract the second file
 tail -n 3936 shuffled_pos_qtl1.txt > qtl1_neutral.txt
+tail -n 3936 shuffled_pos_qtl2.txt > qtl2_neutral.txt
 
 
 ##and now i can filter those based on shuffled positions 
 
 bcftools view -T qtl1_contrib.txt qtl1.vcf -o qtl1_contrib.vcf
 bcftools view -T qtl1_neutral.txt qtl1.vcf -o qtl1_neutral.vcf
+
+
+bcftools view -T qtl2_contrib.txt qtl2.vcf -o qtl2_contrib.vcf
+bcftools view -T qtl2_neutral.txt qtl2.vcf -o qtl2_neutral.vcf
+
+
+## now i changed my mind and im only doing one qtl 
+
+
+bcftools query -f '%CHROM\t%POS\n' chr1_grenenet_ecotypes_subset.vcf.gz | grep -v '^#' | head -n 4920 > pos_inv1.txt
+bcftools query -f '%CHROM\t%POS\n' chr1_grenenet_ecotypes_subset.vcf.gz | grep -v '^#' | tail -n +4921 | head -n 4920 > pos_qtl1.txt
+bcftools query -f '%CHROM\t%POS\n' chr1_grenenet_ecotypes_subset.vcf.gz | grep -v '^#' | tail -n +9841 > pos_inv2.txt
+
+bcftools view -T pos_inv1.txt chr1_grenenet_ecotypes_subset.vcf.gz -o inv1.vcf
+bcftools view -T pos_qtl1.txt chr1_grenenet_ecotypes_subset.vcf.gz -o qtl1.vcf
+bcftools view -T pos_inv2.txt chr1_grenenet_ecotypes_subset.vcf.gz -o inv2.vcf
+
+
+## to now take 0.8 and 0.2 of the variants in the vcf file 
+## we need to take 0.2 and 0.8 of the posiitons in the txt files: 
+
+# Count the total number of lines in the input file
+## 4920
+
+# Calculate the number of lines for each file
+n1=$(echo "scale=0; $total * 0.2" | bc) 
+echo "scale=0; 4920 * 0.2" | bc  ## 492
+
+n2=$(echo "scale=0; $total * 0.8" | bc)
+echo "scale=0; 4920 * 0.8" | bc  ## 4428
+
+# Shuffle the lines randomly
+shuf pos_qtl1.txt > shuffled_pos_qtl1.txt
+# Extract the first file
+head -n 492 shuffled_pos_qtl1.txt > qtl1_contrib.txt
+tail -n 4428 shuffled_pos_qtl1.txt > qtl1_neutral.txt
+
+##and now i can filter those based on shuffled positions 
+
+bcftools view -T qtl1_contrib.txt qtl1.vcf -o qtl1_contrib.vcf
+bcftools view -T qtl1_neutral.txt qtl1.vcf -o qtl1_neutral.vcf
+

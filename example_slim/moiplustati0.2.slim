@@ -1,5 +1,5 @@
 // modified by Tati 
-// now reading from vcf files 
+// now reading from vcf files with selection coefficient drawn from a gaussian distribution 
 
 // i will work with only one qtl 
 
@@ -21,13 +21,13 @@ if (exists("slimgui")){
     // start a condition for gui, aka only is you are in the slim interface setup these constants 
 
 	// Define generations
-	defineConstant("Generations", 100); 
+	//defineConstant("Generations", 100); 
 
 	// Define size of population
-	defineConstant("N", 100); 
+	defineConstant("N", 1000); 
 
 	// Define individuals sampled
-	defineConstant("n", 10); 
+	//defineConstant("n", 10); 
 
 	// Define selection strength // selection will be based on qtl effect size
 	// defineConstant("s", 0.05); 
@@ -50,7 +50,19 @@ if (exists("slimgui")){
    initializeSLiMOptions(nucleotideBased=T);
 	length = initializeAncestralNucleotides("test.fasta");   
 	defineConstant("L", length);
-	initializeMutationTypeNuc("m2", 0, "n", 0, 0.3);
+	initializeMutationTypeNuc("m2", 0, "n", 0, 0.3);   // qtl1 0.2 contributing 492 SNPS
+	m2.convertToSubstitution = F; 
+   m2.color = "red"; 
+   
+	initializeMutationTypeNuc("m3", 0, "n", 0, 0.001);   // qtl1 0.8 noncontributing  4920 - 492
+	m3.convertToSubstitution = F; 
+   m3.color = "blue"; 
+	
+	//initializeMutationTypeNuc("m4", 0, "n", 0, 0);   // qtl2 0.2 contributing 
+	//initializeMutationTypeNuc("m5", 0, "n", 0, 0.00);   // qtl2 0.8 noncontributing 
+
+	initializeMutationTypeNuc("m1", 0.5, "f", 0.0);       // neutral
+
    
    
 	//initializeMutationRate(1e-8);
@@ -61,10 +73,11 @@ if (exists("slimgui")){
    m2.convertToSubstitution = F; 
    m2.color = "red"; 
 	// g1 genomic element type: uses m2 for all mutations
-	initializeGenomicElementType("g1", m2, 1.0, mmJukesCantor(0.0)); 
+	initializeGenomicElementType("g1", m1, 1.0, mmJukesCantor(0.0)); 
+   //initializeGenomicElementType("g2", m1, 1.0);  cannot do it 
 
 	// gene  number
-	geneNumber = 1001; 
+	//geneNumber = 1001; 
     // This is actually 1+ the gene number
 
 	// Initialise 1 QTL  across the genome, with a single selected base in the middle WHY??
@@ -72,7 +85,7 @@ if (exists("slimgui")){
 
 	// initialize recombination and set it between genes
 
-	initializeRecombinationRate(1e-8);
+	initializeRecombinationRate(0);
 
 }
 
@@ -86,10 +99,21 @@ if (exists("slimgui")){
 	print(optima); 
 	subpopCount = asInteger(length(optima));
 	sim.addSubpop("p999", 225);
-	p999.genomes.readFromVCF("chr1_grenenet_ecotypes_subset.vcf", m2);
+	p999.setSelfingRate(0.97); 	
+	
+	p999.genomes.readFromVCF("qtl1_contrib.vcf", m2);
+	p999.genomes.readFromVCF("qtl1_neutral.vcf", m3);
+	
+	//p999.genomes.readFromVCF("qtl2_contrib.vcf", m4);
+	//p999.genomes.readFromVCF("qtl2_neutral.vcf", m5);
+	
+	p999.genomes.readFromVCF("inv1.vcf", m1);
+	p999.genomes.readFromVCF("inv2.vcf", m1);
 	p999.setSubpopulationSize(16*N); 
 	
+	
 }
+	
 
 // Initialize quantitative trait evolution form through fitness
 // the QTLs themselves are selectively neutral; 
@@ -112,6 +136,7 @@ if (exists("slimgui")){
 	for (i in 0:(subpopCount-1)){
 		// from the big subpopulation p999 make subpopulation splits, all with N size
 		sim.addSubpopSplit(i, N, p999);
+		sim.subpopulations[i].setSelfingRate(0.97);
 		// Add a tag to the subpopulation that will be the optima
 		sim.subpopulations[i].tag = asInteger(optima[i]);
 		//		// print for debug
@@ -133,6 +158,19 @@ if (exists("slimgui")){
 	return 1.; //+ s*0;
 }
 
+1:6 mutationEffect(m3) {
+	return 1.; //+ s*0;
+}
+
+1:6 mutationEffect(m4) {
+	return 1.; //+ s*0;
+}
+
+1:6 mutationEffect(m5) {
+	return 1.; //+ s*0;
+}
+
+
 
 
 6:99999 late() { 
@@ -150,7 +188,7 @@ if (exists("slimgui")){
    //numberofmut = inds.countOfMutationsOfType(m2); 
  	//print(numberofmut);
  	
- 	phenotypes = inds.sumOfMutationsOfType(m2); 
+ 	phenotypes = inds.sumOfMutationsOfType(m2) + inds.sumOfMutationsOfType(m3); 
  	//print(phenotypes);
  	//print(inds.sumOfMutationsOfType(m2));
  	//print(inds.fitnessScaling);
@@ -175,33 +213,41 @@ if (exists("slimgui")){
 	//				return 1. + s*genome1.individual.subpopulation.tag;
 //}
 
+7 late(){  
+	sim.subpopulations[0].individuals.genomes.outputVCF('outputs/subp0.vcf');
+	sim.subpopulations[1].individuals.genomes.outputVCF('outputs/subp1.vcf');
+	sim.subpopulations[2].individuals.genomes.outputVCF('outputs/subp2.vcf');
+	sim.subpopulations[3].individuals.genomes.outputVCF('outputs/subp3.vcf');
+	sim.subpopulations[4].individuals.genomes.outputVCF('outputs/subp4.vcf');
+	sim.subpopulations[5].individuals.genomes.outputVCF('outputs/subp5.vcf');
+	sim.subpopulations[6].individuals.genomes.outputVCF('outputs/subp6.vcf');
+	sim.subpopulations[7].individuals.genomes.outputVCF('outputs/subp7.vcf');
+	sim.subpopulations[8].individuals.genomes.outputVCF('outputs/subp8.vcf');
+	sim.subpopulations[9].individuals.genomes.outputVCF('outputs/subp9.vcf');
+	sim.subpopulations[10].individuals.genomes.outputVCF('outputs/subp10.vcf');
+	sim.subpopulations[11].individuals.genomes.outputVCF('outputs/subp11.vcf');
+	sim.subpopulations[12].individuals.genomes.outputVCF('outputs/subp12.vcf');	
+	sim.subpopulations[13].individuals.genomes.outputVCF('outputs/subp13.vcf');	
+	sim.subpopulations[14].individuals.genomes.outputVCF('outputs/subp14.vcf');	
+	sim.subpopulations[15].individuals.genomes.outputVCF('outputs/subp15.vcf');	
 
+	
+}
+
+/*
 //// Output stuff
-10000 late(){  // making this just 31 generations to test
-    // 14 because that is the value of columns/row based on the optima file 
-	sLen=4;
-	subpop=0;
-	mypops=c();
-	myrows=c();
-	mycols=c();
-	// iterate through rows and columns adding migration as in a 2D stepping stone model
-	for (row in 1:sLen-1) {
-		for(col in 1:sLen-1){
-		// add indeces
-			mypops=c(mypops,subpop);
-			myrows=c(myrows,row);
-			mycols=c(mycols,col);
-			subpop=subpop+1 ;
-		}
-	}
-	cat("\narea\tsegsites\n");
-	for (grid in 1:sLen-1) {
-		// grow a grid starting in a corner and sample and output area and S
-		subsetpops= mypops[which(myrows<= grid & mycols <=grid)];
-		mysample=sim.subpopulations[subsetpops].sampleIndividuals(n).genomes;
-		// get the unique mutations in the sample, sorted by position
-		m = sortBy(unique(mysample.mutations), "position");
-		// export with area already squared
-		cat(size(subsetpops)^2+"\t"+size(m)+"\n");
-	}
+10 late(){  // making this just 31 generations to test
+	optima = readFile(optimaFile);
+	subpopCount = length(optima);
+
+	// add tags of optima
+	for (i in 0:(subpopCount-1)){
+
+//// aca deberia ir por cada subpoblaciony  calcular esto
+
+	output_path = "outputs/result" + string(i) + ".vcf";
+ 
+ 	genomes = sim.subpopulations[i].individuals.genomes; 
+ 	genomes.outputVCF(output_path, i);
+}
 }

@@ -1,4 +1,5 @@
 // modified by Tati 
+// now i wll try o non writ fisher model 
 // now reading from vcf files with selection coefficient drawn from 2 gaussian distributions that add up to a PRS
 // One QTL for now 
 // there is an otima for each subpopulation particular to each subpopulation based on the optima file 
@@ -20,7 +21,7 @@ if (exists("slimgui")){
 	//defineConstant("Generations", 100); 
 
 	// Define size of population
-	defineConstant("N", 1000); 
+	//defineConstant("N", 1000); 
 
 	// Define individuals sampled
 	//defineConstant("n", 10); 
@@ -43,14 +44,15 @@ if (exists("slimgui")){
     //	initializeMutationRate(1e-1); // need high for debug
     
    // now im gonna simulate the mutations coming from standing variation. 
+   initializeSLiMModelType("nonWF");
    initializeSLiMOptions(nucleotideBased=T);
 	length = initializeAncestralNucleotides("test.fasta");   
 	defineConstant("L", length);
-	initializeMutationTypeNuc("m2", 0, "n", 0, 0.3);   // qtl1 0.2 contributing 492 SNPS
+	initializeMutationTypeNuc("m2", 0, "n", 0, 0.001);   // qtl1 0.2 contributing 492 SNPS
 	m2.convertToSubstitution = F; 
    m2.color = "red"; 
    
-	initializeMutationTypeNuc("m3", 0, "n", 0, 0.001);   // qtl1 0.8 noncontributing  4920 - 492
+	initializeMutationTypeNuc("m3", 0, "n", 0, 0.0001);   // qtl1 0.8 noncontributing  4920 - 492
 	m3.convertToSubstitution = F; 
    m3.color = "blue"; 
 	
@@ -66,7 +68,7 @@ if (exists("slimgui")){
 	// m2 mutation type: QTL-type 
     // create a mutation type 2 with 0.5 dominance and selection coeff of mean 0 and sd 0.1 just to use them as effect sizes
 	//initializeMutationType("m2", 0.5, "g", 0.1, 2);
-   m2.convertToSubstitution = F; 
+   //m2.convertToSubstitution = F; 
    m2.color = "red"; 
 	// g1 genomic element type: uses m2 for all mutations
 	initializeGenomicElementType("g1", m1, 1.0, mmJukesCantor(0.0)); 
@@ -85,6 +87,32 @@ if (exists("slimgui")){
 
 }
 
+
+reproduction() { 
+// 0.97 chance of selfing, 0.03 chance of reproducing with other random individual in the same subpop 
+
+	if (runif(1) < 0.97) 
+  { 
+	// reproduce through automixis   
+	offspring = subpop.addSelfed(individual); 
+  } 
+	else
+  { 
+  // choose a random mate 
+   offspring = subpop.addCrossed(individual, subpop.sampleIndividuals(1));     
+  } 
+	
+}
+
+
+
+
+
+
+//reproduction() {
+	//subpop.addSelfed(individual, subpop.sampleIndividuals(1)); //addself
+//}
+
 ////////////////////////////////////////////////////////////////////////////////
 // Initialize simulation
 
@@ -95,7 +123,7 @@ if (exists("slimgui")){
 	print(optima); 
 	subpopCount = asInteger(length(optima));
 	sim.addSubpop("p999", 225);
-	p999.setSelfingRate(0.97); 	
+	//p999.setSelfingRate(0.97); 	//WF
 	
 	p999.genomes.readFromVCF("qtl1_contrib.vcf", m2);
 	p999.genomes.readFromVCF("qtl1_neutral.vcf", m3);
@@ -105,7 +133,7 @@ if (exists("slimgui")){
 	
 	p999.genomes.readFromVCF("inv1.vcf", m1);
 	p999.genomes.readFromVCF("inv2.vcf", m1);
-	p999.setSubpopulationSize(16*N); 
+	//p999.setSubpopulationSize(16*N); 
 	
 	
 }
@@ -120,6 +148,11 @@ if (exists("slimgui")){
 ////////////////////////////////////////////////////////////////////////////////
 // RUN SIMULATIONS
 // 100 late(){
+
+
+
+
+
 2 late(){
 
 	// Read a list of optima from a simple text file (one line/one entry per population).
@@ -127,21 +160,27 @@ if (exists("slimgui")){
 
 	// number of population based on the map file
 	subpopCount = length(optima);
+	
+
+	for (i in 0:(subpopCount-1)){
+		sim.addSubpop(i, 0);   /// add just empty populations 
+		sim.subpopulations[i].tag = asInteger(optima[i]);
+	
 
 	// add tags of optima
-	for (i in 0:(subpopCount-1)){
+	//for (i in 0:(subpopCount-1)){
 		// from the big subpopulation p999 make subpopulation splits, all with N size
-		sim.addSubpopSplit(i, N, p999);
-		sim.subpopulations[i].setSelfingRate(0.97);
+		//sim.addSubpopSplit(i, N, p999);
+		//sim.subpopulations[i].setSelfingRate(0.97); //WF
 		// Add a tag to the subpopulation that will be the optima
-		sim.subpopulations[i].tag = asInteger(optima[i]);
+		//sim.subpopulations[i].tag = asInteger(optima[i]);
 		//		// print for debug
 		//		print(		sim.subpopulations[i].tag);
 	}
 
 	// Reduce the initial subpopulation to 0 individuals
 
-	p999.setSubpopulationSize(0); 
+	//p999.setSubpopulationSize(0); 
     // this is to avoid for individuals to migrate back to the p999
 }
 // deleted all the code setting migration rates since in slim, by default the migration rate is set to 0
@@ -149,6 +188,26 @@ if (exists("slimgui")){
 //// Run evolution with directional selection
 // Until 20000 generations of adapting to a dumb optimum
 
+// i will take all the individuals in my population and use them
+// as migrants
+
+
+3 late(){
+	for (migrant in sim.subpopulations.individuals){
+			 do {
+			 //take a subpop at random 
+            dest = sample(sim.subpopulations, 1);
+          // make sure it is not my original subpop
+        } while (dest == migrant.subpopulation);
+
+        // Assign migrant to destination subpopulation
+        dest.takeMigrants(migrant);
+    }
+
+}
+
+
+//p999.setSubpopulationSize(0); 
 
 1:3 mutationEffect(m2) {
 	return 1.; //+ s*0;
@@ -191,7 +250,10 @@ if (exists("slimgui")){
  	//print(inds.fitnessScaling); // this will be always a vector of 1 fitnessScaling is reset to 1.0 every tick, so that any scaling factor set lasts for only a  single tick.
  	
  	// inds.fitnessScaling = 1.5 - (phenotypes - inds.subpopulation.tag)^2 * 0.005; 
- 	inds.fitnessScaling = exp(-0.5 * (phenotypes - inds.subpopulation.tag)^2);
+ 	//inds.fitnessScaling = exp(-0.5 * (phenotypes - inds.subpopulation.tag)^2);
+ 	
+ 	// make sure that if you are older than 1 year then you fitness is for sure 0 (annual arabidopsis)
+ 	inds.fitnessScaling = ifelse(inds.age <= 1, exp(-0.5 * (phenotypes - inds.subpopulation.tag)^2), 0.0);
 
  	//print(inds.fitnessScaling); fisher geometric model
 	if (sim.cycle % 1 == 0) 

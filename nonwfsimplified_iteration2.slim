@@ -28,7 +28,7 @@ if (exists("slimgui")){
    initializeSLiMOptions(nucleotideBased=T);
 	length = initializeAncestralNucleotides("test.fasta");   
 	defineConstant("L", length);
-	initializeMutationTypeNuc("m2", 0, "n", 0, 0.1);   // qtl1 196 # 19625*0.05
+	initializeMutationTypeNuc("m2", 0, "n", 0, 0.0);   // qtl1 196 # 19625*0.05
 	m2.convertToSubstitution = F; 
    m2.color = "red"; 
    
@@ -62,7 +62,7 @@ if (exists("slimgui")){
 	sim.addSubpop("p999", 900);  //initial was 225
 	//p999.setSelfingRate(0.97); 	//WF
 	
-	p999.genomes.readFromVCF("qtl1_contrib.vcf", m2);
+	p999.genomes.readFromVCF("test_addinfo_.vcf", m2);
 	p999.genomes.readFromVCF("qtl1_neutral.vcf", m3);
 	
 	//p999.genomes.readFromVCF("qtl2_contrib.vcf", m4);

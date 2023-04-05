@@ -47,16 +47,19 @@ March 14
 ______
 Classic command in bcftools 
 
-number of positions: 
+#number of positions: 
 bcftools view -H input.vcf.gz | wc -l  
 
-name of samples: 
+#number of samples
+bcftools query -l inv2.vcf | wc -l
+
+#name of samples: 
 bcftools query -l input.vcf
 
-name of samples save it in a txt 
+#name of samples save it in a txt 
 bcftools query -l input.vcf -o sample_names.txt 
 
-filter samples 
+#filter samples 
 bcftools view -S samplelist.txt input.vcf -o output.vcf
 
 ## filter regions or positions
@@ -208,4 +211,184 @@ tail -n 4428 shuffled_pos_qtl1.txt > qtl1_neutral.txt
 
 bcftools view -T qtl1_contrib.txt qtl1.vcf -o qtl1_contrib.vcf
 bcftools view -T qtl1_neutral.txt qtl1.vcf -o qtl1_neutral.vcf
+
+
+____________________
+
+March 27th 
+# ok, simulations are workign now 
+# and I was able to ouput vcf files after 7 generations, where selection started in generation 4 
+
+# now what to doy with the vcf files?
+# well, the whole idea is to simulate the grenenet experiment and for that, we have to simulate the fact that there was certain depth in the reads which was not total 
+
+# for that we are going to use a tool called 
+art_illumina
+
+# I should solve this later but for now, 
+export PATH=$PATH:/usr/local/bin/art_bin_MountRainier
+art_illumina
+## to make it run 
+
+# ok I just realized that als these softwares are to simulate single individual sequencing, so what about pool seq?
+# but meixi had a great idea of using a normal software and pretend all the individuals in a vcf file are actually different chromosomes
+# so the softwares should accept multiple fasta files as inputs 
+
+## so first step would be to convert my vcf file into multiple fasta files 
+
+_____ march 28
+
+fisrt think about how would you convert vcf file to a fasta file 
+
+So, first of all you should know that for each chromosomes in a diploid individual there is tipically
+2 fasta files
+since each fasta file corresponds to 1 molecule of dna 
+fasta files do not include information about hetercygocity is a plain chain of nucleotides 
+
+But, becuase we are supposidly workign with only homocgygot, we are not supposed to see any heterocygocity 
+
+ok i managed to write a python code to create fasta files from vcf files 
+
+now using art-illumina to generate reads from fasta files: 
+
+
+## this si art illumina basic functionality:
+art_illumina -ss HS25 -i <input.fasta> -l <read_length> -f <coverage> -o <output_prefix>
+
+art_illumina -ss HS25 -i genome.fasta -l 100 -f 30 -o reads
+# ART will generate two output files with the extensions ".1.fq" and ".2.fq" for paired-end reads
+
+ok so i have no idea for each run which platform we used but i found a pdf inside the fodler of the reads
+from novogene , so i will just run it with the example 
+
+art_illumina -ss HS25 -i i0.fasta -l 100 -f 30 -p -m 200 -s 10 -o reads
+
+
+##ok now i have the reads, what i need to do is run the whole grenenet pipeline 
+also i should exlore non hw equilibrium since im ending with too many individuals which is not quite real
+
+
+
+###
+
+
+____ march 29th 
+
+i have some problems in slim, because i want to run a non wright fisher model to be able to 
+not have a fixed population size, so plants can die based on their fitness, 
+but the nonwrite fisher does not allow me to have addsubpop
+
+I can think fo 2 options, the first one is to directly add many repetitions of individuals in the vcf
+but that seems like a lot 
+
+the second one is to:
+1. create the pop of 224 individuals with the mut but keeping the mutation effect on 0 
+2. make it grow exponentially until a certain value
+3. create the subpopulations 
+4. make the individuals migrate from the big popualtion to the subpop 
+
+
+____________________
+march 30 
+
+one fo the commment i got was that is better if i get the popualtion 0 directly from a vcf file 
+since i will be adding randomness everytime i run the simulation if i do the expoential growth things
+
+
+## so i will take my original vcf file 
+chr1_grenenet_ecotypes_subset ## 225 samples
+## and i will basically merge it with itself 4 times, so i will 4 times the number of samples 
+## hint: concat is used for vertically pasting, merge is used for horizontal pasting 
+
+## first i need the compressed format
+bcftools merge --threads 4 --force-samples chr1_grenenet_ecotypes_subset.vcf.gz chr1_grenenet_ecotypes_subset.vcf.gz chr1_grenenet_ecotypes_subset.vcf.gz chr1_grenenet_ecotypes_subset.vcf.gz -o chr1_grenenet_multiple_ecotypes_subset.vcf.gz
+
+## output now is 
+chr1_grenenet_multiple_ecotypes_subset.vcf.gz
+
+## checking 
+bcftools query -l chr1_grenenet_ecotypes_subset.vcf.gz | wc -l
+bcftools query -l chr1_grenenet_multiple_ecotypes_subset.vcf.gz | wc -l
+## so now the starting population is 900
+
+
+# now i have to regenerate the qtl 
+
+## so now there are not going to be 3 types of segments in the genome, 
+## there will rather be only one where neutral and constributing variants are taken from 
+
+# Calculate the number of lines for each file
+19625 ## is the total nubmer of positions 
+
+196 # 19625*0.05   contributing 
+19429 # neutral   
+
+## get a list of all the positions:
+bcftools query -f '%CHROM\t%POS\n' chr1_grenenet_multiple_ecotypes_subset.vcf.gz | grep -v '^#' > pos.txt
+
+# Shuffle the lines randomly
+shuf pos.txt > shuffled_pos.txt
+# Extract the first file
+head -n 196 shuffled_pos.txt > qtl1_contrib.txt
+tail -n 19429 shuffled_pos.txt > qtl1_neutral.txt
+
+##and now i can filter those based on shuffled positions 
+
+bcftools view -T qtl1_contrib.txt chr1_grenenet_multiple_ecotypes_subset.vcf.gz -o qtl1_contrib.vcf
+bcftools view -T qtl1_neutral.txt chr1_grenenet_multiple_ecotypes_subset.vcf.gz -o qtl1_neutral.vcf
+
+#check 
+bcftools view -H qtl1_neutral.vcf | wc -l
+bcftools view -H qtl1_contrib.vcf | wc -l
+
+
+
+____________________march 31
+
+one other thing we discussed was how to define optimas 
+
+
+
+_____ April 3
+So, slim does something weird where it basically: if the position of the snp in the vcf file is 4, 
+then in slim its gonna be 4, so the actual position -1. 
+I think this si related to slim saving positions starting at 0 or something 
+
+## so this is how to retrieve the effects and position of all the mutations 
+ut =  sim.mutationsOfType(m2);
+effects = ut.selectionCoeff; # so this will give the effects
+cat(paste(ut.position, sep="\n")); # this will give the positions 
+
+
+_______ april4 
+ok, so right now, im getting selection coefficients for the contributing snps in the qtl from a normal,
+but every time i run the script again, i get new selction coefficeints which is not replicable,
+so i should give the selection coefficents with the vcf fiel so they are fixed. 
+
+this is called annotation of vcf file, bascially adding a column to the info file 
+
+So i created a test vcf file called test_addinfo.vcf (with only 8 positions) where im gonna try to annotate it in the INFO column with the slectio ncoeffcient
+
+so 
+
+## first
+bgzip selection_coef_test.bed 
+bgzip test_addinfo.vcf 
+bcftools tabix selection_coef_test.bed.gz 
+bcftools tabix test_addinfo.vcf.gz 
+
+## and then annotate
+bcftools annotate \
+  -a selection_coef_test.bed.gz \
+  -c CHROM,FROM,TO,S \
+  -h <(echo '##INFO=<ID=S,Number=.,Type=Float,Description="Selection Coefficient">') \
+  test_addinfo.vcf.gz \
+  -o test_addinfo_.vcf
+
+## the code above works 
+
+## so now i can pass the selection coefficients AS I WANT 
+
+## so now i should generate the selection coefficients with python, based on teh nubmer fo variants, and then pass them to the vcf files 
+## and then consume the vcf files
 

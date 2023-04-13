@@ -1,3 +1,271 @@
+## im trying to do some forward-time simulations from vcf files from the 1001 genome project 
+## for this im researching bcf tools to extract info from a a vcf.gz file which is basically 
+## a compress vcf file. The original one from the 1001 genomes 
+## is like 60 gb and the same one is in the cluster in:
+
+/Carnegie/DPB/Data/Shared/Labs/Moi/Everyone/1001g/vcf/1001genomes_snp-short-indel_only_ACGTN.vcf.gz
+
+## so i will use 
+
+bcftools query -l 1001genomes_snp-short-indel_only_ACGTN.vcf.gz > sample_ids.txt
+/Carnegie/DPB/Data/Shared/Labs/Moi/Everyone/1001g/vcf/1001genomes_snp-short-indel_only_ACGTN.vcf.gz
+
+bcftools query -l /Carnegie/DPB/Data/Shared/Labs/Moi/Everyone/1001g/vcf/1001genomes_snp-short-indel_only_ACGTN.vcf.gz  > sample_ids_1001g.txt
+
+## to get all the sample ids from the 1001 genomes 
+## and then take a subsample of that with 
+
+bcftools view -S list_of_samples.txt 1001genomes_snp-short-indel_only_ACGTN.vcf.gz > subset.vcf
+
+## actually: 
+bcftools view -S subsampled_ids_1001g.txt /Carnegie/DPB/Data/Shared/Labs/Moi/Everyone/1001g/vcf/1001genomes_snp-short-indel_only_ACGTN.vcf.gz > subset_1001g.vcf
+
+
+## to try on run some simulations 
+
+## also for this i had to load the bcf module
+module load BCFtools/1.10.2
+
+## once i got the samples_ids.txt file i nees to subsample it since i will try to run some mock 
+## simulations and i dont want al the genomes 
+
+## i will use bash script shuf for this, where you can indicate the percentage of lines you need 
+
+shuf -n 10% sample_ids_1001g.txt > subsampled_ids_1001g.txt
+
+## bueno 10 % parece ser muy poco since there are 1135 files actually 
+## got the numbre of lines with:
+wc -l sample_ids_1001g.txt
+
+
+## also for playing with the simulations in an ordered way I created a new conda environemtn 
+## one issue that i run into is actualyl being able to see my new environemtn from jupyer notebook
+## i solved this by: 
+
+ conda install ipykernel ## inside env
+ python -m ipykernel install --user --name simulations --display-name "simulations"
+
+ ## cosas que descubre el caminante al caminar 
+ ## parece ser que los vcf files pueden tener 1 sample o multiple samples 
+
+fileformat=VCFv4.3
+FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	Sample1
+
+## ese es el formato y de ahi se pueden ir agregando sample2 sample3 sample4 etc. 
+
+
+### ok GRACIAS GPT 
+bcftools view -s Sample1,Sample2 input.vcf | bcftools view -c 10 -Ov > output.vcf
+## se supone que con este script puedo seleccion ciertos samples y la cantidad de snps 
+bcftools view -s 430,9683 1001g_vcf_comp | bcftools view -c 10 -Ov > subs_samplesandsnps.vcf
+
+
+## also i created a symlink beacuse the path is really long and annoying
+## so i can access the datafile directly 
+ln -s /Carnegie/DPB/Data/Shared/Labs/Moi/Everyone/1001g/vcf/1001genomes_snp-short-indel_only_ACGTN.vcf.gz 1001g_vcf_comp.vcf.gz
+
+
+bcftools view -s 6909 /Carnegie/DPB/Data/Shared/Labs/Moi/Everyone/1001g/vcf/1001genomes_snp-short-indel_only_ACGTN.vcf.gz > col0.vcf
+
+
+
+## end
+im trying to run this 2 no succesfully 
+ ### for getting the vcf file for col and subsample snps
+ bcftools view -s 6909 /Carnegie/DPB/Data/Shared/Labs/Moi/Everyone/1001g/vcf/1001genomes_snp-short-indel_only_ACGTN.vcf.gz > col0.vcf
+ 
+ ### for creating a little vcf file fo 2 samples and 10 snps 
+ bcftools view -s 430,9683 /Carnegie/DPB/Data/Shared/Labs/Moi/Everyone/1001g/vcf/1001genomes_snp-short-indel_only_ACGTN.vcf.gz | bcftools view -c 10 -Ov > subs_samplesandsnps.vcf
+
+
+#col0.vcf : vcf file of col0 accession to check it out 
+#subs_samplesandsnps.vcf vcf of 2 samples to check out 
+
+### SOMETHIGN TO BE AWARE OF!!!!!
+## WHEN I WAS https://www.arabidopsis.org/download/index-auto.jsp?dir=%2Fdownload_files%2FGenes%2FTAIR10_genome_release%2FTAIR10_chromosome_files
+# in the tair page i was trying to filter the mithocondrial chromosome thinking it was chr1 
+
+## ChrM~~  avoid
+
+
+
+### ok now im trying to follow the manual from slim on how to generate simulations based on a 'real' population,
+## since the inpu is going to be a table containing snps and insdividual from real data (from vcf files from the 1001 genome)
+
+## the manual said that i need 2 files: the vcf file of all the indivduals and a fasta file from the reference genome 
+## i will assume the reference is the one from tair 
+
+## im just gona work with one part of the genome so i needed to subset that part 
+
+# first based on the file a downloaded from tair im gona subset chromosome 1 
+gunzip -c filename.fasta.gz | awk '/^>Chr1 /{p=1}p' > chr1.fasta
+
+## you can do that by: 
+## create a file called
+
+# subset.bed 
+Chr1    9001000    10001000 #this is a tab separeted file
+## the nsomething that it seems that you need to do to filter a fasta file is create a file with extension .fai
+
+samtools faidx genome.fasta.gz
+## samtols can do that with the coman faidx 
+
+#once you ahve that 
+bedtools getfasta -fi genome.fasta.gz -bed subset.bed -fo subset.fasta
+
+bedtools getfasta -fi chr1.fasta -bed subset.bed -fo reference.fasta
+
+## now we got the subset.fasta that has 
+#>Chr1:9001000-10001000 as header 
+
+
+so i got my reference genome from https://www.arabidopsis.org/download/index-auto.jsp?dir=%2Fdownload_files%2FGenes%2FTAIR10_genome_release%2FTAIR10_chromosome_files
+and i will get my vcf files from 30 accessions from https://tools.1001genomes.org/vcfsubset/#select_loci
+
+
+## i need to elarn how to run things in slim 
+
+
+
+## getting position in a vcf file
+grep -v '^#' variants_30ecotypes.vcf | awk '{print $2}' | sort -n | awk 'BEGIN{min=1000000000}{if($1<min)min=$1}END{print "min position:",min}' ; awk '{print $2}' variants_30ecotypes.vcf | sort -nr | awk 'BEGIN{max=0}{if($1>max)max=$1}END{print "max position:",max}'
+
+##length of seq in fasta file 
+awk '/^>/ {if (seqlen){print seqlen}; seqlen=0;next; } { seqlen += length($0)} END {print seqlen}' input.fasta
+
+## chequeando esto me di cuenta que mi fasta file 
+## y mi vcf file tienen diferente length 
+# jeje 
+1000000
+
+1000001
+
+## parece se rque todo estopaso porque al general el subset de fasta hay qe fijarse bien si el 
+## subsetting se hace inlcuyendo the upper end o no 
+
+
+
+#la verdad que no tengo idea que carajo de problema
+#est apasadno en slim pero me sigeu tirando el 
+#error de que tal posicion esta out fo range 
+
+ERROR (Genome_Class::ExecuteMethod_readFromVCF): VCF file POS value 9000999 out of range.
+#por lo que voy a eliminarla y ver que pasado
+
+#como eliminar una dada posicion con vcf tools
+bcftools view -e 'POS == 9000999' variants_30ecotypes.vcf -o variants_30ecotypes.vcf
+
+
+### SOLUCION
+## basicamente para poder correr esta simulacion en lguar de poner un dado segmento del fasta file y el mismo 
+## segmento del vcf file, la forma de hacer es pasar el fasta file COMPLETO del cromosoma y el vcf file 
+## de los pedazos que haya
+
+## esto tiene sentido biologico, ya que la tasa de recomebinacion etc va a ser a nivel cromosoma
+## y no solo en los segmentos que le paso 
+
+## una vez pasado el fasta compelto de chromosome 1 y el vcf de una parte de varias accessions tuve otros errores 
+
+## fasta
+## slim solo acepta ciertas variantes en los fasta file que son basicamente A,C,G,T y no otras, algo 
+## que se usa en genomica 
+
+"M": ["A"],
+"R": ["A"],
+"W": ["A"],
+"S": ["C"],
+"Y": ["C"],
+"K": ["G"],
+"V": ["A"],
+"H": ["A"],
+"D": ["A"],
+"B": ["C"],
+"N": ["A"]
+
+## si osi hay que remplazarlos para que slim los lea 
+
+sed 's/Y/C/g' TAIR10_chr1.fas > TAIR10_chr1_edited.fas
+
+# esto se puede hacer con sed uno por uno o con un python script para hacerlos todos a la vez 
+## podria armar uno alguna vez
+
+## VCF
+## luego, otra cosa que slim no acepta es que en la columna REF y ALT existan otras cosas que no sean los 4 nucleotidos 
+## a veces en estas columnas en ref y alt existen mas de un tipo de nucleotidos, calculo que indicando que cualqueira
+## de los dos podria ser 
+
+## para eso lo que yo hice fue filtrar solo columnas donde el REF y ALT tenian un unico valor 
+
+bcftools view -i 'REF=="A" || REF=="C" || REF=="G" || REF=="T"' input.vcf > output.vcf ## lo mismo para el ALT 
+bcftools view -i 'ALT=="A" || ALT=="C" || ALT=="G" || ALT=="T"' test1.vcf > test.vcf
+
+# en realidad la forma correcta de hacerlo es tal vez quedarse con el primer elemento 
+
+## otra cosa que no acepta slim partes del genoma basicamente sin coverage, que serian las celdas sonde under samples 
+## veo esto:    ./.  , por loque por ahora elimine todas las aprtes del genoma donde no habia full coverage
+
+bcftools view -v snps -e 'GT="0/0" || GT="./."' input.vcf > output.vcf
+
+
+bcftools view -v snps -e 'GT="./."' test.vcf > subset.vcf
+
+## la forma correcta de ahcer esto seria en realidad reemplazar esto por el REF allele?
+
+## y leugo de todas estasc orreciones por fin si corrio la simulacion 
+
+
+## also another script that i have been using a lot is: 
+bedtools getfasta -fi TAIR10_chr_all.fas -bed subset.bed -fo test.fasta
+## this scripts allows you filter a fasta/fas file based on a subset.bed file to get another fasta file 
+
+### BE CAREFUL ###
+# be careful with the different tools you use to trim fasta and vcf files 
+
+## for example: 
+
+# bedtools getfasta 
+$ cat test.fa
+>chr1
+AAAAAAAACCCCCCCCCCCCCGCTACTGGGGGGGGGGGGGGGGGG
+
+$ cat test.bed
+chr1 5 10  
+
+$ bedtools getfasta -fi test.fa -bed test.bed
+>chr1:5-10
+AAACC  ## as you can see it is not inclusing hte position 5 if you start counting on 1 
+       ## it starrts counting on 0 
+
+## on the other hand when downloading vcf files from the 1001 genome projects the lower and upper end are included 
+Chr1:9001000..9002000
+
+## also i used this python script a lot to compare the length of the fasta and vcf file 
+
+import pysam
+
+# Open FASTA and VCF files
+fasta_file = pysam.FastaFile("referencevcf3.fasta")
+vcf_file = pysam.VariantFile("test.vcf")
+
+# Count number of positions in FASTA and VCF files
+num_positions_fasta = sum([len(fasta_file[contig]) for contig in fasta_file.references])
+num_positions_vcf = sum([1 for record in vcf_file])
+
+print(num_positions_fasta)
+print(num_positions_vcf)
+
+## was not useful at the end since they did not have to have the same length, but might be useful for other things 
+
+
+for (mut in sim.mutations[1]) {
+    catn("Mutation ID: " + mut.id);
+    catn("Location: " + mut.position);
+    catn("Effect: " + mut.selectionCoeff);
+}
+'"
+#####
+
 March 8th 
 
 I am gonna try and download from the 1001 genome proejct the vcf files for the ecotypes we used
@@ -312,6 +580,11 @@ bcftools query -l chr1_grenenet_multiple_ecotypes_subset.vcf.gz | wc -l
 ## so now the starting population is 900
 
 
+## now i will make it 1800
+bcftools merge --threads 4 --force-samples chr1_grenenet_multiple_ecotypes_subset.vcf.gz chr1_grenenet_multiple_ecotypes_subset.vcf.gz -o chr1_grenenet_multiple_ecotypes_subset2.vcf.gz
+bcftools query -l chr1_grenenet_multiple_ecotypes_subset2.vcf.gz | wc -l
+
+
 # now i have to regenerate the qtl 
 
 ## so now there are not going to be 3 types of segments in the genome, 
@@ -324,7 +597,7 @@ bcftools query -l chr1_grenenet_multiple_ecotypes_subset.vcf.gz | wc -l
 19429 # neutral   
 
 ## get a list of all the positions:
-bcftools query -f '%CHROM\t%POS\n' chr1_grenenet_multiple_ecotypes_subset.vcf.gz | grep -v '^#' > pos.txt
+bcftools query -f '%CHROM\t%POS\n' chr1_grenenet_multiple_ecotypes_subset2.vcf.gz | grep -v '^#' > pos.txt
 
 # Shuffle the lines randomly
 shuf pos.txt > shuffled_pos.txt
@@ -334,8 +607,8 @@ tail -n 19429 shuffled_pos.txt > qtl1_neutral.txt
 
 ##and now i can filter those based on shuffled positions 
 
-bcftools view -T qtl1_contrib.txt chr1_grenenet_multiple_ecotypes_subset.vcf.gz -o qtl1_contrib.vcf
-bcftools view -T qtl1_neutral.txt chr1_grenenet_multiple_ecotypes_subset.vcf.gz -o qtl1_neutral.vcf
+bcftools view -T qtl1_contrib.txt chr1_grenenet_multiple_ecotypes_subset2.vcf.gz -o qtl1_contrib.vcf
+bcftools view -T qtl1_neutral.txt chr1_grenenet_multiple_ecotypes_subset2.vcf.gz -o qtl1_neutral.vcf
 
 #check 
 bcftools view -H qtl1_neutral.vcf | wc -l
@@ -372,18 +645,18 @@ So i created a test vcf file called test_addinfo.vcf (with only 8 positions) whe
 so 
 
 ## first
-bgzip selection_coef_test.bed 
-bgzip test_addinfo.vcf 
-bcftools tabix selection_coef_test.bed.gz 
-bcftools tabix test_addinfo.vcf.gz 
+bgzip selection_coef_qtl1_contrib.bed 
+bgzip qtl1_contrib.vcf 
+bcftools tabix selection_coef_qtl1_contrib.bed.gz 
+bcftools tabix -f qtl1_contrib.vcf.gz 
 
 ## and then annotate
 bcftools annotate \
-  -a selection_coef_test.bed.gz \
+  -a selection_coef_qtl1_contrib.bed.gz \
   -c CHROM,FROM,TO,S \
   -h <(echo '##INFO=<ID=S,Number=.,Type=Float,Description="Selection Coefficient">') \
-  test_addinfo.vcf.gz \
-  -o test_addinfo_.vcf
+  qtl1_contrib.vcf.gz \
+  -o qtl1_contrib_sc.vcf
 
 ## the code above works 
 
@@ -391,4 +664,81 @@ bcftools annotate \
 
 ## so now i should generate the selection coefficients with python, based on teh nubmer fo variants, and then pass them to the vcf files 
 ## and then consume the vcf files
+
+
+
+_____ april 11
+so, now i have my optima defined by a gradient of temperature:
+
+so i took random ecotypes from a gradient of temperature they are local to 
+and then calculated the optima based on this ecotypes (their prs)
+
+now i ahve to decide how to scale up this population 
+
+but first i need to solve the number of plants this can be detemriend by the cesus data 
+
+
+
+
+i will increase the number of starting populations
+
+
+## first i need the compressed format
+bcftools merge --threads 4 --force-samples chr1_grenenet_ecotypes_subset.vcf.gz chr1_grenenet_ecotypes_subset.vcf.gz chr1_grenenet_ecotypes_subset.vcf.gz chr1_grenenet_ecotypes_subset.vcf.gz -o chr1_grenenet_multiple_ecotypes_subset.vcf.gz
+
+## output now is 
+chr1_grenenet_multiple_ecotypes_subset.vcf.gz
+
+## checking 
+bcftools query -l chr1_grenenet_ecotypes_subset.vcf.gz | wc -l
+bcftools query -l chr1_grenenet_multiple_ecotypes_subset.vcf.gz | wc -l
+
+
+figure out where mutation effect, fitness scaling etc are acting, poutput each of them at every stage of the simulation 
+
+____ april 12th 
+ok i finally figured out the bug in my slim code. basically, it is important to pay attention to what is the difference bettwen wf and nonwf models, 
+and what each callback does 
+
+----- now i have to think about rescaling and what i need from the ouput 
+
+so lets start with bayenv 
+i know that for bayenv i need allele freq 
+
+
+##3 baypass run 
+
+## so it seems from my previous tries, that i only need 2 files: 
+geno_table	pool_size_file
+
+g_baypass -npop 28  \
+          -gfile geno_table_grenenet_fil  \
+          -poolsizefile pool_size_grenenet_fil  \
+          -d0yij 2.8  \  
+          -outprefix filtrun.BP  \
+          -npilot 50
+
+
+ok, i have bypass in my computer and in the cluster
+and i have bayenv in my computer
+
+to run baypass remember that the comman is actually g_baypass
+
+also remember that to run things on the cluster: 
+
+### jobs in the cluster
+
+# Memex/calc interactive session:
+# create a tmux session 
+tmux new -s session_name
+#run this in a tmux session, so that the interactive session stays alive:
+srun --partition DPB --time 0 --mem 20G --cpus-per-task 4 --nodes 1 --ntasks 1 --pty bash -i
+
+
+
+
+_ april13 
+
+ok so, i think that for running bayenv or bypass i do have enought info just simulating the reads 
+
 

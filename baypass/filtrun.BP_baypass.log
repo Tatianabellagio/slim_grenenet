@@ -1,0 +1,89 @@
+Running BayPass Version 2.31 with the following command line:
+g_baypass -npop 16 -gfile geno_table_slim -poolsizefile pool_size_slim -d0yij 2.8 -outprefix filtrun.BP -npilot 50                                                                                                                                             
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        Size of the data set 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+ No of Markers                      =     10933
+ No of Populations                  =        16
+ Genotype File name                 =    geno_table_slim
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        Model Specifications
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+ -> POOLSEQ MODE with pool sizes:  9944 10670 10844 10916  5540 11206  7102  9036  9844  8746  9620 11498  9576 10068  6998 11386
+
+ -> Basic Mode (no covariate):
+  (*) Omega matrix is estimated with prior inv(Omega) ~ Wish_npop((1/rho)Id_npop,rho)  where rho=     1
+  (*) Parameters from the Pi prior dist. will be estimated
+  (*) Outlier detection: XtX stat. for each SNP        
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+           MCMC specifications
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+ Nb. of sampled parameter values       =    1000
+ Thinning Rate                         =      20
+ Burn in Period Length                 =    5000
+ Max Number of Pilot runs              =      50
+ Pilot run Length                      =     500
+
+ Init. deltas for Pi proposals          = 0.5000
+ Coop Pij proposal with init. sig. for Pi. multivariate prop.          =  0.0500
+ Pilot Run Adj. Factor Pilot            =  1.25
+ Targeted Rej./Acc. rates              =  0.25-0.40
+ R.N.G. seed                            =    5001
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        COUNT DATA
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+First SNP ref. Allele count   162  134  141  119  239  276  119  117  123    8   12  117   68  146   23  283
+First SNP total Gene count   1000 1000 1000 1000  532 1000 1000 1000 1000  858 1000 1000 1000 1000  906 1000
+Last  SNP ref. Allele count  4972 5335 5422 5458 2770 5603 3551 4518 4922 4373 4810 5749 4788 5034 3499  982
+Last  SNP total Gene count   4972 5335 5422 5458 2770 5603 3551 4518 4922 4373 4810 5749 4788 5034 3499 1000
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        PILOT RUNS
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Initial Values:
+Yij min         =        0.0  Yij max         =    11498.0  Average Yij     =     8541.0
+Pij min         =      0.00009  Pij max         =      0.99991  Average Pij     =      0.89600
+Pij_til min     =     -2.68630  Pij_til max     =      1.94067  Average Pij_til =     -0.00002
+PI min          =      0.00100  PI max          =      0.99900  Average PI      =      0.89600
+Pi_beta_params values       1.73138      0.20096
+
+!!!!!!!!!!!!!!!!!!!
+## PILOT RUN:    1
+!!!!!!!!!!!!!!!!!!!
+
+i)   Node Values:
+Yij min         =        0.0  Yij max         =    11498.0  Average Yij     =     8540.6
+Pij min         =      0.00009  Pij max         =      0.99991  Average Pij     =      0.89600
+Pij_til min     =    -49.53807  Pij_til max     =      1.95016  Average Pij_til =     -0.27375
+PI min          =      0.00010  PI max          =      0.99990  Average PI      =      0.91082
+Pi_beta_params values       2.38354      0.31238
+
+ii)  Acceptance Rates (before adjustment):
+  Acceptance Rate not achieved for     86368   out of    174928   y
+  Acceptance Rate not achieved for     10933   out of     10933   p_ij vectors
+  Acceptance Rate not achieved for     10933   out of     10933   pi
+      Mean Acceptance Rate Y  =  0.55477   mean delta_y=     2.5
+      Mean Acceptance Rate Pij  =  0.00000   mean delta_p=  0.04000
+      Mean Acceptance Rate Pi   =  0.05658   mean delta_pi=  0.40000
+      Mean Acceptance Rate b_mu =  0.08000        delta  =  0.04000
+      Mean Acceptance Rate b_phi=  0.03200        delta  =  0.80000
+
+iii) Running Time            :  0 d  0 h 19 min 52 sec
+     Estimated Remaining Time:  1 d  8 h 47 min 12 sec
+
+!!!!!!!!!!!!!!!!!!!
+## PILOT RUN:    2
+!!!!!!!!!!!!!!!!!!!
+
+i)   Node Values:
+Yij min         =        0.0  Yij max         =    11498.0  Average Yij     =     8540.4

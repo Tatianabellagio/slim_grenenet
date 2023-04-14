@@ -718,6 +718,18 @@ g_baypass -npop 28  \
           -outprefix filtrun.BP  \
           -npilot 50
 
+art_illumina -ss HS25 -i vcf_slim/fasta_slim/subp0.fasta -l 100 -f 30 -p -m 200 -s 10 -o vcf_slim/fasta_slim/reads_slim/subp0.fasta_reads
+
+art_illumina -ss HS25 \
+             -i vcf_slim/fasta_slim/subp1.fasta \
+             -l 150 \
+             -f 7 \
+             -p \
+             -m 800 \
+             -s 100 \
+             -o vcf_slim/fasta_slim/reads_slim/subp1.fasta
+
+
 
 ok, i have bypass in my computer and in the cluster
 and i have bayenv in my computer
@@ -735,10 +747,71 @@ tmux new -s session_name
 srun --partition DPB --time 0 --mem 20G --cpus-per-task 4 --nodes 1 --ntasks 1 --pty bash -i
 
 
+### creating ther eads for baypass 
+art_illumina
+
+# I should solve this later but for now, 
+export PATH=$PATH:/usr/local/bin/art_bin_MountRainier
+art_illumina
+## to make it run 
+
+# ok I just realized that als these softwares are to simulate single individual sequencing, so what about pool seq?
+# but meixi had a great idea of using a normal software and pretend all the individuals in a vcf file are actually different chromosomes
+# so the softwares should accept multiple fasta files as inputs 
+
+## so first step would be to convert my vcf file into multiple fasta files 
+
+_____ march 28
+
+fisrt think about how would you convert vcf file to a fasta file 
+
+So, first of all you should know that for each chromosomes in a diploid individual there is tipically
+2 fasta files
+since each fasta file corresponds to 1 molecule of dna 
+fasta files do not include information about hetercygocity is a plain chain of nucleotides 
+
+But, becuase we are supposidly workign with only homocgygot, we are not supposed to see any heterocygocity 
+
+ok i managed to write a python code to create fasta files from vcf files 
+
+now using art-illumina to generate reads from fasta files: 
 
 
-_ april13 
+## this si art illumina basic functionality:
+art_illumina -ss HS25 -i <input.fasta> -l <read_length> -f <coverage> -o <output_prefix>
 
-ok so, i think that for running bayenv or bypass i do have enought info just simulating the reads 
+art_illumina -ss HS25 -i genome.fasta -l 100 -f 30 -o reads
+# ART will generate two output files with the extensions ".1.fq" and ".2.fq" for paired-end reads
+
+ok so i have no idea for each run which platform we used but i found a pdf inside the fodler of the reads
+from novogene , so i will just run it with the example 
+
+art_illumina -ss HS25 -i i0.fasta -l 150 -f 7 -p -m 300 -s 10 -o reads
+
+art_illumina -ss HS25 # right now im assuming HS25 - HiSeq 2500
+             -i i0.fasta #input 
+             -l 150 #length of sequences
+             -f 7 # depth 
+             -p # paired reads
+             -m 800 #mean length 
+             -s 100 # 
+             -o reads
+
+ok so fragment length nowadays is about 700 or 800 hundred with a standars dev of 100 
+
+#-m   --mflen
+# the mean size of DNA/RNA fragments for paired-end simulations
+
+__ 
+so talking with meixi and xing they recommended goign with the default: either novaseq or hiseq and usually the read length is 150 and the coverage for our 
+experiment is in between 5 to 10, and it would be a good idea to model 2 extreme scenarios where the coverage is very low or the vocerage is very high 
 
 
+i created a sh file 
+simulate_reads.sh
+
+#add permisison to run 
+chmod +x simulate_reads.sh
+
+and to run the sh 
+./simulate_reads.sh

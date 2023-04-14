@@ -7,3 +7,5 @@
 *.fas.fai
 *.fasta
 *.fasta.fai
+*.fq
+*.aln

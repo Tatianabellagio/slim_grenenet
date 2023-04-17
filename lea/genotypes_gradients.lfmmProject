@@ -1,0 +1,10 @@
+new("lfmmProject", lfmmProject.file = "genotypes_gradients.lfmmProject", 
+    projDir = "/Users/tbellagio/Documents/grenephase1/scratch_tati/simulations/lea/", 
+    lfmmDir = "genotypes_gradients.lfmm/", input.file = "genotypes.lfmm", 
+    environment.file = "gradients.env", runs = list(), K = c(6L, 
+    6L, 6L, 6L, 6L), d = c(1L, 1L, 1L, 1L, 1L), all = c(FALSE, 
+    FALSE, FALSE, FALSE, FALSE), lfmmClass.files = c("K6/run1/genotypes_r1_s1.6.lfmmClass", 
+    "K6/run2/genotypes_r2_s1.6.lfmmClass", "K6/run3/genotypes_r3_s1.6.lfmmClass", 
+    "K6/run4/genotypes_r4_s1.6.lfmmClass", "K6/run5/genotypes_r5_s1.6.lfmmClass"
+    ), n = 50L, L = 400L, D = 1L, creationTime = structure(1681593014.11873, class = c("POSIXct", 
+    "POSIXt")))

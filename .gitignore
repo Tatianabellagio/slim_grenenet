@@ -9,3 +9,6 @@
 *.fasta.fai
 *.fq
 *.aln
+*.lfmm
+*.env
+*.geno

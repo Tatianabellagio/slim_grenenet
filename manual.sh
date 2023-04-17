@@ -823,12 +823,23 @@ and to run the sh
 
 ## ok lets run baypass
 
+### jobs in the cluster
+
+# Memex/calc interactive session:
+# create a tmux session 
+tmux new -s session_name
+#run this in a tmux session, so that the interactive session stays alive:
+srun --partition DPB --time 0 --mem 20G --cpus-per-task 16 --nodes 1 --ntasks 1 --pty bash -i
+
+--cpus-per-task 16 since baypass can use 16 threads
+
 g_baypass -npop 16  \
           -gfile geno_table_slim  \
           -poolsizefile pool_size_slim  \
           -d0yij 2.8  \
           -outprefix filtrun.BP  \
-          -npilot 50
+          -npilot 50 \
+          -nthreads 16
 
 
 

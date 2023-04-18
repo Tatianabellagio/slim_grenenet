@@ -1,0 +1,25 @@
+PLINK v1.90b6.24 64-bit (6 Jun 2021)
+Options in effect:
+  --make-bed
+  --out subp3
+  --vcf ../vcf_slim/subp3.vcf
+
+Hostname: Tatianas-MacBook-Pro-3.local
+Working directory: /Users/tbellagio/Documents/grenephase1/scratch_tati/simulations/vcf_slim
+Start time: Tue Apr 18 07:20:43 2023
+
+Random number seed: 1681827643
+16384 MB RAM detected; reserving 8192 MB for main workspace.
+--vcf: subp3-temporary.bed + subp3-temporary.bim + subp3-temporary.fam written.
+5458 variants loaded from .bim file.
+500 people (0 males, 0 females, 500 ambiguous) loaded from .fam.
+Ambiguous sex IDs written to subp3.nosex .
+Using 1 thread (no multithreaded calculations invoked).
+Before main variant filters, 500 founders and 0 nonfounders present.
+Calculating allele frequencies... done.
+Total genotyping rate is exactly 1.
+5458 variants and 500 people pass filters and QC.
+Note: No phenotypes present.
+--make-bed to subp3.bed + subp3.bim + subp3.fam ... done.
+
+End time: Tue Apr 18 07:20:43 2023

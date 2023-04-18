@@ -1,0 +1,27 @@
+PLINK v1.90b6.24 64-bit (6 Jun 2021)
+Options in effect:
+  --bfile subp0_filteredmaf
+  --matrix
+  --out subp0_filteredmaf_ld
+  --r2
+
+Hostname: DN0a237a5f.SUNet
+Working directory: /Users/tbellagio/Documents/grenephase1/scratch_tati/simulations/ld_plink
+Start time: Mon Apr 17 19:02:43 2023
+
+Note: --matrix flag deprecated.  Migrate to "--distance ibs flat-missing",
+"--r2 square", etc.
+Random number seed: 1681783363
+16384 MB RAM detected; reserving 8192 MB for main workspace.
+3080 variants loaded from .bim file.
+500 people (0 males, 0 females, 500 ambiguous) loaded from .fam.
+Ambiguous sex IDs written to subp0_filteredmaf_ld.nosex .
+Using up to 8 threads (change this with --threads).
+Before main variant filters, 500 founders and 0 nonfounders present.
+Calculating allele frequencies... done.
+Total genotyping rate is exactly 1.
+3080 variants and 500 people pass filters and QC.
+Note: No phenotypes present.
+--r2 square to subp0_filteredmaf_ld.ld ... done.
+
+End time: Mon Apr 17 19:02:43 2023

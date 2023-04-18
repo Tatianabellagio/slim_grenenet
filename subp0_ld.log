@@ -1,0 +1,18 @@
+PLINK v1.90b6.24 64-bit (6 Jun 2021)
+Options in effect:
+  --bfile subp0
+  --matrix
+  --out subp0_ld
+  --r2
+
+Hostname: DN0a237a5f.SUNet
+Working directory: /Users/tbellagio/Documents/grenephase1/scratch_tati/simulations
+Start time: Mon Apr 17 18:56:41 2023
+
+Note: --matrix flag deprecated.  Migrate to "--distance ibs flat-missing",
+"--r2 square", etc.
+Random number seed: 1681783001
+16384 MB RAM detected; reserving 8192 MB for main workspace.
+Error: Failed to open subp0.bed.
+
+End time: Mon Apr 17 18:56:41 2023

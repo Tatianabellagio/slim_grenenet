@@ -12,3 +12,9 @@
 *.lfmm
 *.env
 *.geno
+*.bim
+*.fam
+*.ld
+*.prune.in
+*.prune.out
+*.nosex

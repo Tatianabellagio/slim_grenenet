@@ -1,0 +1,15 @@
+PLINK v1.90b6.24 64-bit (6 Jun 2021)
+Options in effect:
+  --make-bed
+  --out subp0
+  --set-all-var-ids
+  --vcf ../vcf_slim/subp0.vcf
+
+Hostname: DN0a237a5f.SUNet
+Working directory: /Users/tbellagio/Documents/grenephase1/scratch_tati/simulations/ld_plink
+Start time: Mon Apr 17 19:27:52 2023
+
+Error: Unrecognized flag ('--set-all-var-ids').
+For more information, try "plink --help <flag name>" or "plink --help | more".
+
+End time: Mon Apr 17 19:27:52 2023

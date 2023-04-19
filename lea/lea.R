@@ -10,11 +10,11 @@ library(LEA)
 # Create files: genotypes.eigenvalues - eigenvalues,
 #               genotypes.eigenvectors - eigenvectors, #               genotypes.sdev - standard deviations, #               genotypes.projections - projections,
 # Create a pcaProject object: pc.
-pc = pca("allele_freq.lfmm", scale = TRUE)
-tw = tracy.widom(pc)
+#pc = pca("allele_freq.lfmm", scale = TRUE)
+#tw = tracy.widom(pc)
 
 # plot the percentage of variance explained by each component 
-plot(tw$percentage, pch = 19, col = "darkblue", cex = .8)
+#plot(tw$percentage, pch = 19, col = "darkblue", cex = .8)
 
 
 ### ECOLOGICAL ASSOCIATIONS 
@@ -35,7 +35,7 @@ project = lfmm("genotypes.lfmm",
                repetitions = 5,
                project = "new")
 ## lfmm uses a very naive imputation method which has low power
-when genotypes are missing:  See impute() for a better imputation method.
+#when genotypes are missing:  See impute() for a better imputation method.
 ## Note that lfmm has an improved estimation algorithm implemented in lfmm2, which should be the prefered option.
 
 
@@ -52,7 +52,7 @@ env = read.csv("env.env", header=FALSE)
 # 4 environmental variables
 #X <- offset_example$env
 
-mod.lfmm2 <- lfmm2(input = data, env = env, K = 5)
+mod.lfmm2 <- lfmm2(input = data, env = env, K = 3)
 
 #Simulate non-null effect sizes for 10 target loci #individuals
 n = 100
@@ -71,7 +71,7 @@ plot(mod.lfmm2@U, col = "grey", pch = 19, xlab = "Factor 1",
 
 B[target] = runif(10, -10, 10)
 
-Create 3 hidden factors and their loadings
+#Create 3 hidden factors and their loadings
 U = t(tcrossprod(as.matrix(c(-1,0.5,1.5)), X)) + matrix(rnorm(3*n), ncol = 3)
 V <- matrix(rnorm(3*L), ncol = 3)
 
@@ -83,7 +83,7 @@ pv <- lfmm2.test(object = mod.lfmm2,
 plot(-log10(pv$pvalues), col = 'grey', cex = .5, pch = 19)
 abline(h = -log10(0.1/16), lty = 2, col = "orange")
 
--log10(pv$pvalues)
+#-log10(pv$pvalues)
 #sorted_pvalues = sort(pv$pvalues, decreasing = TRUE)
 write.csv(pv$pvalues, "p_values_snps")
 write.csv(-log10(pv$pvalues), "log10p_values_snps")

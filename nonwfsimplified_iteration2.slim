@@ -1,26 +1,18 @@
-// modified by Tati 
-// now i wll try o non writ fisher model 
-// now reading from vcf files with selection coefficient drawn from 2 gaussian distributions that add up to a PRS
-// One QTL for now 
-// there is an otima for each subpopulation particular to each subpopulation based on the optima file 
-
-// Aim: a simulation of local adaptation in an island model
-// assuming a Gaussian model of stabilising selection
+// Author: Tati
+// simulate evolution of qtl under different environments defined by an optima file 
 
 ////////////////////////////////////////////////////////////////////////////////
 // Setup
+
 initialize() {
-
 	// the optima file is a vector indicating the optima for each of the environments 
-	defineConstant("optimaFile", "optima.txt");
-if (exists("slimgui")){ 
+	//optima = readFile('optima.txt');
+   defineConstant('optima', readFile('optima.txt'));
+	// number of population based on the map file
+	//subpopCount = length(optima);
+	defineConstant('subpopCount', length(optima));
 
-
-} 
 // end options	////////////////////////////////////////////////////////////////////////////////
-	// Keep track of the tree sequence for the population
-	//	initializeTreeSeq(); // not needed for purposes right now
-
 
    // now im gonna simulate the mutations coming from standing variation. 
    initializeSLiMModelType("nonWF");
@@ -34,9 +26,6 @@ if (exists("slimgui")){
 	initializeMutationTypeNuc("m3", 0, "n", 0, 0.0);   // 19429 # neutral  
 	m3.convertToSubstitution = F; 
    m3.color = "blue"; 
-	
-	//initializeMutationTypeNuc("m4", 0, "n", 0, 0);   // qtl2 0.2 contributing 
-	//initializeMutationTypeNuc("m5", 0, "n", 0, 0.00);   // qtl2 0.8 noncontributing 
 
 	initializeMutationTypeNuc("m1", 0, "f", 0.0);       // neutral
 
@@ -60,40 +49,17 @@ if (exists("slimgui")){
 	p999.genomes.readFromVCF("qtl1_contrib_sc.vcf", m2);  // vcf file with seelction coefficients 
 	p999.genomes.readFromVCF("qtl1_neutral.vcf", m3);
 	
-	//p999.genomes.readFromVCF("qtl2_contrib.vcf", m4);
-	//p999.genomes.readFromVCF("qtl2_neutral.vcf", m5);
-	
-	//p999.genomes.readFromVCF("inv1.vcf", m1);
-	//p999.genomes.readFromVCF("inv2.vcf", m1);
-	//p999.setSubpopulationSize(16*N); 
-	//ut =  sim.mutationsOfType(m2);
-	//ut1 = sim.mutationsOfType(m2);
-	//freqs = sim.mutationFrequencies(NULL, ut);   
-	//effects = ut.selectionCoeff;
-	//print(ut);
-	//print(freqs);
-	//print(effects);
-	//cat(paste(ut.position, sep="\n"));
-	//sim.outputMutations(m2);
-	//catn(); 
-	//print(cbind(ut, freqs, effects));
-	
 }
 
 // I will always keep the effect of the mutations neutral 
 // becuase I am actually using their effect as an effect size 
 1:999 mutationEffect(m2) {
-	return 1.; //+ s*0;
+	return 1.; 
 }
-
 
 1 late(){
 
 	// Read a list of optima from a simple text file (one line/one entry per population).
-	optima = readFile(optimaFile);
-
-	// number of population based on the map file
-	subpopCount = length(optima);
 	
 
 	for (i in 0:(subpopCount-1)) {
@@ -119,13 +85,10 @@ if (exists("slimgui")){
 
 
 
-/////// ok so now i want to establish a reproduction regimen where the fitness of an individual will affect the number of offspring 
+/////// establish a reproduction regimen where the fitness of an individual will affect the number of offspring 
 
 2:999 reproduction() { 
 // 0.97 chance of selfing, 0.03 chance of reproducing with other random individual in the same subpop 
-	optima = readFile(optimaFile);
-	subpopCount = length(optima);
-	
 
 	for (i in 0:(subpopCount-1)) {
 	if (sim.subpopulations[i].individualCount > 0){
@@ -168,8 +131,6 @@ if (exists("slimgui")){
     
     
 1:999 late() { 
-   optima = readFile(optimaFile);
-	subpopCount = length(optima);
 
 	// if after the survival event the population size is too big adjust it 
 	for (i in 0:(subpopCount-1)){
@@ -182,17 +143,16 @@ if (exists("slimgui")){
 	inds = sim.subpopulations[i].individuals; 
 	phenotypes = inds.sumOfMutationsOfType(m2); 
 	fitness = exp(-0.5 * (phenotypes - (inds.subpopulation.tag))^2);
-
+	print(phenotypes); // if the phenotypes are all the same i could assume there is ecotype sorting 
 	catn(sim.cycle + ": Mean phen ="+ mean(phenotypes) + " optima "+ sim.subpopulations[i].tag  + " ,subpop " + i + " size:" + 			sim.subpopulations[i].individualCount) ;  	
  	
  	}}
 
 // output 
-7 late(){  
-		optima = readFile(optimaFile);
-		subpopCount = length(optima);
+3 late(){  
+
 		for (i in 0:(subpopCount-1)){
-			sim.subpopulations[i].individuals.genomes.outputVCF('vcf_clim/subp' + i + '.vcf');
+			sim.subpopulations[i].individuals.genomes.outputVCF('vcf_slim/subp' + i + '.vcf');
 }} 	
     
 

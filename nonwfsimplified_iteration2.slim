@@ -22,16 +22,12 @@ initialize() {
 	initializeMutationTypeNuc("m2", 0, "n", 0, 0.0);   // qtl1 196 # 19625*0.05
 	m2.convertToSubstitution = F; 
    m2.color = "red"; 
-   
-	initializeMutationTypeNuc("m3", 0, "n", 0, 0.0);   // 19429 # neutral  
-	m3.convertToSubstitution = F; 
-   m3.color = "blue"; 
 
-	initializeMutationTypeNuc("m1", 0, "f", 0.0);       // neutral
+	//initializeMutationTypeNuc("m1", 0, "f", 0.0);       // neutral
 
 
 	// g1 genomic element type: uses m2 for all mutations
-	initializeGenomicElementType("g1", m1, 1.0, mmJukesCantor(0.0)); 
+	initializeGenomicElementType("g1", m2, 1.0, mmJukesCantor(0.0)); 
    //initializeGenomicElementType("g2", m1, 1.0);  cannot do it 
 
 	initializeGenomicElement(g1, 0,  L-1);
@@ -46,8 +42,8 @@ initialize() {
 	sim.addSubpop("p999", 1800);  //initial was 225
 	//p999.setSelfingRate(0.97); 	//WF
 	
-	p999.genomes.readFromVCF("qtl1_contrib_sc.vcf", m2);  // vcf file with seelction coefficients 
-	p999.genomes.readFromVCF("qtl1_neutral.vcf", m3);
+	p999.genomes.readFromVCF("qtl1_neutral.vcf", m2);  // vcf file with seelction coefficients 
+	//p999.genomes.readFromVCF("qtl1_neutral.vcf", m3);
 	
 }
 

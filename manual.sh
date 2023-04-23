@@ -263,7 +263,7 @@ for (mut in sim.mutations[1]) {
     catn("Location: " + mut.position);
     catn("Effect: " + mut.selectionCoeff);
 }
-'"
+'"'
 #####
 
 March 8th 
@@ -336,7 +336,7 @@ bcftools view -r chr1:1000-2000,chr2:3000-4000 input.vcf > output.vcf
 bcftools view -T positions.txt input.vcf > output.vcf
 
 
-sometimes bcftools is annoying with compressing decompressing 
+#sometimes bcftools is annoying with compressing decompressing 
 bgzip file.vcf ## to compress it 
 gunzip file.vcf.gz ## to decompress it 
 
@@ -846,3 +846,13 @@ g_baypass -npop 16  \
           geno_table_slim
 
           pool_size_slim
+
+
+
+###### installing slim with conda in the cluster
+
+conda install -c conda-forge slim 
+
+conda create -n slim 
+conda activate slim 
+conda install -c conda-forge slim

@@ -1,0 +1,19 @@
+rule python_script:
+    input:
+        input_file="input.txt"
+    output:
+        output_file="output.txt"
+    params:
+        param1=[1, 2, 3, 4]
+    shell:
+        "python my_script.py {input.input_file} {output.output_file} {params.param1}"
+
+rule slim_script:
+    input:
+        input_file="input.txt"
+    output:
+        output_file="output.txt"
+    params:
+        param2=[0.1, 0.2, 0.3, 0.4]
+    shell:
+        "slim my_script.slim {input.input_file} {output.output_file} {params.param2}"

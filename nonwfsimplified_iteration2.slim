@@ -7,7 +7,12 @@
 initialize() {
 	// the optima file is a vector indicating the optima for each of the environments 
 	//optima = readFile('optima.txt');
-   defineConstant('optima', readFile('optima.txt'));
+   defineConstant('optima', readFile('optima_files/optima0_slim.txt'));
+   defineConstant('ref_fasta', "chr5.fasta");
+   defineConstant('main_vcf', "chr5_grenenet_subset_ann4.vcf");
+   defineConstant('initial_pop', 225); // this is based on the number of individuals in the vcf file  28800
+
+
 	// number of population based on the map file
 	//subpopCount = length(optima);
 	defineConstant('subpopCount', length(optima));
@@ -17,20 +22,19 @@ initialize() {
    // now im gonna simulate the mutations coming from standing variation. 
    initializeSLiMModelType("nonWF");
    initializeSLiMOptions(nucleotideBased=T);
-	length = initializeAncestralNucleotides("test.fasta");   
-	defineConstant("L", length);
+	length = initializeAncestralNucleotides(ref_fasta);   
 	initializeMutationTypeNuc("m2", 0, "n", 0, 0.0);   // qtl1 196 # 19625*0.05
 	m2.convertToSubstitution = F; 
    m2.color = "red"; 
 
-	//initializeMutationTypeNuc("m1", 0, "f", 0.0);       // neutral
+	initializeMutationTypeNuc("m1", 0, "f", 0.0);       // neutral
 
 
 	// g1 genomic element type: uses m2 for all mutations
-	initializeGenomicElementType("g1", m2, 1.0, mmJukesCantor(0.0)); 
+	initializeGenomicElementType("g1", m1, 1.0, mmJukesCantor(0.0)); 
    //initializeGenomicElementType("g2", m1, 1.0);  cannot do it 
 
-	initializeGenomicElement(g1, 0,  L-1);
+	initializeGenomicElement(g1, 0,  length-1);
 
 	// initialize recombination 
 	initializeRecombinationRate(0.0001);
@@ -39,10 +43,8 @@ initialize() {
 
 //// create one popualtion and then popualte the new ones 
 1 early() { 
-	sim.addSubpop("p999", 1800);  //initial was 225
-	//p999.setSelfingRate(0.97); 	//WF
-	
-	p999.genomes.readFromVCF("qtl1_neutral.vcf", m2);  // vcf file with seelction coefficients 
+	sim.addSubpop("p999", initial_pop);  // 
+	p999.genomes.readFromVCF('chr5_grenenet_subset_ann.vcf', m2);  // vcf file with seelction coefficients 
 	//p999.genomes.readFromVCF("qtl1_neutral.vcf", m3);
 	
 }

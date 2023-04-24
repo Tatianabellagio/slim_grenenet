@@ -20,3 +20,5 @@
 *.nosex
 *.xls
 *.csv
+/snakemake/crispresso-machine/
+/optima_files/

@@ -100,7 +100,9 @@ im trying to run this 2 no succesfully
 
 # first based on the file a downloaded from tair im gona subset chromosome 1 
 gunzip -c filename.fasta.gz | awk '/^>Chr1 /{p=1}p' > chr1.fasta
+gunzip -c TAIR10_chr_all.fas | awk '/^>Chr1 /{p=1}p' > chr1.fasta
 
+TAIR10_chr_all.fas
 ## you can do that by: 
 ## create a file called
 

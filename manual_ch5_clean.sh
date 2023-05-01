@@ -20,7 +20,6 @@ bcftools view chr5_grenenet.vcf | vcfrandomsample -r 0.01 > chr5_grenenet_subset
 ####### run python script ############################
 ######################################################
 
-
 ##### phase 3 #######################################
 ############## annotate vcf with sc
 

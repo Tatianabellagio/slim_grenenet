@@ -858,3 +858,21 @@ conda install -c conda-forge slim
 conda create -n slim 
 conda activate slim 
 conda install -c conda-forge slim
+
+
+###### if you are in need of getting soemthing from the cluster: 
+scp tbellagio@calc.dpb.carnegiescience.edu:safedata/ath_evo/grenephase1/data/worldclim_ecotypesdata.csv ~/Desktop/
+
+## my slim script has 3 parameters optima, replicates, gen_to_run
+slim -d optima=0 -d replicates=12 -d gen_to_run=3 arabidopsis_evolve.slim
+
+
+
+conda install 
+
+
+## conda environemnt problems 
+conda create --name simulations_slim python=3.8.9
+conda activate simulations_slim
+conda create --name simulations_slim --clone simulations
+conda env remove --name my_old_env

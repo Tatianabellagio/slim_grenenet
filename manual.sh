@@ -876,3 +876,64 @@ conda create --name simulations_slim python=3.8.9
 conda activate simulations_slim
 conda create --name simulations_slim --clone simulations
 conda env remove --name my_old_env
+
+
+# - mon may 1st
+### there is an unknown and very insteresting thing happening when running python scripts from the vscode terminal
+## its like it fails to run in from inside the conda environment
+## so always do it from an external temrinal 
+
+
+tip
+## in the case you can chose is preferable to use 
+bgzip -d [file]
+# rather than 
+gunzip 
+# both are used for decompressing files that have been compressed with the gzip algorithm. 
+# However, bgzip -d is specifically designed to work with files that have been compressed using the bgzip utility, 
+# which is based on the Bzip2 algorithm. gunzip, on the other hand, is a more general-purpose utility that can decompress 
+# files that have been compressed using a variety of different algorithms
+
+
+### now that i am done creating the pipeline in my locacl machine,
+## how do i run it in the clusteR?
+
+## first i need to recreate the conda environment in the cluster
+
+conda activate my_environment
+conda env export > environment.yaml
+
+
+## check sessions 
+tmux ls
+## if i want one of this, attach it 
+tmux attach-session -t session_name
+## if not, create a new one 
+tmux new -s session_name
+
+## to see jobs in queue 
+squeue
+## to eliminate a job 
+scancel idjob
+
+#run this in a tmux session, so that the interactive session stays alive:
+srun --partition DPB --time 0 --mem 40G --cpus-per-task 1 --nodes 1 --ntasks 1 --pty bash -i
+
+
+conda env list
+
+
+conda env remove --name environment_name
+
+## create a yaml with all the specifications of your environemnt 
+conda env export > snakes_check.yml
+
+#create a conda environment from a yaml file 
+conda env create -f snakes_check.yml
+
+
+tmux attach-session -t simulations
+
+
+dont forget bgzip in the conda environment 
+conda install -c conda-forge py-bgzip

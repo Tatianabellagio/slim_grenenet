@@ -1,11 +1,20 @@
+#!/bin/bash
+
+## load modules on cluster
+#module load Conda/3.7
+module load BCFtools/1.10.2
+module load SLiM/4.0.1
+module load HTSlib/1.10.2 
+
+###activate env on cluster
+#conda activate pipeline_slim
+source /carnegie/binaries/centos7/conda/3.7/bin/activate pipeline_slim
+
 ####### run the pipeline ############################
 ######################################################
 
-## for cluster
-# module load Conda/3.7 
-# module load BCFtools/1.10.2 
-# module load SLiM/4.0.1
-
+##in case it is compressed from other runs 
+bgzip -d chr5_grenenet.vcf.gz 
 
 # python pi_beta_optima_fasta.py pi beta
 echo PHASE 1 based on beta and pi calculate optimum phenotypes based on selected snps and their effect sizes 
@@ -36,32 +45,35 @@ echo PHASE 4 amplify number of ecotypes to simulate starting seedmix
 ##### phase 4 #######################################
 ###### amplify number of ecotypes #########################################################
 bcftools query -l chr5_grenenet_ann.vcf | wc -l ## now only 225
-
-bgzip chr5_grenenet_ann.vcf
+bgzip -f chr5_grenenet_ann.vcf
 bcftools tabix -f chr5_grenenet_ann.vcf.gz 
 
-bcftools merge --threads 4 --force-samples chr5_grenenet_ann.vcf.gz chr5_grenenet_ann.vcf.gz chr5_grenenet_ann.vcf.gz chr5_grenenet_ann.vcf.gz -o chr5_grenenet_ann1.vcf.gz
+bcftools merge --threads 4 --force-samples chr5_grenenet_ann.vcf.gz chr5_grenenet_ann.vcf.gz chr5_grenenet_ann.vcf.gz chr5_grenenet_ann.vcf.gz -o chr5_grenenet_ann1.vcf
+bgzip -f chr5_grenenet_ann1.vcf
 bcftools tabix -f chr5_grenenet_ann1.vcf.gz 
 
 bcftools query -l chr5_grenenet_ann1.vcf.gz | wc -l ## 900
 
-bcftools merge --threads 4 --force-samples chr5_grenenet_ann1.vcf.gz chr5_grenenet_ann1.vcf.gz chr5_grenenet_ann1.vcf.gz chr5_grenenet_ann1.vcf.gz -o chr5_grenenet_ann2.vcf.gz
+bcftools merge --threads 4 --force-samples chr5_grenenet_ann1.vcf.gz chr5_grenenet_ann1.vcf.gz chr5_grenenet_ann1.vcf.gz chr5_grenenet_ann1.vcf.gz -o chr5_grenenet_ann2.vcf
+bgzip -f chr5_grenenet_ann2.vcf
 bcftools tabix -f chr5_grenenet_ann2.vcf.gz 
 
 bcftools query -l chr5_grenenet_ann2.vcf.gz | wc -l ## 3600
 
-bcftools merge --threads 4 --force-samples chr5_grenenet_ann2.vcf.gz chr5_grenenet_ann2.vcf.gz chr5_grenenet_ann2.vcf.gz chr5_grenenet_ann2.vcf.gz -o chr5_grenenet_ann3.vcf.gz
+bcftools merge --threads 4 --force-samples chr5_grenenet_ann2.vcf.gz chr5_grenenet_ann2.vcf.gz chr5_grenenet_ann2.vcf.gz chr5_grenenet_ann2.vcf.gz -o chr5_grenenet_ann3.vcf
+bgzip -f chr5_grenenet_ann3.vcf
 bcftools tabix -f chr5_grenenet_ann3.vcf.gz 
 
 bcftools query -l chr5_grenenet_ann3.vcf.gz | wc -l ## 14400
 
-bcftools merge --threads 4 --force-samples chr5_grenenet_ann3.vcf.gz chr5_grenenet_ann3.vcf.gz -o chr5_grenenet_ann4.vcf.gz
+bcftools merge --threads 4 --force-samples chr5_grenenet_ann3.vcf.gz chr5_grenenet_ann3.vcf.gz -o chr5_grenenet_ann4.vcf
+bgzip -f chr5_grenenet_ann4.vcf
 bcftools tabix -f chr5_grenenet_ann4.vcf.gz 
 
 #for slim use, decompress
-gunzip chr5_grenenet_ann4.vcf.gz 
+bgzip -d chr5_grenenet_ann4.vcf.gz 
 
 ## phase 4
-echo PHASE 4 run slim simulation  
-./bash_slim.sh
+#echo PHASE 4 run slim simulation  
+#./bash_slim.sh
 

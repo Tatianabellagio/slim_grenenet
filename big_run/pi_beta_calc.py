@@ -83,9 +83,12 @@ if os.path.exists("vcf_slim"):
     # If it does, delete the folder and all its contents
     os.system("rm -r vcf_slim")
     os.makedirs("vcf_slim")
+    os.system("rm -r optima_files")
+    os.makedirs('optima_files')
 else: 
     os.makedirs("vcf_slim")
-os.makedirs('optima_files')
+    os.makedirs('optima_files')
+
 samples.to_csv('optima_files/optimas.csv')
 samples['phenotype'].to_csv('optima_files/optima_slim.txt', header=None, sep='\n', index=None)
 print(f"Folders: optima_files with optimas.csv and optimas for slim created successfully.")

@@ -900,8 +900,12 @@ gunzip
 
 ## first i need to recreate the conda environment in the cluster
 
+
+
+## dealing  with environments 
 conda activate my_environment
 conda env export > environment.yaml
+conda env export > snakes_check.yml
 
 
 ## check sessions 
@@ -930,6 +934,7 @@ conda env export > snakes_check.yml
 
 #create a conda environment from a yaml file 
 conda env create -f snakes_check.yml
+## be aware that the name of the env is stated on the yaml 
 
 
 tmux attach-session -t simulations
@@ -937,3 +942,12 @@ tmux attach-session -t simulations
 
 dont forget bgzip in the conda environment 
 conda install -c conda-forge py-bgzip
+
+conda env create -f snakes_check.yml
+
+conda env create -f base_env.yml
+
+conda env export > base_env_after_activation.yml
+
+##3 so i basically created a very basic conda environment with all teh libraries i need 
+## and then created that environemnt en the clsuter 

@@ -902,11 +902,6 @@ gunzip
 
 
 
-## dealing  with environments 
-conda activate my_environment
-conda env export > environment.yaml
-conda env export > snakes_check.yml
-
 
 ## check sessions 
 tmux ls
@@ -919,35 +914,28 @@ tmux new -s session_name
 squeue
 ## to eliminate a job 
 scancel idjob
-
 #run this in a tmux session, so that the interactive session stays alive:
-srun --partition DPB --time 0 --mem 40G --cpus-per-task 1 --nodes 1 --ntasks 1 --pty bash -i
+srun --partition DPB --time 0 --mem 20G --cpus-per-task 1 --nodes 1 --ntasks 1 --pty bash -i
 
 
-conda env list
 
+### conda 
+conda env list  ## list available environments 
+## activate envronment 
+conda activate my_environment
 
+### recmove an environemnt 
 conda env remove --name environment_name
 
-## create a yaml with all the specifications of your environemnt 
-conda env export > snakes_check.yml
-
+## create yaml file from existing environment 
+conda env export > environment.yaml
 #create a conda environment from a yaml file 
-conda env create -f snakes_check.yml
-## be aware that the name of the env is stated on the yaml 
+conda env create -f environment.yml   ## be aware that the name of the env is stated on the yaml 
 
 
-tmux attach-session -t simulations
+## to just display the first rows without header 
+grep -v '^##' chr5_grenenet_ann4.vcf | head -n 3
 
 
-dont forget bgzip in the conda environment 
-conda install -c conda-forge py-bgzip
-
-conda env create -f snakes_check.yml
-
-conda env create -f base_env.yml
-
-conda env export > base_env_after_activation.yml
-
-##3 so i basically created a very basic conda environment with all teh libraries i need 
-## and then created that environemnt en the clsuter 
+# so something i learned is that you can create your own yaml file to create a basic environment that does not 
+# a bunch of things that you actully dont need

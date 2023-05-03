@@ -67,12 +67,7 @@ bcftools tabix -f chr5_grenenet_ann3.vcf.gz
 bcftools query -l chr5_grenenet_ann3.vcf.gz | wc -l ## 14400
 
 bcftools merge --threads 4 --force-samples chr5_grenenet_ann3.vcf.gz chr5_grenenet_ann3.vcf.gz -o chr5_grenenet_ann4.vcf
-bgzip -f chr5_grenenet_ann4.vcf
-bcftools tabix -f chr5_grenenet_ann4.vcf.gz 
-
-#for slim use, decompress
-bgzip -d chr5_grenenet_ann4.vcf.gz 
-
+bcftools query -l chr5_grenenet_ann4.vcf | wc -l ## 14400
 ## phase 4
 #echo PHASE 4 run slim simulation  
 #./bash_slim.sh

@@ -377,7 +377,7 @@ ____________________
 
 ## So based on the internet the best toold for doing this is vcflib
 ## that contains a function called vcfrandomsample
-
+## package needed conda install -c bioconda vcflib
 bcftools view chr1_grenenet_ecotypes.vcf | vcfrandomsample -r 0.01 > chr1_grenenet_ecotypes_subset.vcf
 bgzip chr1_grenenet_ecotypes_subset.vcf
 ## once a filtered the vcf file no w have only 19681 variants 
@@ -915,7 +915,7 @@ squeue
 ## to eliminate a job 
 scancel idjob
 #run this in a tmux session, so that the interactive session stays alive:
-srun --partition DPB --time 0 --mem 20G --cpus-per-task 1 --nodes 1 --ntasks 1 --pty bash -i
+srun --partition DPB --time 0 --mem 30G --cpus-per-task 1 --nodes 1 --ntasks 1 --pty bash -i
 
 
 
@@ -939,3 +939,25 @@ grep -v '^##' chr5_grenenet_ann4.vcf | head -n 3
 
 # so something i learned is that you can create your own yaml file to create a basic environment that does not 
 # a bunch of things that you actully dont need
+
+
+## i am getting errors in my job submissions 
+## so im gonna subset the file to check becasue the error is: 
+
+ERROR (Genome_Class::ExecuteMethod_readFromVCF): VCF file call line ended unexpectly before the last sample.
+
+Error on script line 57, character 14:
+
+   p999.genomes.readFromVCF(main_vcf, m2);  // vcf file with seelction coefficients 
+                ^^^^^^^^^^^
+ERROR (Genome_Class::ExecuteMethod_readFromVCF): VCF file call line ended unexpectly before the last sample.
+
+Error on script line 57, character 14:
+
+   p999.genomes.readFromVCF(main_vcf, m2);  // vcf file with seelction coefficients 
+
+  ### random sample of positions 
+# first install
+conda install -c bioconda vcflib
+## 
+bcftools view chr5_grenenet_ann3.vcf | vcfrandomsample -r 0.001 > chr5_grenenet_ann3_check.vcf

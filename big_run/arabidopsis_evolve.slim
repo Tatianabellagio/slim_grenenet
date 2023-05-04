@@ -13,8 +13,8 @@ initialize() {
 	if (!exists("optima"))defineConstant('optima', 1);
 	defineConstant('optima_value', asFloat(optimas[optima]));
    defineConstant('ref_fasta', "chr5.fasta");
-   defineConstant('main_vcf', "chr5_grenenet_ann4.vcf");  // chr5_grenenet_ann4.vcf
-   defineConstant('initial_pop', 28800); // this is based on the number of individuals in the vcf file  28800
+   defineConstant('main_vcf', "chr5_grenenet_ann3.vcf");  // chr5_grenenet_ann4.vcf
+   defineConstant('initial_pop', 14400); // this is based on the number of individuals in the vcf file  28800
    if (!exists("replicates"))defineConstant('replicates', 12);
    if (!exists("gen_to_run"))defineConstant('gen_to_run', 3);
 	//defineConstant('gen_to_finish', gen_to_run + 1);

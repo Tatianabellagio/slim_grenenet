@@ -49,26 +49,13 @@ bgzip -f chr5_grenenet_ann.vcf
 bcftools tabix -f chr5_grenenet_ann.vcf.gz 
 
 bcftools merge --threads 4 --force-samples chr5_grenenet_ann.vcf.gz chr5_grenenet_ann.vcf.gz chr5_grenenet_ann.vcf.gz chr5_grenenet_ann.vcf.gz -o chr5_grenenet_ann1.vcf
-bgzip -f chr5_grenenet_ann1.vcf
-bcftools tabix -f chr5_grenenet_ann1.vcf.gz 
+gzip -d chr5_grenenet_ann1.vcf.gz 
+bcftools view -H chr5_grenenet_ann1.vcf | wc -l   ## 900
 
-bcftools query -l chr5_grenenet_ann1.vcf.gz | wc -l ## 900
-
-bcftools merge --threads 4 --force-samples chr5_grenenet_ann1.vcf.gz chr5_grenenet_ann1.vcf.gz chr5_grenenet_ann1.vcf.gz chr5_grenenet_ann1.vcf.gz -o chr5_grenenet_ann2.vcf
-bgzip -f chr5_grenenet_ann2.vcf
-bcftools tabix -f chr5_grenenet_ann2.vcf.gz 
-
-bcftools query -l chr5_grenenet_ann2.vcf.gz | wc -l ## 3600
-
-bcftools merge --threads 4 --force-samples chr5_grenenet_ann2.vcf.gz chr5_grenenet_ann2.vcf.gz chr5_grenenet_ann2.vcf.gz chr5_grenenet_ann2.vcf.gz -o chr5_grenenet_ann3.vcf
-bgzip -f chr5_grenenet_ann3.vcf
-bcftools tabix -f chr5_grenenet_ann3.vcf.gz 
-
-bcftools query -l chr5_grenenet_ann3.vcf.gz | wc -l ## 14400
-
-bcftools merge --threads 4 --force-samples chr5_grenenet_ann3.vcf.gz chr5_grenenet_ann3.vcf.gz -o chr5_grenenet_ann4.vcf
-bcftools query -l chr5_grenenet_ann4.vcf | wc -l ## 14400
 ## phase 4
 #echo PHASE 4 run slim simulation  
 #./bash_slim.sh
 
+
+
+##### i think i will have to do ld pruning for slim to run faster

@@ -13,8 +13,8 @@ initialize() {
 	if (!exists("optima"))defineConstant('optima', 1);
 	defineConstant('optima_value', asFloat(optimas[optima]));
    defineConstant('ref_fasta', "chr5.fasta");
-   defineConstant('main_vcf', "chr5_grenenet_ann3.vcf");  // chr5_grenenet_ann4.vcf
-   defineConstant('initial_pop', 14400); // this is based on the number of individuals in the vcf file  28800
+   defineConstant('main_vcf', "chr5_grenenet_ann1.vcf");  // chr5_grenenet_ann4.vcf
+   defineConstant('initial_pop', 900); // this is based on the number of individuals in the vcf file  28800
    if (!exists("replicates"))defineConstant('replicates', 12);
    if (!exists("gen_to_run"))defineConstant('gen_to_run', 3);
 	//defineConstant('gen_to_finish', gen_to_run + 1);
@@ -90,22 +90,43 @@ initialize() {
 
 }
 
+//checks
+1:999 late() { 
+	for (i in 0:(replicates-1)){
+
+	// check fluctuation of phenotype and fitness
+	inds = sim.subpopulations[i].individuals; 
+	phenotypes = inds.sumOfMutationsOfType(m2); 
+	fitness = exp(-0.5 * (phenotypes - (optima_value))^2);
+	print(phenotypes); // if the phenotypes are all the same i could assume there is ecotype sorting 
+	catn(sim.cycle + ": Mean phen ="+ mean(phenotypes) + " optima "+ optima_value  + " ,subpop " + i + " size:" + 			sim.subpopulations[i].individualCount) ;  	
+ 	}
+	}
+
 
 
 /////// establish a reproduction regimen where the fitness of an individual will affect the number of offspring 
 
-3:999 reproduction() { 
+2:999 reproduction() { 
 // 0.97 chance of selfing, 0.03 chance of reproducing with other random individual in the same subpop 
 
 	for (i in 0:(replicates-1)) {
 	if (sim.subpopulations[i].individualCount > 0){
 		inds = sim.subpopulations[i].individuals; 
  		phenotypes = inds.sumOfMutationsOfType(m2); 
-		fitness = exp(-0.5 * (phenotypes - (optima_value))^2);	
+		fitness = exp(-0.5 * (phenotypes - (optima_value))^2);
 	
 		max_fitness = max(fitness);
-		rel_fitness = fitness / max_fitness;
+		
+rel_fitness = fitness / max_fitness;
+for (w in 0:(sim.subpopulations[i].individualCount-1))
+{if (isNAN(rel_fitness[w])){rel_fitness[w]=0;}}
+print(max_fitness);
+print(rel_fitness);
+print(rel_fitness*10);
 		offspring = rel_fitness * 10;  //max number of offsrping 
+print(offspring);
+
 		offspring = asInteger(floor((offspring)));		
 		
 		
@@ -135,24 +156,14 @@ initialize() {
 }
     
     
-1:999 late() { 
-	for (i in 0:(replicates-1)){
 
-	// check fluctuation of phenotype and fitness
-	inds = sim.subpopulations[i].individuals; 
-	phenotypes = inds.sumOfMutationsOfType(m2); 
-	fitness = exp(-0.5 * (phenotypes - (optima_value))^2);
-	print(phenotypes); // if the phenotypes are all the same i could assume there is ecotype sorting 
-	catn(sim.cycle + ": Mean phen ="+ mean(phenotypes) + " optima "+ optima_value  + " ,subpop " + i + " size:" + 			sim.subpopulations[i].individualCount) ;  	
- 	}
-	}
 
 2:999 late() { 
 
 	// if after the survival event the population size is too big adjust it 
 	for (i in 0:(replicates-1)){
-		if (sim.subpopulations[i].individualCount > 500){
-			number_to_kill = sim.subpopulations[i].individualCount - 500;		
+		if (sim.subpopulations[i].individualCount > 900){
+			number_to_kill = sim.subpopulations[i].individualCount - 900;		
 			sim.killIndividuals(sim.subpopulations[i].sampleIndividuals(number_to_kill));
 			}
 			}
@@ -162,7 +173,7 @@ initialize() {
 
 
 // output 
-5:999 late(){  
+4:999 late(){  
 		if(sim.cycle==gen_to_run){
 		for (i in 0:(replicates-1)){
 		sim.subpopulations[i].individuals.genomes.outputVCF('vcf_slim/optima' + optima + '/subp' + i + '.vcf');

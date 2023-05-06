@@ -915,7 +915,8 @@ squeue
 ## to eliminate a job 
 scancel idjob
 #run this in a tmux session, so that the interactive session stays alive:
-srun --partition DPB --time 0 --mem 30G --cpus-per-task 1 --nodes 1 --ntasks 1 --pty bash -i
+
+
 
 
 
@@ -961,3 +962,44 @@ Error on script line 57, character 14:
 conda install -c bioconda vcflib
 ## 
 bcftools view chr5_grenenet_ann3.vcf | vcfrandomsample -r 0.001 > chr5_grenenet_ann3_check.vcf
+
+
+## ok so after trying many times to run the simulation it would keeo crashing even with 4 cores 80 gb of memeory
+## so i will do ld pruninng on chr 5 so it is lighter 
+
+## i wil do itin the cluster in an interactive session 
+
+module load PLINK/1.90b6.17 
+plink --vcf chr5_grenenet.vcf --make-bed --out chr5_grenenet
+
+## so right now the length of the vcf () how many positions are there) is 
+bcftools view -H chr5_grenenet.vcf | wc -l  
+# 1702174
+
+
+plink --bfile chr5_grenenet --indep-pairwise 50 5 0.8 --out chr5_grenenet
+# Pruned 961349 variants from chromosome 5, leaving 740825.
+
+## and now filter the vcf file 
+cat snps.list
+bcftools view --include ID==@chr5_grenenet.prune.in chr5_grenenet.vcf > chr5_grenenet_pruned.vcf
+## 740825
+
+
+## ok now this is my new vcf file chr5_grenenet_pruned
+#ok and i renamed it just chr5_grenenet so that i dont ahve to change everything on the pipeline 
+
+
+bcftools view -H chr5_grenenet_ann1.vcf | wc -l  
+
+
+grep -o 'Mean phen' run_slim.log | wc -l
+
+
+## because the process got killed
+plink --bfile chr5_grenenet --indep-pairwise 50 5 0.5 --out chr5_grenenet
+bcftools view -H chr5_grenenet.vcf | wc -l  # 634367  so it is not a big difference
+
+
+mkdir ch5_complete
+mv chr5_grenenet.vcf ch5_complete/chr5_grenenet.vcf

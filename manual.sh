@@ -1003,3 +1003,19 @@ bcftools view -H chr5_grenenet.vcf | wc -l  # 634367  so it is not a big differe
 
 mkdir ch5_complete
 mv chr5_grenenet.vcf ch5_complete/chr5_grenenet.vcf
+
+## to cehck the stats of a running job
+sstat -j 189787 --format AveCPU
+
+## to check memory use of past jobs
+sacct -j 189799 --format=MaxRSS,AveRSS,AllocCPUs,AveCPU,AveCPU -P
+
+srun --partition Moi --time 0 --mem 100G --cpus-per-task 16 --nodes 1 --ntasks 1 --pty bash -i
+
+
+vcf_slim/optima1/subp0.vcf
+
+####### 
+
+a job to run the 12 replicates in chr5 for one optima value took 
+35 gb of ram and 1:21:37 of time 

@@ -1,28 +1,3 @@
-#!/bin/bash
-
-## load modules on cluster
-#module load Conda/3.7
-module load BCFtools/1.10.2
-module load SLiM/4.0.1
-module load HTSlib/1.10.2 
-
-###activate env on cluster
-#conda activate pipeline_slim
-source /carnegie/binaries/centos7/conda/3.7/bin/activate pipeline_slim
-
-####### run the pipeline ############################
-######################################################
-
-##in case it is compressed from other runs 
-bgzip -d chr5_grenenet.vcf.gz 
-
-# python pi_beta_optima_fasta.py pi beta
-echo PHASE 1 based on beta and pi calculate optimum phenotypes based on selected snps and their effect sizes 
-python pi_beta_calc.py 0.0001 5
-
-##### phase 3 #######################################
-############## annotate vcf with sc 
-echo PHASE 2 annotate vcf with effect sizes 
 ## first
 bgzip -f selection_coef_chr5.bed 
 bgzip -f chr5_grenenet.vcf 
@@ -60,14 +35,3 @@ awk '{if ($1 == "#CHROM"){print NF-9; exit}}' chr5_grenenet_ann2.vcf
 bcftools merge --threads 4 --force-samples chr5_grenenet_ann2.vcf.gz chr5_grenenet_ann2.vcf.gz chr5_grenenet_ann2.vcf.gz -o chr5_grenenet_ann3.vcf
 awk '{if ($1 == "#CHROM"){print NF-9; exit}}' chr5_grenenet_ann3.vcf
    ## 10800
-## 
-awk '{if ($1 == "#CHROM"){print NF-9; exit}}' chr5_grenenet_ann3.vcf
-
-
-
-
-## phase 4
-#echo PHASE 4 run slim simulation  
-./bash_slim.sh
-
-##### i think i will have to do ld pruning for slim to run faster

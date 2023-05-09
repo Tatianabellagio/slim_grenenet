@@ -1,19 +1,75 @@
-rule python_script:
-    input:
-        input_file="input.txt"
-    output:
-        output_file="output.txt"
-    params:
-        param1=[1, 2, 3, 4]
-    shell:
-        "python my_script.py {input.input_file} {output.output_file} {params.param1}"
+# =================================================================================================
+#     Dependencies
+# =================================================================================================
 
-rule slim_script:
+module load BCFtools/1.10.2
+module load SLiM/4.0.1
+module load HTSlib/1.10.2 
+
+replicates = list(range(0,13))
+optimas = list(range(0,35))
+
+
+## base files 
+configfile: "config.yaml"
+
+######
+
+rule run_python_script:
     input:
-        input_file="input.txt"
-    output:
-        output_file="output.txt"
+        [config['base_vcf'], 'optimum_ecotypes.csv', config['base_fasta']]
     params:
-        param2=[0.1, 0.2, 0.3, 0.4]
+        pi = [0.001,0.01],
+        beta = [5,6]
+    output:
+        ["selection_coef_chr5.bed", 'optima_files/optimas.csv', 'optima_files/optima_slim.txt']
+    conda:
+        'envs/base_env.yaml'
     shell:
-        "slim my_script.slim {input.input_file} {output.output_file} {params.param2}"
+        "python pi_beta_calc.py --input {input} --output {output} --pi {params.pi} --beta {params.beta}"
+
+rule run_bash_script:
+    input:
+        [config['base_vcf'], 'selection_coef_chr5.bed']
+    output:
+        "chr5_grenenet_ann3.vcf"
+    shell:
+        "./annotate.sh {input} {output}"
+
+rule run_slim_script:
+    input:
+        ["chr5_grenenet_ann3.vcf", 'optima_files/optima_slim.txt']
+    output:
+        expand(
+            "vcf_files/optima{optimas}/subp{replicates}.png",
+            optimas=optimas,
+            replicates=replicates
+        )
+    shell:
+        "slim arabidopsis_evolve.slim -i {input} -o {output}"
+
+rule run_python_script2:
+    input:
+        expand(
+            "vcf_files/optima{optimas}/subp{replicates}.png",
+            optimas=optimas,
+            replicates=replicates
+        )
+    output:
+        expand(
+            ['simulation_results_{pi}{beta}/allele_counts.csv', 'simulation_results_{pi}{beta}/pool_sizes.csv'],
+            pi=params.pi,
+            beta=params.beta
+        )
+    conda:
+        'envs/base_env.yaml'
+    shell:
+        'python allele_counts_from_vcf.py -i {input} -o {output}'
+
+rule all:
+    input:
+        expand(
+            'simulation_results_{pi}{beta}/allele_counts.csv',
+            pi=[0.001, 0.01],
+            beta=[5, 6]
+        )

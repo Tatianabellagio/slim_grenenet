@@ -1,0 +1,2 @@
+base_vcf: 'chr5_grenenet.vcf'
+base_fasta: 'chr5.fasta'

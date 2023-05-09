@@ -7,27 +7,34 @@
 initialize() {
 	// the optima file is a vector indicating the optima for each of the environments 
 	//optima = readFile('optima.txt');
-	if (!exists("X"))
-	defineConstant('optima', readFile('optima.txt'));
+	//if (!exists("X"))
+	//if (!exists("optima"))defineConstant('optima', 'optima0');
+	optimas = readFile('optima_files/optima_slim.txt');
+	if (!exists("optima"))defineConstant('optima', 1);
+	defineConstant('optima_value', asFloat(optimas[optima]));
    defineConstant('ref_fasta', "test.fasta");
-   defineConstant('main_vcf', "qtl1_contrib_sc.vcf");
-   defineConstant('initial_pop', 1800); // this is based on the number of individuals in the vcf file  28800
+   defineConstant('main_vcf', "qtl1_contrib_sc.vcf");  // chr5_grenenet_ann4.vcf
+   defineConstant('initial_pop', 10800); // this is based on the number of individuals in the vcf file  28800
+   if (!exists("replicates"))defineConstant('replicates', 12);
    if (!exists("gen_to_run"))defineConstant('gen_to_run', 5);
-
+	//defineConstant('gen_to_finish', gen_to_run + 1);
 
 	// number of population based on the map file
-	//subpopCount = length(optima);
-	defineConstant('subpopCount', length(optima));
+	//replicates = length(optima_value);
+	
 
 // end options	////////////////////////////////////////////////////////////////////////////////
 
    // now im gonna simulate the mutations coming from standing variation. 
+   print("Starting simulation now with optima: " + optima_value + ", number of generations: " + gen_to_run + " and" + replicates + " replicates in chromosome " + ref_fasta);
+
    initializeSLiMModelType("nonWF");
    initializeSLiMOptions(nucleotideBased=T);
 	length = initializeAncestralNucleotides(ref_fasta);   
 	initializeMutationTypeNuc("m2", 0, "n", 0, 0.0);   // qtl1 196 # 19625*0.05
 	m2.convertToSubstitution = F; 
    m2.color = "red"; 
+   print(optima_value);
 
 	initializeMutationTypeNuc("m1", 0, "f", 0.0);       // neutral
 
@@ -45,6 +52,7 @@ initialize() {
 
 //// create one popualtion and then popualte the new ones 
 1 early() { 
+
 	sim.addSubpop("p999", initial_pop);  // 
 	p999.genomes.readFromVCF(main_vcf, m2);  // vcf file with seelction coefficients 
 	//p999.genomes.readFromVCF("qtl1_neutral.vcf", m3);
@@ -62,9 +70,8 @@ initialize() {
 	// Read a list of optima from a simple text file (one line/one entry per population).
 	
 
-	for (i in 0:(subpopCount-1)) {
+	for (i in 0:(replicates-1)) {
 		sim.addSubpop(i, 0);   /// add just empty populations 
-		sim.subpopulations[i].tag = asInteger(optima[i]);
 	}
 	
 	// once created the subpopulations make the migrants go to them 
@@ -87,14 +94,14 @@ initialize() {
 
 /////// establish a reproduction regimen where the fitness of an individual will affect the number of offspring 
 
-2:999 reproduction() { 
+3:999 reproduction() { 
 // 0.97 chance of selfing, 0.03 chance of reproducing with other random individual in the same subpop 
 
-	for (i in 0:(subpopCount-1)) {
+	for (i in 0:(replicates-1)) {
 	if (sim.subpopulations[i].individualCount > 0){
 		inds = sim.subpopulations[i].individuals; 
  		phenotypes = inds.sumOfMutationsOfType(m2); 
-		fitness = exp(-0.5 * (phenotypes - (inds.subpopulation.tag))^2);	
+		fitness = exp(-0.5 * (phenotypes - (optima_value))^2);	
 	
 		max_fitness = max(fitness);
 		rel_fitness = fitness / max_fitness;
@@ -120,57 +127,47 @@ initialize() {
 	self.active = 0; 
 }
 
-
-    	
 2:999 fitnessEffect() { 
 	phenotype = sum(individual.genomes.sumOfMutationsOfType(m2));
-  	fitness = exp(-0.5 * (phenotype - (individual.subpopulation.tag))^2);
+  	fitness = exp(-0.5 * (phenotype - (optima_value))^2);
  	//also here I adjust for only 1 year of survival 
 	return ifelse(individual.age <=1, fitness, 0.0);
 }
-
-5:999 late(){  
-		print(sim.cycle);
-		if(sim.cycle==gen_to_run){
-		sim.simulationFinished();  
-}}
     
     
-//1:999 late() { 
+1:999 late() { 
+	for (i in 0:(replicates-1)){
 
-	// if after the survival event the population size is too big adjust it 
-//	for (i in 0:(subpopCount-1)){
-	//	if (sim.subpopulations[i].individualCount > 500){
-	//		number_to_kill = sim.subpopulations[i].individualCount - 500;		
-	//		sim.killIndividuals(sim.subpopulations[i].sampleIndividuals(number_to_kill));
-	//		}
-			
 	// check fluctuation of phenotype and fitness
-//	inds = sim.subpopulations[i].individuals; 
-//	phenotypes = inds.sumOfMutationsOfType(m2); 
-//	fitness = exp(-0.5 * (phenotypes - (inds.subpopulation.tag))^2);
-	//print(phenotypes); // if the phenotypes are all the same i could assume there is ecotype sorting 
-//	catn(sim.cycle + ": Mean phen ="+ mean(phenotypes) + " optima "+ sim.subpopulations[i].tag  + " ,subpop " + i + " size:" + 			sim.subpopulations[i].individualCount) ;  	
-// 	}
-//	}
+	inds = sim.subpopulations[i].individuals; 
+	phenotypes = inds.sumOfMutationsOfType(m2); 
+	fitness = exp(-0.5 * (phenotypes - (optima_value))^2);
+	print(phenotypes); // if the phenotypes are all the same i could assume there is ecotype sorting 
+	catn(sim.cycle + ": Mean phen ="+ mean(phenotypes) + " optima "+ optima_value  + " ,subpop " + i + " size:" + 			sim.subpopulations[i].individualCount) ;  	
+ 	}
+	}
 
 2:999 late() { 
 
 	// if after the survival event the population size is too big adjust it 
-	for (i in 0:(subpopCount-1)){
-		if (sim.subpopulations[i].individualCount > 100){
-			number_to_kill = sim.subpopulations[i].individualCount - 100;		
+	for (i in 0:(replicates-1)){
+		if (sim.subpopulations[i].individualCount > 900){
+			number_to_kill = sim.subpopulations[i].individualCount - 900;		
 			sim.killIndividuals(sim.subpopulations[i].sampleIndividuals(number_to_kill));
 			}
 			}
  	}
+ 	
+
+
 
 // output 
-//3 late(){  
-//
-//		for (i in 0:(subpopCount-1)){
-//			sim.subpopulations[i].individuals.genomes.outputVCF('/vcf_slim/optima' + sim.subpopulations[i].tag + 'subp' + i + '.vcf');
-//}} 
+5:999 late(){  
+		if(sim.cycle==gen_to_run){
+		for (i in 0:(replicates-1)){
+		sim.subpopulations[i].individuals.genomes.outputVCF('vcf_slim/optima' + optima + '/subp' + i + '.vcf');
+		sim.simulationFinished();  
+}}}
 
 //im not sure if this is necessary but just in case
 //4 early() 
@@ -189,7 +186,7 @@ checks
 2:99999 early() { 
 	print("early");
    optima = readFile(optimaFile);
-	subpopCount = length(optima);
+	replicates = length(optima);
 
 	// add tags of optima
 
@@ -217,10 +214,10 @@ output
     	// kill them after a year 
 1:5 late() { 
 	optima = readFile(optimaFile);
-	subpopCount = length(optima);
+	replicates = length(optima);
 
 	// add tags of optima
-	for (i in 0:(subpopCount-1)){
+	for (i in 0:(replicates-1)){
 	inds = sim.subpopulations[i].individuals; 
 	inds.fitnessScaling = ifelse(inds.age <=1, 1.0, 0.0);
 	}
@@ -228,8 +225,8 @@ output
  	
 6:99999 early() { 
    optima = readFile(optimaFile);
-	subpopCount = length(optima);
-	for (i in 0:(subpopCount-1)){
+	replicates = length(optima);
+	for (i in 0:(replicates-1)){
     	catn("subpop " + i + " size:" + sim.subpopulations[i].individualCount) ; 
     	}
     	}
@@ -240,10 +237,10 @@ output
 // number of population based on the map file
 	
    optima = readFile(optimaFile);
-	subpopCount = length(optima);
+	replicates = length(optima);
 
 	// add tags of optima
-	for (i in 0:(subpopCount-1)){
+	for (i in 0:(replicates-1)){
 
 	//// aca deberia ir por cada subpoblaciony  calcular esto 
  	inds = sim.subpopulations[i].individuals; 
@@ -273,10 +270,10 @@ output
 
 	
    optima = readFile(optimaFile);
-	subpopCount = length(optima);
+	replicates = length(optima);
 
 	// add tags of optima
-	for (i in 0:(subpopCount-1)){
+	for (i in 0:(replicates-1)){
 
 	//// aca deberia ir por cada subpoblaciony  calcular esto 
  	inds = sim.subpopulations[i].individuals; 

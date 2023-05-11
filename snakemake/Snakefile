@@ -2,13 +2,18 @@
 #     Dependencies
 # =================================================================================================
 
-module load BCFtools/1.10.2
-module load SLiM/4.0.1
-module load HTSlib/1.10.2 
+##### when run in cluster #################
+#module load BCFtools/1.10.2
+#module load SLiM/4.0.1
+#module load HTSlib/1.10.2 
+##### when run in cluster #################
 
-replicates = list(range(0,13))
-optimas = list(range(0,35))
+replicates = list(range(0,config['replicates']+1))
+optima = list(range(0,config['optima']+1))
 
+
+##checkpoints for unknowns number of files 
+## parameter space explor
 
 ## base files 
 configfile: "config.yaml"
@@ -17,31 +22,39 @@ configfile: "config.yaml"
 
 rule run_python_script:
     input:
-        [config['base_vcf'], 'optimum_ecotypes.csv', config['base_fasta']]
-    params:
-        pi = [0.001,0.01],
-        beta = [5,6]
+        chr_number = config['chr_number'] , 
+        base_vcf = config['base_vcf'], 
+        optimum_ecotypes = config['optimum_ecotypes.csv'], 
+        base_fasta = config['base_fasta']
+
     output:
-        ["selection_coef_chr5.bed", 'optima_files/optimas.csv', 'optima_files/optima_slim.txt']
+        bed_sc="arq_pi{pi}_beta{beta}/selection_coef.bed", 
+        optima='arq_pi{pi}_beta{beta}/optima_files/optima.csv', 
+        slim='arq_pi{pi}_beta{beta}/optima_files/optima_slim.txt'
+    params:
+        pi = wildcards.pi,
+        beta = wildcards.beta
     conda:
         'envs/base_env.yaml'
-    shell:
-        "python pi_beta_calc.py --input {input} --output {output} --pi {params.pi} --beta {params.beta}"
+    script:
+        "pi_beta_calc.py"
 
 rule run_bash_script:
     input:
-        [config['base_vcf'], 'selection_coef_chr5.bed']
+        vcf_file = config['base_vcf'], 
+        bed_sc="arq_pi{pi}_beta{beta}/selection_coef.bed"
     output:
-        "chr5_grenenet_ann3.vcf"
+        "arq_pi{pi}_beta{beta}/annotated_vcf"
     shell:
         "./annotate.sh {input} {output}"
 
 rule run_slim_script:
     input:
-        ["chr5_grenenet_ann3.vcf", 'optima_files/optima_slim.txt']
+        "arq_pi{pi}_beta{beta}/annotated_vcf", 
+        'arq_pi{pi}_beta{beta}/optima_files/optima_slim.txt'
     output:
         expand(
-            "vcf_files/optima{optimas}/subp{replicates}.png",
+            "arq_pi{pi}_beta{beta}/vcf_files/optima{optima}/subp{replicates}.vcf",
             optimas=optimas,
             replicates=replicates
         )
@@ -51,15 +64,20 @@ rule run_slim_script:
 rule run_python_script2:
     input:
         expand(
-            "vcf_files/optima{optimas}/subp{replicates}.png",
+            "arq_pi{pi}_beta{beta}/vcf_files/optima{optima}/subp{replicates}.vcf",
             optimas=optimas,
             replicates=replicates
         )
     output:
         expand(
-            ['simulation_results_{pi}{beta}/allele_counts.csv', 'simulation_results_{pi}{beta}/pool_sizes.csv'],
-            pi=params.pi,
-            beta=params.beta
+            'arq_pi{pi}_beta{beta}/simulation_results/allele_counts.csv',
+            pi=config['pi'],
+            beta=config['beta']
+        ),
+        expand(
+            'arq_pi{pi}_beta{beta}/simulation_results/pool_sizes.csv',
+            pi=config['pi'],
+            beta=config['beta']
         )
     conda:
         'envs/base_env.yaml'
@@ -69,7 +87,12 @@ rule run_python_script2:
 rule all:
     input:
         expand(
-            'simulation_results_{pi}{beta}/allele_counts.csv',
-            pi=[0.001, 0.01],
-            beta=[5, 6]
+            'arq_pi{pi}_beta{beta}/simulation_results/allele_counts.csv',
+            pi=config['pi'],
+            beta=config['beta']
+        ),
+        expand(
+            'arq_pi{pi}_beta{beta}/simulation_results/pool_sizes.csv',
+            pi=config['pi'],
+            beta=config['beta']
         )

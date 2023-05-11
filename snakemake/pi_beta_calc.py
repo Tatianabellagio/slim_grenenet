@@ -4,33 +4,20 @@ import allel
 import random
 import os
 import sys
+import snakemake
 
-#### default params 
-## params for annotating vcf file with sc
-chr_number = 5
-vcf_file = 'chr5_grenenet.vcf'
+#### params 
+
+chr_number = snakemake.input['chr_number'] 
+vcf_file = snakemake.input['base_vcf'] 
+optimum_ecotypes = snakemake.input['optimum_ecotypes']
+
 
 ### pi is 0.0001 since length_chr5 = 1702174 * 0.0001 = 170
-pi =  0.01
-beta = 5
-
-bed_sc = 'selection_coef_chr5.bed'
-
-########### params defined in command line ############################
-## the 2 params that i am going to be iterating through are pi and beta 
-
-# Check if a command-line argument was provided
-
-if len(sys.argv) > 1:
-    # If an argument was provided, use it to set the variable
-    pi = float(sys.argv[1])
-
-if len(sys.argv) > 2:
-    # If an argument was provided, use it to set the variable
-    beta = float(sys.argv[2])
-
-########### end params defined in command line ############################
-
+pi =  snakemake.params['pi'] 
+beta = snakemake.params['beta'] 
+bed_sc = snakemake.output["bed_sc"]
+######
 
 ### calculation of the number of contributing positions and effect sizes of each ###################
 file_p = allel.read_vcf(vcf_file, fields='variants/POS')
@@ -58,13 +45,15 @@ contrib_pos = pd.DataFrame({'positions_to': pos_contr, 'sel_coef':effect_sizes})
 # merge and fillna with 0 since that is the selection coefficient for all the non contributing snps 
 all_pos = all_pos.merge(contrib_pos, left_on= 'positions_to', right_on= 'positions_to' ,how='left').fillna(0)
 # Write the DataFrame to a BED file
-all_pos.to_csv(bed_sc, sep='\t', header=False, index=False)
+
+## output 
+all_pos.to_csv(bed_sc, sep='\t', header=False, index=False) # selection_coef_chr5.bed
 print('Finished creating bed file to annotate vcf with effect sizes at each contributing position')
 
 
 ############################### filling the optimum_ecotypes file with phenotpyes based on the snps contributing and their effect sizes previously calculated
 print('Starting optimum phenotype calculation based on ecotypes from an env gradient and the effect sized and SNPs contributing')
-samples = pd.read_csv('optimum_ecotypes.csv',usecols = ['ecotypeid', 'bio1'])
+samples = pd.read_csv(optimum_ecotypes,usecols = ['ecotypeid', 'bio1'])
 selection_coef = pd.read_csv(bed_sc, sep = '\t',header = None)[3]
 vcf = allel.read_vcf(vcf_file)
 phenotypes = []

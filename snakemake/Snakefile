@@ -7,24 +7,19 @@
 #module load SLiM/4.0.1
 #module load HTSlib/1.10.2 
 ##### when run in cluster #################
-
-replicates = list(range(0,config['replicates']+1))
-optima = list(range(0,config['optima']+1))
-
-
-##checkpoints for unknowns number of files 
-## parameter space explor
-
-## base files 
 configfile: "config.yaml"
+
+
+replicates = list(range(0,config['replicates']))
+optima = list(range(0,config['optima']))
+
 
 ######
 
 rule run_python_script:
     input:
-        chr_number = config['chr_number'] , 
         base_vcf = config['base_vcf'], 
-        optimum_ecotypes = config['optimum_ecotypes.csv'], 
+        optimum_ecotypes = config['optimum_ecotypes'], 
         base_fasta = config['base_fasta']
 
     output:
@@ -32,8 +27,9 @@ rule run_python_script:
         optima='arq_pi{pi}_beta{beta}/optima_files/optima.csv', 
         slim='arq_pi{pi}_beta{beta}/optima_files/optima_slim.txt'
     params:
-        pi = wildcards.pi,
-        beta = wildcards.beta
+        pi = lambda wildcards: str(wildcards.pi),
+        beta = lambda wildcards: str(wildcards.beta),
+        chr_number = config['chr_number']
     conda:
         'envs/base_env.yaml'
     script:
@@ -44,45 +40,44 @@ rule run_bash_script:
         vcf_file = config['base_vcf'], 
         bed_sc="arq_pi{pi}_beta{beta}/selection_coef.bed"
     output:
-        "arq_pi{pi}_beta{beta}/annotated_vcf"
+        "arq_pi{pi}_beta{beta}/annotated.vcf"
+    threads: 4
     shell:
-        "./annotate.sh {input} {output}"
+        #"chmod +x annotate.sh",
+        "./annotate.sh {input} {output} {threads}"
 
 rule run_slim_script:
     input:
-        "arq_pi{pi}_beta{beta}/annotated_vcf", 
-        'arq_pi{pi}_beta{beta}/optima_files/optima_slim.txt'
+        fasta = config['base_fasta'],
+        vcf ="arq_pi{pi}_beta{beta}/annotated.vcf", 
+        optima_slim ='arq_pi{pi}_beta{beta}/optima_files/optima_slim.txt'
     output:
         expand(
-            "arq_pi{pi}_beta{beta}/vcf_files/optima{optima}/subp{replicates}.vcf",
-            optimas=optimas,
-            replicates=replicates
+            "arq_pi{{pi}}_beta{{beta}}/vcf_files/optima{{optima}}/subp{replicates}.vcf",
+            replicates = range(0,12)
         )
+    params: 
+        optima = lambda wildcards: str(wildcards.optima),
+        initial_pop = config['initial_pop']
+    #log:
+    #    "log/run_slim_script/pi{pi}_beta{beta}.log" > {log} 2>&1
     shell:
-        "slim arabidopsis_evolve.slim -i {input} -o {output}"
+         "./slim.sh -f {input.fasta} -v {input.vcf} -s {input.optima_slim} -o {output[0]} -p {params.optima} -i {params.initial_pop}"
 
 rule run_python_script2:
     input:
         expand(
-            "arq_pi{pi}_beta{beta}/vcf_files/optima{optima}/subp{replicates}.vcf",
-            optimas=optimas,
+            "arq_pi{{pi}}_beta{{beta}}/vcf_files/optima{optima}/subp{replicates}.vcf",
+            optima=optima,
             replicates=replicates
         )
     output:
-        expand(
-            'arq_pi{pi}_beta{beta}/simulation_results/allele_counts.csv',
-            pi=config['pi'],
-            beta=config['beta']
-        ),
-        expand(
-            'arq_pi{pi}_beta{beta}/simulation_results/pool_sizes.csv',
-            pi=config['pi'],
-            beta=config['beta']
-        )
+        'arq_pi{pi}_beta{beta}/simulation_results/allele_counts.csv',
+        'arq_pi{pi}_beta{beta}/simulation_results/pool_sizes.csv'
     conda:
         'envs/base_env.yaml'
-    shell:
-        'python allele_counts_from_vcf.py -i {input} -o {output}'
+    script:
+        'allele_counts_from_vcf.py'
 
 rule all:
     input:

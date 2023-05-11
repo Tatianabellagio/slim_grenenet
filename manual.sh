@@ -1019,3 +1019,24 @@ vcf_slim/optima1/subp0.vcf
 
 a job to run the 12 replicates in chr5 for one optima value took 
 35 gb of ram and 1:21:37 of time 
+
+
+### snakemake
+
+# for dry run
+## so basically is checking the syntax is good and telling you 
+## what will run in the future 
+# without actually running anything 
+snakemake --cores 16 -n all
+
+
+snakemake --cores 16 all
+
+ask lucas about granting permission isnide pipeline 
+
+## be careful with bash and snakemake and mac!! version of bash in mac is super 
+## outdated and wont recognize the call of snakemake params/input etc
+read : 
+### now you will have to change #!/opt/homebrew/bin/bash 
+problem with reading var inside sh
+probelm with quotes when reading sim 

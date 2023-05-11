@@ -3,17 +3,23 @@ import numpy as np
 import pandas as pd
 import allel
 
+
+vcf_files_f = snakemake.input[0].split('optima')[0]
+allele_counts_csv = snakemake.output[0]
+indiv_number_csv = snakemake.output[1]
+
 ### create a dictionary where 1 dataframe containing all the replicates for each optima is saved 
 
 allele_counts = pd.DataFrame()
 indiv_number = pd.DataFrame()
 #  take all the vcf files in the folder 
-for optima in ['optima0', 'optima1', 'optima2']: #os.listdir(dir_cluster):
-    optima_subp = os.listdir(dir_cluster + optima + '/')
+
+for optima in od.listdir(vcf_files_f):
+    optima_subp = os.listdir(vcf_files_f + optima + '/')
     subps = [i for i in optima_subp if '.vcf' in i ]
-    
+
     for subp in subps:
-        vcf = allel.read_vcf(dir_cluster + optima + '/' + subp)
+        vcf = allel.read_vcf(vcf_files_f + optima + '/' + subp)
         print(len(vcf['variants/POS']))
         genotypes = allel.GenotypeArray(vcf['calldata/GT'])
         ref_allele_counts = genotypes.count_alleles()[:, 0]
@@ -38,6 +44,6 @@ for col in allele_counts.columns:
 allele_counts = allele_counts.reset_index().rename(columns={'index': 'pos'})
 
 
-allele_counts.to_csv('results_slim/pi0.001beta5/allele_counts.csv')
+allele_counts.to_csv(allele_counts_csv)
 
-indiv_number.to_csv('results_slim/pi0.001beta5/pool_sizes.csv', index=None)
+indiv_number.to_csv(indiv_number_csv, index=None)

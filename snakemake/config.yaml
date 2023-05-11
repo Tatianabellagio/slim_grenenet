@@ -3,7 +3,8 @@ base_vcf: 'chr5_grenenet.vcf'
 base_fasta: 'chr5.fasta'
 pi: [0.001,0.01]
 beta: [5,6]
-
+optimum_ecotypes: 'optimum_ecotypes.csv'
 # number of replicates of each simulation to run
 replicates: 12
-optima: 34
+optima: 32
+initial_pop: 86400

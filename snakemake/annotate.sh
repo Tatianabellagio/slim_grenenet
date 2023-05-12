@@ -1,5 +1,11 @@
-#!/opt/homebrew/bin/bash
+#!/usr/bin/bash:wq
+
+# this is for running as local
+# #!/opt/homebrew/bin/bash
 echo $BASH_VERSION
+
+module load BCFtools/1.10.2
+module load HTSlib/1.10.2
 
 ## this didnt work 
 #echo "${snakemake_input[bed_sc]}"

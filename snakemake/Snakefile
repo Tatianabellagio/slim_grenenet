@@ -2,20 +2,13 @@
 #     Dependencies
 # =================================================================================================
 
-##### when run in cluster #################
-#module load BCFtools/1.10.2
-#module load SLiM/4.0.1
-#module load HTSlib/1.10.2 
-##### when run in cluster #################
 configfile: "config.yaml"
-
 
 replicates = list(range(0,config['replicates']))
 optima = list(range(0,config['optima']))
 
-
-######
-
+## this rule runs a python script that will generate the bed file containing the contributing loci and their effect sizes based on values of beta dn alpha
+## the bed file will be then used to annotate a vcf file that will be used by SliM to run the simulations 
 rule run_python_script:
     input:
         base_vcf = config['base_vcf'], 
@@ -42,9 +35,12 @@ rule run_bash_script:
     output:
         "arq_pi{pi}_beta{beta}/annotated.vcf"
     threads: 4
+    log: 
+        out = "log/pi{pi}_beta{beta}_run_bash_script_stdout.log",
+        err = "log/pi{pi}_beta{beta}_run_bash_script_stderr.err"
     shell:
-        #"chmod +x annotate.sh",
-        "./annotate.sh {input} {output} {threads}"
+        "./annotate.sh {input} {output} {threads} 2> {log.err} 1> {log.out}"
+
 
 rule run_slim_script:
     input:
@@ -59,10 +55,15 @@ rule run_slim_script:
     params: 
         optima = lambda wildcards: str(wildcards.optima),
         initial_pop = config['initial_pop']
-    #log:
-    #    "log/run_slim_script/pi{pi}_beta{beta}.log" > {log} 2>&1
+    log: 
+        out = "log/pi{{pi}}_beta{{beta}}_slim_script_stdout.log",
+        err = "log/pi{{pi}}_beta{{beta}}_slim_script_stdout_stderr.err"
+
     shell:
-         "./slim.sh -f {input.fasta} -v {input.vcf} -s {input.optima_slim} -o {output[0]} -p {params.optima} -i {params.initial_pop}"
+         """
+         module load SLiM/4.0.1
+         ./slim.sh -f {input.fasta} -v {input.vcf} -s {input.optima_slim} -o {output[0]} -p {params.optima} -i {params.initial_pop} 2> {log.err} 1> {log.out}"
+         """
 
 rule run_python_script2:
     input:

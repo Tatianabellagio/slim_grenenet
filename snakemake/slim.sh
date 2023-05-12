@@ -1,5 +1,7 @@
 #!/opt/homebrew/bin/bash
 
+# this is an auxiliary script to call slim, since all the parameters have to be included and there are some troubles with double quotes 
+
 while getopts f:v:s:o:p:i: flag
 do
     case "${flag}" in

@@ -26,7 +26,7 @@ rule run_python_script:
     conda:
         'envs/base_env.yaml'
     script:
-        "pi_beta_calc.py"
+        "scripts/pi_beta_calc.py"
 
 rule run_bash_script:
     input:
@@ -38,8 +38,10 @@ rule run_bash_script:
     log: 
         out = "log/pi{pi}_beta{beta}_run_bash_script_stdout.log",
         err = "log/pi{pi}_beta{beta}_run_bash_script_stderr.err"
-    shell:
-        "./annotate.sh {input} {output} {threads} 2> {log.err} 1> {log.out}"
+    conda:
+        'envs/base_env.yaml'
+    script:  
+        "scripts/annotate.sh"
 
 
 rule run_slim_script:
@@ -56,14 +58,13 @@ rule run_slim_script:
         optima = lambda wildcards: str(wildcards.optima),
         initial_pop = config['initial_pop']
     log: 
-        out = "log/pi{{pi}}_beta{{beta}}_slim_script_stdout.log",
-        err = "log/pi{{pi}}_beta{{beta}}_slim_script_stdout_stderr.err"
-
+        out = "log/arq_pi{pi}_beta{beta}_optima{optima}_stdout.log",
+        err = "log/arq_pi{pi}_beta{beta}_optima{optima}_stderr.err"
+    conda:
+        'envs/base_env.yaml'
     shell:
-         """
-         module load SLiM/4.0.1
-         ./slim.sh -f {input.fasta} -v {input.vcf} -s {input.optima_slim} -o {output[0]} -p {params.optima} -i {params.initial_pop} 2> {log.err} 1> {log.out}"
-         """
+         "bash ./slim.sh -f {input.fasta} -v {input.vcf} -s {input.optima_slim} -o {output[0]} -p {params.optima} -i {params.initial_pop} 2> {log.err} 1> {log.out}"
+# 2> {log.err} 1> {log.out}
 
 rule run_python_script2:
     input:
@@ -78,7 +79,7 @@ rule run_python_script2:
     conda:
         'envs/base_env.yaml'
     script:
-        'allele_counts_from_vcf.py'
+        'scripts/allele_counts_from_vcf.py'
 
 rule all:
     input:

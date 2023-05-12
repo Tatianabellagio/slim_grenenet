@@ -25,3 +25,5 @@
 /snakemake/crispresso-machine/
 /optima_files/
 *.snakemake/
+*.err
+*.log

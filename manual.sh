@@ -1010,7 +1010,7 @@ sstat -j 189787 --format AveCPU
 ## to check memory use of past jobs
 sacct -j 189799 --format=MaxRSS,AveRSS,AllocCPUs,AveCPU,AveCPU -P
 
-srun --partition Moi --time 0 --mem 100G --cpus-per-task 16 --nodes 1 --ntasks 1 --pty bash -i
+srun --partition Moi --time 0 --mem 10G --cpus-per-task 16 --nodes 1 --ntasks 1 --pty bash -i
 
 
 vcf_slim/optima1/subp0.vcf
@@ -1030,9 +1030,11 @@ a job to run the 12 replicates in chr5 for one optima value took
 snakemake --cores 16 -n all
 
 
+snakemake all --profile profiles
+
 snakemake --cores 16 all
 
-ask lucas about granting permission isnide pipeline 
+
 
 ## be careful with bash and snakemake and mac!! version of bash in mac is super 
 ## outdated and wont recognize the call of snakemake params/input etc
@@ -1040,3 +1042,13 @@ read :
 ### now you will have to change #!/opt/homebrew/bin/bash 
 problem with reading var inside sh
 probelm with quotes when reading sim 
+
+dealign with ll the eprmissions
+
+moduels in cluster 
+
+
+ok lets do it the right way
+
+
+1) createa a conda env that has BCFtools/1.10.2, slim and module load HTSlib/1.10.2 SLiM/4.0.1 

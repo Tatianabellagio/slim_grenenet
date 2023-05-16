@@ -1030,7 +1030,7 @@ a job to run the 12 replicates in chr5 for one optima value took
 snakemake --cores 16 -n all
 
 
-snakemake all --profile profiles
+snakemake all --profile profiles/slurm
 
 snakemake --cores 16 all
 
@@ -1052,3 +1052,52 @@ ok lets do it the right way
 
 
 1) createa a conda env that has BCFtools/1.10.2, slim and module load HTSlib/1.10.2 SLiM/4.0.1 
+
+
+#########
+awk '!/^#/ {count++} END {print count}' ../chr5_grenenet.vcf
+
+awk '{if ($1 == "#CHROM"){print NF-9; exit}}' ../chr5_grenenet.vcf
+
+
+srun --partition DPB --time 0 --mem 30G --cpus-per-task 16 --nodes 1 --ntasks 1 --pty bash -i
+
+
+#######
+
+ ok so what i think i should do is get the ld pruning for the initial vcf of the 230 founders 
+
+#second we need to transform my vcf to the plink format 
+
+plink --vcf ../chr5_grenenet.vcf --make-bed --out chr5_grenenet
+
+#ok im gonna filter by maf before
+
+plink --bfile chr5_grenenet --maf 0.01 --make-bed --out chr5_grenenet_filteredmaf
+#1135068 variants removed due to minor allele threshold(s)
+#kept 567106
+
+
+# ok so how to do ld pruning 
+# this si a comman to kinda check 
+plink --bfile chr5_grenenet_filteredmaf --indep-pairwise 50 5 0.6 --out chr5_grenenet_filteredmaf
+#Pruned 348861 variants from chromosome 5, leaving 218245.
+#Pruning complete.  348861 of 567106 variants removed.
+
+
+
+
+### filter csv based on txt file with awk 
+
+## if the selected values are just in a txt file, each one in one line
+awk -F ',' 'BEGIN{OFS=","} NR==FNR{values[$1]; next} $1 in values' prune.in.txt ../test/arq_pi0.001_beta5_allele_counts.csv > filtered.csv
+
+## if the selected values are actually in a particualr aprt of the string like the case of prune.in 
+## where the ids are saved that are in the fomrat 5_pos 
+
+awk -F ',' 'BEGIN{OFS=","} NR==FNR{values[substr($1, 3)]; next} {gsub(/^5_/, "", $1); if ($1 in values) print}' chr5_grenenet_filteredmaf.prune.in ../test/arq_pi0.001_beta5_allele_counts.csv > filtered.csv
+
+
+
+
+awk -F ',' 'BEGIN{OFS=","} NR==FNR{values[substr($1, 3)]; next} {gsub(/^5_/, "", $1); if ($1 in values) print}' chr5_grenenet_filteredmaf.prune.in ../test/arq_pi0.001_beta5_allele_counts.csv > ../test/arq_pi0.001_beta5_allele_counts_filtered.csv

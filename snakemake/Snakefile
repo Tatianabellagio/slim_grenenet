@@ -9,6 +9,21 @@ optima = list(range(0,config['optima']))
 
 ## this rule runs a python script that will generate the bed file containing the contributing loci and their effect sizes based on values of beta dn alpha
 ## the bed file will be then used to annotate a vcf file that will be used by SliM to run the simulations 
+
+rule all:
+    input:
+        expand(
+            'results/arq_pi{pi}_beta{beta}/simulation_results/allele_counts_filtered.csv',
+            pi=config['pi'],
+            beta=config['beta']
+        ),
+        expand(
+            'results/arq_pi{pi}_beta{beta}/simulation_results/pool_sizes.csv',
+            pi=config['pi'],
+            beta=config['beta']
+        )
+
+
 rule run_python_script:
     input:
         base_vcf = config['base_vcf'], 
@@ -16,9 +31,9 @@ rule run_python_script:
         base_fasta = config['base_fasta']
 
     output:
-        bed_sc="arq_pi{pi}_beta{beta}/selection_coef.bed", 
-        optima='arq_pi{pi}_beta{beta}/optima_files/optima.csv', 
-        slim='arq_pi{pi}_beta{beta}/optima_files/optima_slim.txt'
+        bed_sc="results/arq_pi{pi}_beta{beta}/selection_coef.bed", 
+        optima='results/arq_pi{pi}_beta{beta}/optima_files/optima.csv', 
+        slim='results/arq_pi{pi}_beta{beta}/optima_files/optima_slim.txt'
     params:
         pi = lambda wildcards: str(wildcards.pi),
         beta = lambda wildcards: str(wildcards.beta),
@@ -31,10 +46,10 @@ rule run_python_script:
 rule run_bash_script:
     input:
         vcf_file = config['base_vcf'], 
-        bed_sc="arq_pi{pi}_beta{beta}/selection_coef.bed"
+        bed_sc="results/arq_pi{pi}_beta{beta}/selection_coef.bed"
     output:
-        "arq_pi{pi}_beta{beta}/annotated.vcf"
-    threads: 4
+        "results/arq_pi{pi}_beta{beta}/annotated.vcf"
+    threads: 10
     log: 
         out = "log/pi{pi}_beta{beta}_run_bash_script_stdout.log",
         err = "log/pi{pi}_beta{beta}_run_bash_script_stderr.err"
@@ -47,11 +62,11 @@ rule run_bash_script:
 rule run_slim_script:
     input:
         fasta = config['base_fasta'],
-        vcf ="arq_pi{pi}_beta{beta}/annotated.vcf", 
-        optima_slim ='arq_pi{pi}_beta{beta}/optima_files/optima_slim.txt'
+        vcf ="results/arq_pi{pi}_beta{beta}/annotated.vcf", 
+        optima_slim ='results/arq_pi{pi}_beta{beta}/optima_files/optima_slim.txt'
     output:
         expand(
-            "arq_pi{{pi}}_beta{{beta}}/vcf_files/optima{{optima}}/subp{replicates}.vcf",
+            "results/arq_pi{{pi}}_beta{{beta}}/vcf_files/optima{{optima}}/subp{replicates}.vcf",
             replicates = range(0,12)
         )
     params: 
@@ -62,34 +77,68 @@ rule run_slim_script:
         err = "log/arq_pi{pi}_beta{beta}_optima{optima}_stderr.err"
     conda:
         'envs/base_env.yaml'
-    shell:
-         "bash ./slim.sh -f {input.fasta} -v {input.vcf} -s {input.optima_slim} -o {output[0]} -p {params.optima} -i {params.initial_pop} 2> {log.err} 1> {log.out}"
+    script:
+         "scripts/slim.sh"
 # 2> {log.err} 1> {log.out}
 
 rule run_python_script2:
     input:
         expand(
-            "arq_pi{{pi}}_beta{{beta}}/vcf_files/optima{optima}/subp{replicates}.vcf",
+            "results/arq_pi{{pi}}_beta{{beta}}/vcf_files/optima{optima}/subp{replicates}.vcf",
             optima=optima,
             replicates=replicates
         )
     output:
-        'arq_pi{pi}_beta{beta}/simulation_results/allele_counts.csv',
-        'arq_pi{pi}_beta{beta}/simulation_results/pool_sizes.csv'
+        'results/arq_pi{pi}_beta{beta}/simulation_results/allele_counts.csv',
+        'results/arq_pi{pi}_beta{beta}/simulation_results/pool_sizes.csv'
     conda:
         'envs/base_env.yaml'
     script:
         'scripts/allele_counts_from_vcf.py'
 
-rule all:
+rule ld_pruning:
     input:
-        expand(
-            'arq_pi{pi}_beta{beta}/simulation_results/allele_counts.csv',
-            pi=config['pi'],
-            beta=config['beta']
-        ),
-        expand(
-            'arq_pi{pi}_beta{beta}/simulation_results/pool_sizes.csv',
-            pi=config['pi'],
-            beta=config['beta']
-        )
+        vcf_file = config['base_vcf'], 
+        maf= config[maf]
+        corr_ld= config[corr_ld]
+    output:
+        "data/chr5_grenenet_filteredmaf.prune.in"
+    log: 
+        out = "log/pi{pi}_beta{beta}_run_bash_script_stdout.log",
+        err = "log/pi{pi}_beta{beta}_run_bash_script_stderr.err"
+    conda:
+        'envs/base_env.yaml'
+    script:  
+        "ld_pruning.sh"
+
+rule apply_ld_pruning:
+    input:
+        allele_counts_table = 'results/arq_pi{pi}_beta{beta}/simulation_results/allele_counts.csv',
+        snps_to_keep = 'data/chr5_grenenet_filteredmaf.prune.in'
+    output:
+        allele_counts_table_filtered = 'results/arq_pi{pi}_beta{beta}/simulation_results/allele_counts_filtered.csv',
+    log: 
+        out = "log/pi{pi}_beta{beta}_run_bash_script_stdout.log",
+        err = "log/pi{pi}_beta{beta}_run_bash_script_stderr.err"
+    conda:
+        'envs/base_env.yaml'
+    script:  
+        "apply_ld_pruning.sh"
+
+
+
+
+## backlog 
+## this was the begining thing 
+
+
+# TAIR10_chr_all.fas | awk '/^>Chr5 /{p=1}p' > chr5.fasta
+# ## then in the python script this file will be modified so it is int he slim format
+
+# ##### phase 1 #######################################
+# ## filter ch5 and grenenet ecotypes from the big file 
+
+# bcftools view 1001_genomes_snps_missing0.8_merged_imputed_biallelic_named.vcf.gz --regions 5 -o chr5.vcf.gz
+
+# bcftools view -S ecotypes_grenenet.txt chr5.vcf.gz -o chr5_grenenet.vcf
+

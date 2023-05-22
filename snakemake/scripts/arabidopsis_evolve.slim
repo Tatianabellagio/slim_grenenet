@@ -5,28 +5,14 @@
 // Setup
 
 initialize() {
-	// the optima file is a vector indicating the optima for each of the environments 
 	optimas = readFile(optima_file);
 	if (!exists("optima"))defineConstant('optima', 0);
-	//print(optima);
-	//optima = asInteger(optima);
-    //print(optima);
 	defineConstant('optima_value', asFloat(optimas[asInteger(optima)]));
-   //defineConstant('ref_fasta', "chr5.fasta");
-   //defineConstant('main_vcf', "chr5_grenenet_ann3.vcf");  // chr5_grenenet_ann4.vcf
-   //defineConstant('initial_pop', 86400); // this is based on the number of individuals in the vcf file  28800
    if (!exists("replicates"))defineConstant('replicates', 12);
    if (!exists("gen_to_run"))defineConstant('gen_to_run', 5);
-	//defineConstant('gen_to_finish', gen_to_run + 1);
 
-	// number of population based on the map file
-	//replicates = length(optima_value);
 	
-
-// end options	////////////////////////////////////////////////////////////////////////////////
-
    // now im gonna simulate the mutations coming from standing variation. 
-   print("Starting simulation now with optima: " + optima_value + ", number of generations: " + gen_to_run + " and" + replicates + " replicates in chromosome " + ref_fasta);
 
    initializeSLiMModelType("nonWF");
    initializeSLiMOptions(nucleotideBased=T);
@@ -45,17 +31,16 @@ initialize() {
 
 	initializeGenomicElement(g1, 0,  length-1);
 
-	// initialize recombination  //0.000003
-	initializeRecombinationRate(0.000003); 
+	// initialize recombination 
+	initializeRecombinationRate(0.0001);
 
 }
 
 //// create one popualtion and then popualte the new ones 
 1 early() { 
 
-	sim.addSubpop("p999", asInteger(initial_pop));  // 
-	p999.genomes.readFromVCF(main_vcf, m2);  // vcf file with seelction coefficients 
-	//p999.genomes.readFromVCF("qtl1_neutral.vcf", m3);
+	sim.addSubpop("p1", asInteger(initial_pop));  // 
+	p1.genomes.readFromVCF(main_vcf, m2);  // vcf file with seelction coefficients 
 	
 }
 
@@ -65,107 +50,119 @@ initialize() {
 	return 1.; 
 }
 
-1 late(){
-
-	// Read a list of optima from a simple text file (one line/one entry per population).
-	
-
-	for (i in 0:(replicates-1)) {
-		sim.addSubpop(i, 0);   /// add just empty populations 
-	}
-	
-	// once created the subpopulations make the migrants go to them 
-	for (migrant in sim.subpopulations.individuals){
-			 do {
-			 //take a subpop at random 
-            dest = sample(sim.subpopulations, 1);
-          // make sure it is not my original subpop
-        } while (dest == migrant.subpopulation);
-
-        // Assign migrant to destination subpopulation
-        dest.takeMigrants(migrant);
-    }
-   // now that i have taken all the individuals from pop999 i  delete it 
-   p999.removeSubpopulation();
-
-}
-
-
 
 /////// establish a reproduction regimen where the fitness of an individual will affect the number of offspring 
 
 3:999 reproduction() { 
-// 0.97 chance of selfing, 0.03 chance of reproducing with other random individual in the same subpop 
-
-	for (i in 0:(replicates-1)) {
-	if (sim.subpopulations[i].individualCount > 0){
-		inds = sim.subpopulations[i].individuals; 
+   // only run this if population size if greater than 0, would run into error otherwise 
+	if (sim.subpopulations[0].individualCount > 0){
+		// get each of the individuals
+		inds = sim.subpopulations[0].individuals; 
+		// calculate their phenotype
  		phenotypes = inds.sumOfMutationsOfType(m2); 
+		// calculate their fitness
 		fitness = exp(-0.5 * (phenotypes - (optima_value))^2);	
-	
+		// calculate their relative fitness
 		max_fitness = max(fitness);
 		rel_fitness = fitness / max_fitness;
+		// calculate the number of offspring for each individual
 		offspring = rel_fitness * 10;  //max number of offsrping 
 		offspring = asInteger(floor((offspring)));		
 		
-		
-		for (j in 0:(size(sim.subpopulations[i].individuals)-1)) {
+		// loop over each of the individuals in the population
+		for (j in 0:(size(sim.subpopulations[0].individuals)-1)) {
+		// for each individual cehck their expected offspring size and based on that
+		// for each offspring based on a chance of 97% make it a selfer offscpring or an outcross offspring 
 			for (k in seqLen(offspring[j])) {
 				if (runif(1) < 0.97) 
 					{ 
-  						 sim.subpopulations[i].addSelfed(sim.subpopulations[i].individuals[j]);
+  						 sim.subpopulations[0].addSelfed(sim.subpopulations[0].individuals[j]);
   					} 
 				else
   					{ 
-						mate = sim.subpopulations[i].sampleIndividuals(1);
- 						sim.subpopulations[i].addCrossed(sim.subpopulations[i].individuals[j], mate);
-  					} 
-			}
-		}
-	}
-	}
+  						//for the outcrossign event chose at random another individual from teh population 
+						mate = sim.subpopulations[0].sampleIndividuals(1);
+ 						sim.subpopulations[0].addCrossed(sim.subpopulations[0].individuals[j], mate);
+			      }
+														}
+																					 }
+																	}
 	self.active = 0; 
 }
 
 2:999 fitnessEffect() { 
+	// calculate their phenotype
 	phenotype = sum(individual.genomes.sumOfMutationsOfType(m2));
+	// calculate their fitness
   	fitness = exp(-0.5 * (phenotype - (optima_value))^2);
- 	//also here I adjust for only 1 year of survival 
+ 	//also here I adjust for only 1 year of survival  (anual plant)
 	return ifelse(individual.age <=1, fitness, 0.0);
 }
     
-    
+//checkpoint
 1:999 late() { 
-	for (i in 0:(replicates-1)){
-
 	// check fluctuation of phenotype and fitness
-	inds = sim.subpopulations[i].individuals; 
+	inds = sim.subpopulations[0].individuals; 
 	phenotypes = inds.sumOfMutationsOfType(m2); 
 	fitness = exp(-0.5 * (phenotypes - (optima_value))^2);
 	//print(phenotypes); // if the phenotypes are all the same i could assume there is ecotype sorting 
-	catn(sim.cycle + ": Mean phen ="+ mean(phenotypes) + " optima "+ optima_value  + " ,subpop " + i + " size:" + 			sim.subpopulations[i].individualCount) ;  	
- 	}
+	//catn(sim.cycle + ": Mean phen ="+ mean(phenotypes) + " optima "+ optima_value  + " ,subpop " + i + " size:" + 			sim.subpopulations[i].individualCount) ;  	
 	}
 
-5:999 late() { 
-
+2:999 late() { 
 	// if after the survival event the population size is too big adjust it 
-	for (i in 0:(replicates-1)){
-		if (sim.subpopulations[i].individualCount > 200){
-			number_to_kill = sim.subpopulations[i].individualCount - 200;		
-			sim.killIndividuals(sim.subpopulations[i].sampleIndividuals(number_to_kill));
-			}
+		if (sim.subpopulations[0].individualCount > 900){
+			number_to_kill = sim.subpopulations[0].individualCount - 900;		
+			sim.killIndividuals(sim.subpopulations[0].sampleIndividuals(number_to_kill));
 			}
  	}
  	
 
-
-
 // output 
-2:999 late(){  
+5:999 late(){ 
+	// make sure the sim is finished when desired 
+	if(sim.cycle==gen_to_run){
+
+	////////////////// this part generates the vcf file, comemented for now ///////////////////////////////////
+	// if all the individuals died output would give error since cannot create vcf file so
+		// if there are individuals create the vcf file
+		//if (sim.subpopulations[0].individualCount > 0){
+		//	sim.subpopulations[0].individuals.genomes.outputVCF('vcf_slim/optima' + optima + '/subp' + i + '.vcf');}
+		//}
+		// if there are no individuals create an empty file called vcf for snakemake to check them 
+		//else{writeFile('vcf_slim/optima' + optima + '/subp' + i + '.vcf', 'all_indiv_died');}
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
+	catn('pop_size,' + sim.subpopulations[0].individualCount );
+	
+	// iterate over each mutation in the simulation 
+		for (mut in sim.mutations){ 
+			catn('');
+				// count the number of this mutation (basically alternative allele count)
+				mutcount = sum(sim.subpopulations[0].genomes.containsMutations(mut)); 
+   			// only add it to the output if the mucount is more than 0, so only if the mut is not lost 
+				if (mutcount > 0) {
+				// collect the position of the mutation
+					cat(mut.position + ',' + mutcount);
+					  					}
+					  				}
+       							}   
+       
+       sim.simulationFinished();  
+            }
+/*
+
+
+5:999 late(){  
 		if(sim.cycle==gen_to_run){
 		for (i in 0:(replicates-1)){
+		// if all the individuals died output would give error since cannot create vcf file so
+		// if there are individuals create the vcf file
+			if (sim.subpopulations[i].individualCount > 0){
 		sim.subpopulations[i].individuals.genomes.outputVCF(output_folder + '/vcf_files/optima' + optima + '/subp' + i + '.vcf');
+		}
+		// if there are no individuals create an empty file called vcf for snakemake to check them 
+			else{writeFile(output_folder + '/vcf_files/optima' + optima + '/subp' + i + '.vcf', 'all_indiv_died');}
 		sim.simulationFinished();  
 }}}
 
@@ -177,7 +174,6 @@ initialize() {
     
 
     
-/*
 
 
 

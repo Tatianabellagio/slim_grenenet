@@ -50,7 +50,7 @@ echo "${file}" >> "${snakemake_log[0]}"
 
 command="bcftools merge --threads "${threads_ann}" --force-samples"
 
-for i in {1..48}; do
+for i in {1..9}; do
     command+=" $file"
 done
 

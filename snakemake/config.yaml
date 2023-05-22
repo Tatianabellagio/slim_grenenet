@@ -15,7 +15,7 @@ replicates: 12
 # number of different environments to simulate
 optima: 32
 # inital population size in the simulation 
-initial_pop: 10800
+initial_pop: 2025
 
 ## ld pruning settings
 maf: 0.6

@@ -746,7 +746,7 @@ also remember that to run things on the cluster:
 # create a tmux session 
 tmux new -s session_name
 #run this in a tmux session, so that the interactive session stays alive:
-srun --partition DPB --time 0 --mem 20G --cpus-per-task 4 --nodes 1 --ntasks 1 --pty bash -i
+srun --partition DPB --time 0 --mem 120G --cpus-per-task 8 --nodes 1 --ntasks 1 --pty bash -i
 
 
 ### creating ther eads for baypass 
@@ -1030,7 +1030,7 @@ a job to run the 12 replicates in chr5 for one optima value took
 snakemake --cores 16 -n all
 
 
-snakemake all --profile profiles/slurm
+snakemake all --profile profiles/slurm --keep-incomplete
 
 snakemake --cores 16 all
 
@@ -1055,9 +1055,10 @@ ok lets do it the right way
 
 
 #########
-awk '!/^#/ {count++} END {print count}' ../chr5_grenenet.vcf
+awk '!/^#/ {count++} END {print count}' annotated.vcf
 
-awk '{if ($1 == "#CHROM"){print NF-9; exit}}' ../chr5_grenenet.vcf
+awk '{if ($1 == "#CHROM"){print NF-9; exit}}' annotated.vcf
+
 
 
 srun --partition DPB --time 0 --mem 30G --cpus-per-task 16 --nodes 1 --ntasks 1 --pty bash -i
@@ -1101,3 +1102,144 @@ awk -F ',' 'BEGIN{OFS=","} NR==FNR{values[substr($1, 3)]; next} {gsub(/^5_/, "",
 
 
 awk -F ',' 'BEGIN{OFS=","} NR==FNR{values[substr($1, 3)]; next} {gsub(/^5_/, "", $1); if ($1 in values) print}' chr5_grenenet_filteredmaf.prune.in ../test/arq_pi0.001_beta5_allele_counts.csv > ../test/arq_pi0.001_beta5_allele_counts_filtered.csv
+
+
+mAY 16
+### OK WHAT I NEED TO DO TODAY IS 
+## make sure empty vcf files can be produced by slim 
+## and directly generate the table of allele counts in slim, so that is doesnt take years to run 
+
+
+
+
+
+## ok!! lets put together the commans to run the baypass model!! 
+## i will start by running directly the 
+
+The standard covariate model
+
+## should be 384 since i have 12 * 32 = 384
+## env var data scaled, this activates the cov model instead or the core one
+
+g_baypass \
+          -gfile arq_pi0.001_beta/geno_table \
+          -poolsizefile arq_pi0.001_beta/pool_size \
+          -efile arq_pi0.001_beta/cov_data \
+          -outprefix arq_pi0.001_beta/arq_pi0.001_beta_  
+## this was taking forever (aka 3 days)
+
+
+## other options
+-gfile           CHAR   Genotyping Data File                                            (always required) -efile           CHAR   Covariate file: activate Covariate Mode                         (def="")
+-scalecov        CHAR   Scale covariates                                                (def="")
+-contrastfile    CHAR   Contrast to be computed                                         (def="")
+-poolsizefile    CHAR   Name of the Pool Size file => activate PoolSeq mode             (def="")
+
+# if mcmc
+          -d0yij 2.8  \  
+          -npilot 50
+
+
+srun --partition DPB --time 0 --mem 120G --cpus-per-task 6 --nodes 1 --ntasks 1 --pty bash -i
+
+
+BACKLOG
+
+# create script inside slim in order to actually generate the allele count table directly if i dont see a use in
+# the generation of vcf files 
+
+
+
+/carnegie/nobackup/scratch/tbellagio/
+
+
+
+#OUT: 3 3 T p0 1 m2 472938 -0.3735 0 p-1 1 10 T
+tick , cycle, type of output , sth, pop where it first aroused, sth, mut type, POSITION, selection coeff, dominance coef, where is arouse, numnber of genomes
+that contain the mutation 
+
+
+## RUNNING GBYPASS
+
+1) GET tmux
+2) ASK FOR INTERACTIVE SESION WITH MANY GB 
+srun --partition DPB --time 0 --mem 160G --cpus-per-task 8 --nodes 1 --ntasks 1 --pty bash -i
+AND TRHEADS
+srun --partition Moi --time 0 --mem 480g --cpus-per-task 8 --nodes 1 --ntasks 1 --pty bash -i
+
+g_baypass \
+          -npop 384 \
+          -gfile arq_pi5e-05_beta5/geno_table_core_model \
+          -poolsizefile arq_pi5e-05_beta5/pool_size \
+          -outprefix arq_pi5e-05_beta5/arq_pi5e-05_beta5 \
+          -d0yij 360 \
+          -nthreads 8
+
+
+
+#          -efile arq_pi5e-05_beta5/cov_data \
+
+# -d0yij = is something to do with the initial read counts and their distribution seeded into the model, 
+#and is specifically for Pool-seq data. I followed the tip in the manual that says to set it to 1/5th of the minimum pool size
+
+## example
+g_baypass \
+          -npop 12 \
+          -gfile manual_example/lsa.geno \
+          -poolsizefile manual_example/lsa.poolsize \
+          -outprefix manual_example/output \
+          -d0yij 20 \
+          -nthreads 8
+
+
+
+So bascially gbaypass crashes so im gonna try with smaller dataset 
+
+## soim gonna run only 1 optima 
+g_baypass \
+          -npop 12 \
+          -gfile arq_pi5e-05_beta5_optima17_copy/geno_table_core_model \
+          -poolsizefile arq_pi5e-05_beta5_optima17_copy/pool_size \
+          -outprefix arq_pi5e-05_beta5_optima17_copy/output \
+          -d0yij 360 \
+          -nthreads 8
+
+
+srun --partition Moi --time 0 --mem 200GB --cpus-per-task 8 --nodes 1 --ntasks 1 --pty bash -i
+
+
+srun --partition Moi --time 0 --mem 60GB --cpus-per-task 8 --nodes 1 --ntasks 1 --pty bash -i
+
+
+g_baypass \
+          -npop 12 \
+          -gfile arq_pi5e-05_beta5_optima17_copy2/geno_table_core_model \
+          -poolsizefile arq_pi5e-05_beta5_optima17_copy2/pool_size \
+          -outprefix arq_pi5e-05_beta5_optima17_copy2/output \
+          -d0yij 360 \
+          -nthreads 8
+
+
+TODO:
+- agregar a snakemake el codigo de python para llegar de los txt a talbes de allele freq 
+-leer en detalle el manual de baypass
+-correr lfmm
+- comparar los cuadros de corr en grenenet data 
+-compare with grenent the hypothesis of adaptive low freq alleles
+
+hablar con moi de que baypass va a tomar un monton 
+y de los graficos de correlacion 
+
+is it the same to run the models for each optima or to run it all together?
+
+
+### to extract alelle freq from xing 
+
+awk 'END {print NR}' merged_allele_frequency.csv
+3363914
+
+3363914/100
+33639.14
+
+## awk to keep the first row and then 1 every 
+awk 'NR==1 || NR%100==0' merged_allele_frequency.csv > /carnegie/nobackup/scratch/tbellagio/data_grenenet/merged_allele_frequency_filt.csv

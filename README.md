@@ -33,10 +33,3 @@ Furthermore, the pipeline includes benchmarking of different models for detectin
 4. Push the changes to your forked repository.
 5. Submit a pull request, clearly describing the changes you've made.
 
-## License
-
-[Specify the license under which the pipeline is distributed.]
-
-## Acknowledgments
-
-[If you'd like to acknowledge any contributors, libraries, or resources that have been helpful in developing this pipeline, include them here.]

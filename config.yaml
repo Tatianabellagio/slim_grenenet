@@ -1,0 +1,47 @@
+# chromosome nubmer you are workign with (important for writing the bed file to annotate the vcf)
+chr_number: 5
+# name of the vcf file you provide to run the simulation on 
+base_vcf: 'data/chr5_grenenet.vcf'
+# base fasta file used by slim 
+base_fasta: 'data/chr5.fasta'
+base_fam: 'data/chr5_grenenet.fam'
+
+bed_file: 'data/chr5_grenenet.bed'
+bim_file: 'data/chr5_grenenet.bim'
+kinship: 'data/chr5_grenenet_kinship.cXX.txt'
+
+# number of ecotypes in the founder mix
+n_ecotypes: 225
+## og_allele_freq
+og_allele_freq: 'data/og_allele_freq.csv'
+
+allele_freq: ['lowfreq',
+              'mediumfreq',
+              'highfreq']
+
+lowfreq: [0, 0.05]
+mediumfreq: [0.05, 0.5]
+highfreq: [0.5, 1]
+
+# proportion of contributin snps to the trait
+pi: ['monogen','fivepoly', 'tenpoly', 'fifthpoly', 'twentypoly']
+monogen:  0.000001
+fivepoly: 0.000005
+tenpoly: 0.000009
+fifthpoly: 0.000014
+twentypoly: 0.000018
+# standard deviation of effect sizÍes of contributing loci 
+beta: ['betaprop', 'betanonprop']
+# ecotypes randomly selected from a temperature gradient to represent the optimum values in each environment 
+optimum_ecotypes: 'data/optimum_ecotypes.csv'
+# number of replicates of each simulation to run
+replicates: 5
+# number of different environments to simulate
+optima: 15
+
+# inital population size in the simulation 
+initial_pop: 2025
+
+## ld pruning settings
+maf: 0.6
+corr_ld: 0.01

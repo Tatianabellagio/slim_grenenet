@@ -27,3 +27,4 @@
 *.snakemake/
 *.err
 *.log
+.Rproj.user

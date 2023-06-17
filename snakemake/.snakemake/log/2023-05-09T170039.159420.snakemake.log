@@ -1,3 +1,0 @@
-NameError in file /Users/tbellagio/Documents/grenephase1/scratch_tati/simulations/snakemake/Snakefile, line 63:
-name 'params' is not defined
-  File "/Users/tbellagio/Documents/grenephase1/scratch_tati/simulations/snakemake/Snakefile", line 63, in <module>

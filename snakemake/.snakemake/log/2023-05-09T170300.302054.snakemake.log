@@ -1,3 +1,0 @@
-KeyError in file /Users/tbellagio/Documents/grenephase1/scratch_tati/simulations/snakemake/Snakefile, line 24:
-'pi'
-  File "/Users/tbellagio/Documents/grenephase1/scratch_tati/simulations/snakemake/Snakefile", line 24, in <module>

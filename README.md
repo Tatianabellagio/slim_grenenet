@@ -21,7 +21,14 @@ Furthermore, the pipeline includes benchmarking of different models for detectin
 
 ## Usage
 
-[Provide instructions on how to use the pipeline, including any prerequisites, installation steps, and command-line arguments if applicable.]
+1. Clone the repo
+
+2. Create an environment where you make sure to have Snakemake installed. You can visit the Snakemake website for instructions on how to install it. It is highly recommended to install Snakemake through Mamba for faster installation of required packages and setting up of the environments.
+
+3. Activate the environment
+
+4. Position yourself where the Snakefile is located and execute the following command:
+
 
 ## Contributing
 

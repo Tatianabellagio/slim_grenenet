@@ -1,8 +1,0 @@
-# Samples table, as used in grenepipe
-samples-table: "samples.tsv"
-
-# Amplicons file, option -f in CRISPResso2
-amplicons-file: "amplicons.txt"
-
-# Options for --trimmomatic_options_string in CRISPResso2
-trimmomatic-options-string: "ILLUMINACLIP:adapters.fa:0:90:10:0:true"

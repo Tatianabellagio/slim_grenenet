@@ -1,0 +1,149 @@
+/*
+
+
+3:999 late(){  
+		if(sim.cycle==gen_to_run){
+		for (i in 0:(replicates-1)){
+		// if all the individuals died output would give error since cannot create vcf file so
+		// if there are individuals create the vcf file
+			if (sim.subpopulations[i].individualCount > 0){
+		sim.subpopulations[i].individuals.genomes.outputVCF(output_folder + '/vcf_files/optima' + optima + '/subp' + i + '.vcf');
+		}
+		// if there are no individuals create an empty file called vcf for snakemake to check them 
+			else{writeFile(output_folder + '/vcf_files/optima' + optima + '/subp' + i + '.vcf', 'all_indiv_died');}
+		sim.simulationFinished();  
+}}}
+
+//im not sure if this is necessary but just in case
+//4 early() 
+//{ 
+//sim.simulationFinished();  
+//}	
+    
+
+    
+
+
+
+
+checks
+2:99999 early() { 
+	print("early");
+   optima = readFile(optimaFile);
+	replicates = length(optima);
+
+	// add tags of optima
+
+
+	//// aca deberia ir por cada subpoblaciony  calcular esto 
+ 	inds = sim.subpopulations[4].individuals; 
+ 	
+ 	phenotypes = inds.sumOfMutationsOfType(m2); 
+ 	print(" subpop " + 4);
+ 	print("phenotypes");
+ 	print(phenotypes);
+ 	print(inds.subpopulation.tag);
+	fitness = exp(-0.5 * (phenotypes - (inds.subpopulation.tag))^2);
+ 	
+ 	print("fitness");
+ 	print(fitness);
+ 	}
+
+
+
+
+output 
+
+
+    	// kill them after a year 
+1:5 late() { 
+	optima = readFile(optimaFile);
+	replicates = length(optima);
+
+	// add tags of optima
+	for (i in 0:(replicates-1)){
+	inds = sim.subpopulations[i].individuals; 
+	inds.fitnessScaling = ifelse(inds.age <=1, 1.0, 0.0);
+	}
+ 	}
+ 	
+6:99999 early() { 
+   optima = readFile(optimaFile);
+	replicates = length(optima);
+	for (i in 0:(replicates-1)){
+    	catn("subpop " + i + " size:" + sim.subpopulations[i].individualCount) ; 
+    	}
+    	}
+    	
+    	
+    	
+ 1:2 late() { 
+// number of population based on the map file
+	
+   optima = readFile(optimaFile);
+	replicates = length(optima);
+
+	// add tags of optima
+	for (i in 0:(replicates-1)){
+
+	//// aca deberia ir por cada subpoblaciony  calcular esto 
+ 	inds = sim.subpopulations[i].individuals; 
+ 	
+ 	phenotypes = inds.sumOfMutationsOfType(m2); 
+ 	print(" subpop " + i);
+ 	print("phenotypes");
+ 	print(phenotypes);
+ 	
+ 	print(inds.subpopulation.tag);
+	fitness = exp(-0.5 * (phenotypes - (inds.subpopulation.tag))^2);
+ 	
+ 	print("fitness");
+ 	print(fitness);
+ 	//fisher geometric model
+	if (sim.cycle % 1 == 0) 
+    	catn(sim.cycle + ": Mean phen ="+ mean(phenotypes) + " optima "+ sim.subpopulations[i].tag  + " ,subpop " + i + " size:" + 			sim.subpopulations[i].individualCount) ; 
+    	
+    	}
+    	}
+    	
+    	
+    	
+//// old fitness scaling
+2:99999 early() { 
+// number of population based on the map file
+
+	
+   optima = readFile(optimaFile);
+	replicates = length(optima);
+
+	// add tags of optima
+	for (i in 0:(replicates-1)){
+
+	//// aca deberia ir por cada subpoblaciony  calcular esto 
+ 	inds = sim.subpopulations[i].individuals; 
+ 	
+ 	phenotypes = inds.sumOfMutationsOfType(m2); 
+ 	print(" subpop " + i);
+ 	print("phenotypes");
+ 	print(phenotypes);
+ 	// inds.fitnessScaling = 1.5 - (phenotypes - inds.subpopulation.tag)^2 * 0.005; 
+ 	//inds.fitnessScaling = exp(-0.5 * (phenotypes - inds.subpopulation.tag)^2);
+
+ 	// make sure that if you are older than 1 year then you fitness is for sure 0 (annual arabidopsis)
+ 	//print(inds.age);
+ 	//fitness = ifelse(inds.age <= 1, exp(-0.5 * (phenotypes - (inds.subpopulation.tag))^2), 0.0);
+ 	print(inds.subpopulation.tag);
+	fitness = exp(-0.5 * (phenotypes - (inds.subpopulation.tag))^2);
+ 	
+	inds.fitnessScaling = fitness;
+ 	print("fitness");
+ 	print(fitness);
+ 	//fisher geometric model
+	if (sim.cycle % 1 == 0) 
+    	catn(sim.cycle + ": Mean phen ="+ mean(phenotypes) + " optima "+ sim.subpopulations[i].tag  + " ,subpop " + i + " size:" + 			sim.subpopulations[i].individualCount) ; 
+    	
+   /// and now based on population size kill randomly inside population 
+   
+											}
+    	
+    	}

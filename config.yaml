@@ -24,11 +24,10 @@ mediumfreq: [0.05, 0.5]
 highfreq: [0.5, 1]
 
 # proportion of contributin snps to the trait
-pi: ['monogen','fivepoly', 'tenpoly', 'fifthpoly', 'twentypoly']
+pi: ['monogen','fivepoly', 'tenpoly', 'twentypoly']
 monogen:  0.000001
 fivepoly: 0.000005
 tenpoly: 0.000009
-fifthpoly: 0.000014
 twentypoly: 0.000018
 # standard deviation of effect sizÍes of contributing loci 
 beta: ['betaprop', 'betanonprop']
@@ -37,7 +36,7 @@ optimum_ecotypes: 'data/optimum_ecotypes.csv'
 # number of replicates of each simulation to run
 replicates: 5
 # number of different environments to simulate
-optima: 15
+optima: 5
 
 # inital population size in the simulation 
 initial_pop: 2025

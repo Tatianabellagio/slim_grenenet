@@ -8,7 +8,7 @@ configfile: "config.yaml"
 
 replicates = list(range(0, config["replicates"]))
 optima = list(range(0, config["optima"]))
-generation = list(range(2,7))
+# generation = list(range(2,7))
 
 ## this rule runs a python script that will generate the bed file containing the contributing loci and their effect sizes based on values of beta dn alpha
 ## the bed file will be then used to annotate a vcf file that will be used by SliM to run the simulations
@@ -311,3 +311,9 @@ rule run_gwa:
 
 
 ## maybe add the conversion fo the files from vcf to bim gam with plink adn the calculation fo the kinship with gemma 
+
+
+#### soemthing that is very important for the whole tree seq thing si to annotate the seq length 
+
+## adn for taht i need the orgiinal fasta file with all the chromosomes TAIR10_chr_all.fas.fai
+#bcftools reheader --fai TAIR10_chr_all.fas.fai qtl2_contrib.vcf > output.vcf

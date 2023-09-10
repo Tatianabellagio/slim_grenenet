@@ -17,7 +17,6 @@ echo "${snakemake_output[0]}"
 
 mkdir -p "$output_folder/optima$optima"
 echo "$output_folder/optima$optima"
-echo 'folder created'
 
 slim \
     -d "ref_fasta='$fasta'" \

@@ -5,6 +5,7 @@
 // Setup
 
 initialize() {
+	// read the optima file created 
 	optimas = readFile(optima_file);
 	if (!exists("optima"))defineConstant('optima', 0);
 	defineConstant('optima_value', asFloat(optimas[asInteger(optima)]));

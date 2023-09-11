@@ -1,5 +1,7 @@
 # og tree is the tree with the 3 mill variants, all chromosomes and genomic offset (no overlapping pos)
+og_vcf_offset: 'data/wholegenome_offset.vcf'
 og_tree_offset: 'data/og_tree_offset.trees'
+mapper_realid_metadataid: 'data/mapper_realid_metadataid_wholegenomeoffset.csv'
 
 allele_freq: ['lowfreq',
               'mediumfreq',
@@ -20,8 +22,9 @@ onehpoly: 100
 # standard deviation of effect sizÍes of contributing loci 
 beta: ['lowbeta', 'highbeta']
 
+## this si standard deviation which makes de variance 1 and 4 
 lowbeta: 1
-highbeta: 5
+highbeta: 2
 
 # variances to simulate different strength of selection 
 selection: ['strongsel', 'moderatesel', 'lowsel']
@@ -33,7 +36,7 @@ lowsel: 5
 # number of replicates of each simulation to run
 replicates: 5
 # number of different environments to simulate
-optima: 5
+optima_qty: 5
 
 
 

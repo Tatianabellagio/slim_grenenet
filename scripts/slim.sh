@@ -1,30 +1,47 @@
-fasta="${snakemake_input[fasta]}"
-vcf="${snakemake_input[vcf]}"
-optima_slim="${snakemake_input[optima_slim]}"
-output_folder=$(echo "${snakemake_output[0]}" | cut -d'/' -f1-2)
-ouput="${snakemake_output[0]}"
-optima="${snakemake_params[optima]}"
-initial_pop="${snakemake_params[initial_pop]}"
+tree_seq_causalloci="${snakemake_input[tree_seq_causalloci]}"
+optima_values="${snakemake_input[optima_values]}"
+variance_values="${snakemake_input[variance_values]}"
+optima_index="${snakemake_params[optima_index]}"
+selection="${snakemake_params[selection]}"
+output_file="${snakemake_output[0]}"
 
-echo "fasta: $fasta" #> "${snakemake_log[0]}"
-echo "vcf: $vcf" #>> "${snakemake_log[0]}"
-echo "optima_slim: $optima_slim" #>> "${snakemake_log[0]}"
-echo "output_folder: $output_folder" #>> "${snakemake_log[0]}"
-echo "optima: $optima" #>> "${snakemake_log[0]}"
-echo "initial_pop: $initial_pop" #>> "${snakemake_log[0]}"
+# Map 'selection' to its numeric value using a case statement
+case "$selection" in
+  'strongsel')
+    variance_index=1
+    ;;
+  'moderatesel')
+    variance_index=2
+    ;;
+  'lowsel')
+    variance_index=3
+    ;;
+  *)
+    echo "Invalid selection"
+    exit 1
+    ;;
+esac
+
+echo "tree_seq_causalloci: $tree_seq_causalloci" #>> "${snakemake_log[0]}"
+echo "optima_values: $optima_values" #>> "${snakemake_log[0]}"
+echo "variance_values: $variance_values" #>> "${snakemake_log[0]}"
+echo "selection: $selection" #>> "${snakemake_log[0]}"
+echo "variance_index: $variance_index"
+echo "optima_index: $optima_index" #>> "${snakemake_log[0]}"
 echo ${snakemake_output[0]}
 echo "${snakemake_output[0]}"
 
-mkdir -p "$output_folder/optima$optima"
-echo "$output_folder/optima$optima"
+mkdir -p "$output_folder/optima_index$optima_index"
+echo "$output_folder/optima_index$optima_index"
 
 slim \
-    -d "ref_fasta='$fasta'" \
-    -d "main_vcf='$vcf'" \
-    -d "optima_file='$optima_slim'" \
-    -d "optima='$optima'" \
-    -d "initial_pop='$initial_pop'" \
-    scripts/arabidopsis_evolve.slim > ${snakemake_output[0]}
+    -d "tree='$tree_seq_causalloci'" \
+    -d "optima_index='$optima_index'" \
+    -d "optima_file='$optima_values'" \
+    -d "variance_index='$variance_index'" \
+    -d "variance_values='$variance_values'" \
+    -d "output_file='$output_file'" \
+    scripts/arabidopsis_evolve_treeseq.slim 
     
 
 

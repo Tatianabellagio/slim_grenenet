@@ -1,9 +1,10 @@
-tree_seq_causalloci="${snakemake_input[tree_seq_causalloci]}"
-optima_values="${snakemake_input[optima_values]}"
-variance_values="${snakemake_input[variance_values]}"
-optima_index="${snakemake_params[optima_index]}"
-selection="${snakemake_params[selection]}"
-output_file="${snakemake_output[0]}"
+tree_seq_causalloci="results/arq_mediumfreq_onehpoly_lowbeta/tree_seq_causalloci.trees"
+optima_values="results/arq_mediumfreq_onehpoly_lowbeta/optima_values.txt"
+variance_values="results/arq_mediumfreq_onehpoly_lowbeta/variance_values.txt"
+optima_index='0'
+selection="moderatesel"
+output_file="results/arq_mediumfreq_onehpoly_lowbeta/moderatesel_selection/optima0/subp0_tree_output.trees"
+#output_folder=$(echo "${snakemake_output[0]}" | cut -d'/' -f1-2)
 
 # Map 'selection' to its numeric value using a case statement
 case "$selection" in
@@ -42,5 +43,7 @@ slim \
     -d "variance_file='$variance_values'" \
     -d "output_file='$output_file'" \
     scripts/arabidopsis_evolve_treeseq.slim 
+    
+    
 
 

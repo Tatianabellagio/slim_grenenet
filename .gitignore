@@ -1,4 +1,6 @@
 testing.ipynb
+*.trees
+*.txt
 *.vcf
 *.vcf.gz
 *.bed
@@ -29,3 +31,5 @@ testing.ipynb
 *.err
 *.log
 .Rproj.user
+/results/
+/slurm-logs/

@@ -22,17 +22,17 @@ case "$selection" in
     ;;
 esac
 
-echo "tree_seq_causalloci: $tree_seq_causalloci" #>> "${snakemake_log[0]}"
-echo "optima_values: $optima_values" #>> "${snakemake_log[0]}"
-echo "variance_values: $variance_values" #>> "${snakemake_log[0]}"
-echo "selection: $selection" #>> "${snakemake_log[0]}"
-echo "variance_index: $variance_index"
-echo "optima_index: $optima_index" #>> "${snakemake_log[0]}"
-echo ${snakemake_output[0]}
-echo $output_folder
+#echo "tree_seq_causalloci: $tree_seq_causalloci" #>> "${snakemake_log[0]}"
+#echo "optima_values: $optima_values" #>> "${snakemake_log[0]}"
+#echo "variance_values: $variance_values" #>> "${snakemake_log[0]}"
+#echo "selection: $selection" #>> "${snakemake_log[0]}"
+#echo "variance_index: $variance_index"
+#echo "optima_index: $optima_index" #>> "${snakemake_log[0]}"
+#echo ${snakemake_output[0]}
+#echo $output_folder
 
 #mkdir -p "$output_folder/optima_index$optima_index"
-echo "$output_folder/optima_index$optima_index"
+#echo "$output_folder/optima_index$optima_index"
 
 slim \
     -d "tree='$tree_seq_causalloci'" \

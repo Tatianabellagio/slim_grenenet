@@ -6,6 +6,7 @@ import random
 import numpy as np
 import tsinfer
 import pyslim
+import os
 
 og_tree_offset = snakemake.input['og_tree_offset'] 
 print(og_tree_offset)
@@ -85,11 +86,20 @@ def convert_tree_to_vcf (tree,name_vcf):
 #import the old tree
 ts_old = tskit.load(og_tree_offset)
 #import mapper old nodes to new nodes
-mapper_realid_metadataid = pd.read_csv('../treeseq/mapper_realid_metadataid_wholegenome.csv')
+mapper_realid_metadataid = pd.read_csv(mapper_realid_metadataid)
 
 ## ts new
-ts_new = tskit.load(output_sim_tree)
+print('ACAAAA')
+print(output_sim_tree)
 
-ts_nm = overlap_neutral_mut(ts_new, ts_old, mapper_realid_metadataid)
-tskit.dump(ts_nm, output_sim_tree_wm)
-convert_tree_to_vcf(ts_nm, output_vcf)
+if os.path.exists(output_sim_tree) and os.path.getsize(output_sim_tree) <= 1:
+    print('empty_tree')
+    with open(output_vcf, "w"):
+        pass  # Create an empty vcf file 
+    with open(output_sim_tree_wm, "w"):
+        pass  # Create an empty tree file 
+elif os.path.exists(output_sim_tree) and os.path.getsize(output_sim_tree) > 1:
+    ts_new = tskit.load(output_sim_tree)
+    ts_nm = overlap_neutral_mut(ts_new, ts_old, mapper_realid_metadataid)
+    ts_nm.dump(output_sim_tree_wm)
+    convert_tree_to_vcf(ts_nm, output_vcf)

@@ -24,7 +24,7 @@ rule all:
             replicates=replicates,    
         ),
         expand(
-            "results/arq_{allele_freq}_{pi}_{beta}/{selection}/optima{optima_index}/subp{replicates}_tree_output.trees",
+            "results/arq_{allele_freq}_{pi}_{beta}/{selection}/optima{optima_index}/subp{replicates}_tree_output_wm.trees",
             allele_freq=config['allele_freq'],
             pi=config["pi"],
             beta=config["beta"],
@@ -86,14 +86,9 @@ rule tree_postprocessing:
     input:
         og_tree_offset=config["og_tree_offset"],
         mapper_ids=config['mapper_realid_metadataid'],
-        output_sim_tree = expand(
-            "results/arq_{{allele_freq}}_{{pi}}_{{beta}}/{selection}/optima{optima_index}/subp{replicates}_tree_output.trees",
-            optima_index=optima_index,    
-            replicates=replicates,    
-            selection=config["selection"],
-        ),
+        output_sim_tree="results/arq_{allele_freq}_{pi}_{beta}/{selection}/optima{optima_index}/subp{replicates}_tree_output.trees",
     output:
-        output_sim_tree_wm ="results/arq_{allele_freq}_{pi}_{beta}/{selection}/optima{optima_index}/subp{replicates}_tree_output.trees",
+        output_sim_tree_wm ="results/arq_{allele_freq}_{pi}_{beta}/{selection}/optima{optima_index}/subp{replicates}_tree_output_wm.trees",
         output_vcf ="results/arq_{allele_freq}_{pi}_{beta}/{selection}/optima{optima_index}/subp{replicates}_vcf_output.vcf",
     params:
         pi=lambda wildcards: str(wildcards.pi),
@@ -105,4 +100,4 @@ rule tree_postprocessing:
     conda:
         "envs/base_env.yaml"
     script:
-        "scripts/tree_postproessing.py"
+        "scripts/tree_postprocessing.py"

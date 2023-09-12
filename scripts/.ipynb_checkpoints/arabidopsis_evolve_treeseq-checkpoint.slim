@@ -14,13 +14,10 @@ initialize() {
 	if (!exists("optima_index"))defineConstant('optima_index', 0);  
 	optima_values = readFile(optima_file);                                                                
 	defineConstant('optima_value', asFloat(optima_values[asInteger(optima_index)]));    
-	print(optima_value);
-    
+
 	if (!exists("variance_index"))defineConstant('variance_index', 0);  
 	variance_values = readFile(variance_file);                                                                
 	defineConstant('variance_value', asFloat(variance_values[asInteger(variance_index)]));    
-    print(variance_value);
-    print(asFloat(variance_value));
 	
 	initializeSLiMModelType("nonWF");
 	initializeTreeSeq(retainCoalescentOnly=F);
@@ -75,7 +72,6 @@ initialize() {
 		inds =  sim.subpopulations.individuals;
 		// calculate their additive genetic value 
 		additive = inds.sumOfMutationsOfType(m0);
-		//print(additive);
 		VA = sd(additive)^2;
 		// from h2 and VA calculate VE
 		VE = (VA - h2 * VA) / h2;    // from h2 = VA / (VA + VE)   
@@ -83,12 +79,10 @@ initialize() {
 		env_noise = rnorm(size(inds), 0.0, sqrt(VE));
 		//calculate phenotype
 		phenotype = additive + env_noise;
-        print('phenotype');
-        print(phenotype);        
+   
 		//calculate fitness 
 		fitness = exp(-0.5 * ((phenotype - asFloat(optima_value))^2)/variance_value);
-        print('fitness');
-        print(fitness);
+
 		// set up the fitness of the population to be usen in the reproduction callback
         
 		sim.subpopulations[0].setValue('fitness', fitness);
@@ -103,10 +97,6 @@ initialize() {
 
 2:999 fitnessEffect() {
 	fitness = individual.getValue("fitness");
-    print('fitness');
-    print(individual);
-    print(fitness);
-    print(sim.cycle);
 	return fitness;
 }
 

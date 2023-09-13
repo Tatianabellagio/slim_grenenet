@@ -94,7 +94,7 @@ rule tree_postprocessing:
 rule gen_allele_freq:
     input:
         expand(
-            "results/arq_{allele_freq}_{pi}_{beta}/{selection}/optima{optima_index}/subp{replicates}_vcf_output.vcf",
+            "results/arq_{{allele_freq}}_{{pi}}_{{beta}}/{selection}/optima{optima_index}/subp{replicates}_vcf_output.vcf",
             allele_freq=config['allele_freq'],
             pi=config["pi"],
             beta=config["beta"],

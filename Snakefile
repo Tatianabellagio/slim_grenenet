@@ -91,14 +91,22 @@ rule tree_postprocessing:
     script:
         "scripts/tree_postprocessing.py"
 
+rule fix_positions_vcf:
+    input:
+        output_vcf ="results/arq_{allele_freq}_{pi}_{beta}/{selection}/optima{optima_index}/subp{replicates}_vcf_output.vcf",
+    output: 
+        output_vcf_fixpos ="results/arq_{allele_freq}_{pi}_{beta}/{selection}/optima{optima_index}/subp{replicates}_vcf_output_rp.vcf",
+    resources:
+        mem_mb=10240,
+    conda:
+        "envs/base_env.yaml"
+    script:
+        "scripts/fix_positions.sh"
+
 rule gen_allele_freq:
     input:
-        expand(
-            "results/arq_{{allele_freq}}_{{pi}}_{{beta}}/{selection}/optima{optima_index}/subp{replicates}_vcf_output.vcf",
-            allele_freq=config['allele_freq'],
-            pi=config["pi"],
-            beta=config["beta"],
-            selection=config["selection"],
+        output_vcf_fixpos = expand(
+            "results/arq_{{allele_freq}}_{{pi}}_{{beta}}/{{selection}}/optima{optima_index}/subp{replicates}_vcf_output_rp.vcf",
             optima_index=optima_index,
             replicates=replicates,    
         ),

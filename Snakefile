@@ -97,7 +97,7 @@ rule fix_positions_vcf:
     output: 
         output_vcf_fixpos ="results/arq_{allele_freq}_{pi}_{beta}/{selection}/optima{optima_index}/subp{replicates}_vcf_output_rp.vcf",
     resources:
-        mem_mb=10240,
+        mem_mb=20480
     conda:
         "envs/base_env.yaml"
     script:

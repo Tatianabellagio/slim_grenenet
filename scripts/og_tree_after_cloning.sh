@@ -3,8 +3,8 @@ tree_file="data/og_tree_offset.trees"
 ## output
 output="data/og_tree_offset_after_cloning.trees"
 
-echo tree_file
-echo output
+echo $tree_file
+echo $output
 
 
 slim \

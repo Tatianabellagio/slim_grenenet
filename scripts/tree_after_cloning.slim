@@ -1,0 +1,51 @@
+// Author: Tati
+// this simulations is just to cehck the og tree after cloning of inidviduals to get to the actual initial pop size 
+
+initialize() {
+	setSeed(1455193095666);
+	//constants
+
+	initializeSLiMModelType("nonWF");
+	initializeTreeSeq(retainCoalescentOnly=F);
+	initializeMutationRate(0);
+	initializeMutationType("m0", 0, "f", 0.0);
+	m0.convertToSubstitution = F;
+	initializeGenomicElementType("g1", m0, 1.0);
+	// the genomic element will be of the size of the arabidopsis genome
+	initializeGenomicElement(g1, 0, 119146347);
+	// setting up the recombination rates in between chromosomes 
+	rates = c(3e-6, 0.5, 3e-6, 0.5, 3e-6, 0.5, 3e-6, 0.5, 3e-6);
+	ends = c(30427670, 30427671, 50125959, 50125960, 73585789, 73585790, 92170845, 92170846, 119146347);
+	initializeRecombinationRate(rates, ends);
+}
+
+1 first() {
+	// import tree of arabidopsis 5 chromosomes 
+	sim.readFromPopulationFile(tree);
+
+}
+
+1 reproduction() {
+	// this first reproduction callbacks has the purpose of increasing the population size 
+	// for each of the individuals 
+	for (ind in sim.subpopulations[0].individuals){
+		// add 5 clones 
+		for (i in 1:10){
+			sim.subpopulations[0].addCloned(ind);
+		}
+	}
+	self.active = 0;
+}
+
+// I will always keep the effect of the mutations neutral 
+// becuase I am actually using their effect as an effect size 
+1:999 mutationEffect(m0) {
+	return 1.;
+}
+
+1 late() {
+		//output tree seq 
+		sim.treeSeqOutput(output);
+		sim.simulationFinished();
+	}
+

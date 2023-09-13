@@ -21,7 +21,7 @@ initialize() {
 
 1 first() {
 	// import tree of arabidopsis 5 chromosomes 
-	sim.readFromPopulationFile('data/og_tree_offset.trees');
+	sim.readFromPopulationFile('../data/og_tree_offset.trees');
 
 }
 
@@ -45,7 +45,7 @@ initialize() {
 
 1 late() {
 		//output tree seq 
-		sim.treeSeqOutput('data/og_tree_offset_after_cloning.trees');
+		sim.treeSeqOutput('../data/og_tree_offset_after_cloning.trees');
 		sim.simulationFinished();
 	}
 

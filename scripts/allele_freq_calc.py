@@ -1,7 +1,7 @@
 import pandas as pd
 import allel
 
-output_vcf_fixpos = snakemake.input['og_vcf_offset'] 
+output_vcf_fixpos = snakemake.input['output_vcf_fixpos'] 
 output_allele_freq = snakemake.input['allele_freq'] 
 
 def extract_allele_freq(samples, geno_array, pos, name):

@@ -31,7 +31,6 @@ esac
 #echo ${snakemake_output[0]}
 #echo $output_folder
 
-#mkdir -p "$output_folder/optima_index$optima_index"
 #echo "$output_folder/optima_index$optima_index"
 
 slim \

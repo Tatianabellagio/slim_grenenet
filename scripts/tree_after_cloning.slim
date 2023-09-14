@@ -20,12 +20,14 @@ initialize() {
 }
 
 1 first() {
+print('hola');
 	// import tree of arabidopsis 5 chromosomes 
-	sim.readFromPopulationFile(tree);
+	sim.readFromPopulationFile('../data/og_tree_offset_for_slim.trees');
 
 }
 
 1 reproduction() {
+print('made_it');
 	// this first reproduction callbacks has the purpose of increasing the population size 
 	// for each of the individuals 
 	for (ind in sim.subpopulations[0].individuals){
@@ -45,7 +47,7 @@ initialize() {
 
 1 late() {
 		//output tree seq 
-		sim.treeSeqOutput(output);
+		sim.treeSeqOutput('og_tree_offset_after_cloning.trees');
 		sim.simulationFinished();
 	}
 

@@ -2,7 +2,7 @@ import pandas as pd
 import allel
 
 output_vcf_fixpos = snakemake.input['output_vcf_fixpos'] 
-output_allele_freq = snakemake.input['allele_freq'] 
+output_allele_freq = snakemake.output['allele_freq'] 
 
 def extract_allele_freq(samples, geno_array, pos, name):
     total_alleles = len(samples) * 2 

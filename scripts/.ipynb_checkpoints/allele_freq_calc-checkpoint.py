@@ -1,5 +1,7 @@
 import pandas as pd
 import allel
+import os
+import numpy as np
 
 output_vcf_fixpos = snakemake.input['output_vcf_fixpos'] 
 pos_vcf_og = snakemake.input['pos_vcf_og'] 

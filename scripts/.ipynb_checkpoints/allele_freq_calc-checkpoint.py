@@ -11,7 +11,7 @@ def extract_allele_freq(samples, geno_array, pos, name):
     return alt_allele_freq
 
 for i in output_vcf_fixpos:
-    name = name.split('/')[-2] + '_' + name.split('/')[-1][0:5]
+    name = i.split('/')[-2] + '_' + i.split('/')[-1][0:5]
     vcf = allel.read_vcf(i)
     samples = vcf['samples']
     geno_array = vcf['calldata/GT']

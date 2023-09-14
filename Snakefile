@@ -105,6 +105,7 @@ rule fix_positions_vcf:
 
 rule gen_allele_freq:
     input:
+        pos_vcf_og = snakemake.input['pos_vcf_og'] 
         output_vcf_fixpos = expand(
             "results/arq_{{allele_freq}}_{{pi}}_{{beta}}/{{selection}}/optima{optima_index}/subp{replicates}_vcf_output_rp.vcf",
             optima_index=optima_index,

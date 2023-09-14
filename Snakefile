@@ -118,7 +118,7 @@ rule gen_allele_freq:
         allele_freq=lambda wildcards: str(wildcards.allele_freq),
         selection=lambda wildcards: str(wildcards.selection),
     resources:
-        mem_mb=30720,
+        mem_mb=40960,
     conda:
         "envs/base_env.yaml"
     script:

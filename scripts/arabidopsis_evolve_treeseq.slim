@@ -132,7 +132,7 @@ initialize() {
 	self.active = 0;
 }
 
-2:4 late(){
+2:3 late(){
 	
 	if (sim.subpopulations[0].individualCount > 0){
 		// if after the survival event the population size is too big adjust it 
@@ -150,7 +150,7 @@ initialize() {
 }
 
 
-5 late() {
+4 late() {
 	if (sim.subpopulations[0].individualCount > 1){
 		
 		// if after the survival event the population size is too big adjust it 

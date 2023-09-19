@@ -2,7 +2,7 @@
 og_vcf_offset: 'data/wholegenome_offset.vcf'
 og_tree_offset: 'data/og_tree_offset.trees'
 mapper_realid_metadataid: 'data/mapper_realid_metadataid_wholegenomeoffset.csv'
-pos_vcf_og: 'data/pos_vcf_og.csv'
+pos_vcf_og: 'data/pos_vcf_og_nooffset.csv'
 
 allele_freq: ['lowfreq',
               'mediumfreq',

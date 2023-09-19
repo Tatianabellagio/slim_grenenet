@@ -132,7 +132,7 @@ initialize() {
 	self.active = 0;
 }
 
-2:3 late(){
+2:4 late(){
 
     writeFile(output_pop_size, asString(sim.subpopulations[0].individualCount), append = T);
 	
@@ -152,7 +152,7 @@ initialize() {
 }
 
 
-4 late() {
+5 late() {
 
     writeFile(output_pop_size, asString(sim.subpopulations[0].individualCount), append = T);
 

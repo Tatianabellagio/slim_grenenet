@@ -32,7 +32,6 @@ esac
 #echo "optima_index: $optima_index" #>> "${snakemake_log[0]}"
 #echo ${snakemake_output[0]}
 #echo $output_folder
-
 #echo "$output_folder/optima_index$optima_index"
 
 slim \

@@ -15,11 +15,13 @@ optima_index = list(range(0, config["optima_qty"]))
 rule all:
     input:
         expand(
-            'results/arq_{allele_freq}_{pi}_{beta}/{selection}/allele_freq.csv',
+            'results/arq_{allele_freq}_{pi}_{beta}/{selection}/optima{optima_index}/subp{replicates}_tree_output.trees',
             allele_freq=config['allele_freq'],
             pi=config["pi"],
             beta=config["beta"],
             selection=config["selection"],
+            optima_index=optima_index,
+            replicates=replicates
         ),
 
 rule build_population_for_sim:
@@ -69,58 +71,3 @@ rule run_slim_simulation:
         "envs/base_env.yaml"
     script:
         "scripts/slim.sh"
-
-
-rule tree_postprocessing:
-    input:
-        og_tree_offset=config["og_tree_offset"],
-        mapper_ids=config['mapper_realid_metadataid'],
-        output_sim_tree="results/arq_{allele_freq}_{pi}_{beta}/{selection}/optima{optima_index}/subp{replicates}_tree_output.trees",
-    output:
-        output_sim_tree_wm ="results/arq_{allele_freq}_{pi}_{beta}/{selection}/optima{optima_index}/subp{replicates}_tree_output_wm.trees",
-        output_vcf ="results/arq_{allele_freq}_{pi}_{beta}/{selection}/optima{optima_index}/subp{replicates}_vcf_output.vcf",
-    params:
-        pi=lambda wildcards: str(wildcards.pi),
-        beta=lambda wildcards: str(wildcards.beta),
-        allele_freq=lambda wildcards: str(wildcards.allele_freq),
-        selection=lambda wildcards: str(wildcards.selection),
-    resources:
-        mem_mb=30720,
-    conda:
-        "envs/base_env.yaml"
-    script:
-        "scripts/tree_postprocessing.py"
-
-rule fix_positions_vcf:
-    input:
-        output_vcf ="results/arq_{allele_freq}_{pi}_{beta}/{selection}/optima{optima_index}/subp{replicates}_vcf_output.vcf",
-    output: 
-        output_vcf_fixpos ="results/arq_{allele_freq}_{pi}_{beta}/{selection}/optima{optima_index}/subp{replicates}_vcf_output_rp.vcf",
-    resources:
-        mem_mb=10240,
-    conda:
-        "envs/base_env.yaml"
-    script:
-        "scripts/fix_positions.sh"
-
-rule gen_allele_freq:
-    input:
-        pos_vcf_og=config['pos_vcf_og'],
-        output_vcf_fixpos = expand(
-            "results/arq_{{allele_freq}}_{{pi}}_{{beta}}/{{selection}}/optima{optima_index}/subp{replicates}_vcf_output_rp.vcf",
-            optima_index=optima_index,
-            replicates=replicates,    
-        ),
-    output:
-        allele_freq ="results/arq_{allele_freq}_{pi}_{beta}/{selection}/allele_freq.csv",
-    params:
-        pi=lambda wildcards: str(wildcards.pi),
-        beta=lambda wildcards: str(wildcards.beta),
-        allele_freq=lambda wildcards: str(wildcards.allele_freq),
-        selection=lambda wildcards: str(wildcards.selection),
-    resources:
-        mem_mb=30720,
-    conda:
-        "envs/base_env.yaml"
-    script:
-        "scripts/allele_freq_calc.py"

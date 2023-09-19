@@ -133,6 +133,8 @@ initialize() {
 }
 
 2:3 late(){
+
+    writeFile(output_pop_size, sim.subpopulations[0].individualCount, append = T);
 	
 	if (sim.subpopulations[0].individualCount > 0){
 		// if after the survival event the population size is too big adjust it 
@@ -151,6 +153,9 @@ initialize() {
 
 
 4 late() {
+
+    writeFile(output_pop_size, sim.subpopulations[0].individualCount, append = T);
+
 	if (sim.subpopulations[0].individualCount > 1){
 		
 		// if after the survival event the population size is too big adjust it 

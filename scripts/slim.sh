@@ -3,7 +3,9 @@ optima_values="${snakemake_input[optima_values]}"
 variance_values="${snakemake_input[variance_values]}"
 optima_index="${snakemake_params[optima_index]}"
 selection="${snakemake_params[selection]}"
-output_file="${snakemake_output[0]}"
+output_tree="${snakemake_output[output_tree]}"
+output_file="${snakemake_output[output_tree]}"
+output_pop_size="${snakemake_output[output_pop_size]}"
 
 # Map 'selection' to its numeric value using a case statement
 case "$selection" in
@@ -39,7 +41,8 @@ slim \
     -d "optima_file='$optima_values'" \
     -d "variance_index='$variance_index'" \
     -d "variance_file='$variance_values'" \
-    -d "output_file='$output_file'" \
+    -d "output_file='$output_tree'" \
+    -d "output_pop_size='$output_pop_size'" \
     scripts/arabidopsis_evolve_treeseq.slim 
 
 

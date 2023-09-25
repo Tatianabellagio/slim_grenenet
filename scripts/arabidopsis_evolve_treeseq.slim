@@ -89,7 +89,7 @@ initialize() {
 		//set up the fitness for each individual to be used in the fitnesseffect callback
 		for (i in 0:(size(sim.subpopulations[0].individuals)-1)) {
 			inds[i].setValue('fitness', fitness[i]);
-
+		}
 		// save values in files
 		// save pop size 
     	writeFile(output_pop_size, asString(sim.subpopulations[0].individualCount), append = T);
@@ -100,7 +100,7 @@ initialize() {
 		// save mean fitness and variance of fitness
     	writeFile(output_mfitness, asString(mean(fitness)), append = T);
     	writeFile(output_vfitness, asString(var(fitness)), append = T);
-        }
+        
 	}
 }
 

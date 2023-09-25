@@ -63,6 +63,11 @@ rule run_slim_simulation:
     output: 
         output_tree="results/arq_{allele_freq}_{pi}_{beta}/{selection}/optima{optima_index}/subp{replicates}_tree_output.trees",
         output_pop_size="results/arq_{allele_freq}_{pi}_{beta}/{selection}/optima{optima_index}/subp{replicates}_pop_size.txt",
+        output_va="results/arq_{allele_freq}_{pi}_{beta}/{selection}/optima{optima_index}/subp{replicates}_va.txt",
+        output_vpheno="results/arq_{allele_freq}_{pi}_{beta}/{selection}/optima{optima_index}/subp{replicates}_vpheno.txt",
+        output_mfitness="results/arq_{allele_freq}_{pi}_{beta}/{selection}/optima{optima_index}/subp{replicates}_mfitness.txt",
+        output_vfitness="results/arq_{allele_freq}_{pi}_{beta}/{selection}/optima{optima_index}/subp{replicates}_vfitness.txt",
+
     params:
         optima_index=lambda wildcards: str(wildcards.optima_index),        
         selection=lambda wildcards: str(wildcards.selection),

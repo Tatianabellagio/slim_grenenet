@@ -107,7 +107,7 @@ initialize() {
 		
 		fitness = sim.subpopulations[0].getValue("fitness");
 		
-		offspring = fitness * 5;  //max number of offsrping 
+		offspring = fitness * 100;  //max number of offsrping 
 		offspring = asInteger(floor((offspring)));
 		
 		// loop over each of the individuals in the population
@@ -132,7 +132,7 @@ initialize() {
 	self.active = 0;
 }
 
-2:4 late(){
+2:9 late(){
 
     writeFile(output_pop_size, asString(sim.subpopulations[0].individualCount), append = T);
 	
@@ -152,7 +152,7 @@ initialize() {
 }
 
 
-5 late() {
+10 late() {
 
     writeFile(output_pop_size, asString(sim.subpopulations[0].individualCount), append = T);
 

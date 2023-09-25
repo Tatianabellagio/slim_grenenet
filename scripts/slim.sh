@@ -6,7 +6,7 @@ selection="${snakemake_params[selection]}"
 output_tree="${snakemake_output[output_tree]}"
 output_file="${snakemake_output[output_tree]}"
 output_pop_size="${snakemake_output[output_pop_size]}"
-
+ 
 # Map 'selection' to its numeric value using a case statement
 case "$selection" in
   'strongsel')

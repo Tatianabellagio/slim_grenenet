@@ -89,6 +89,17 @@ initialize() {
 		//set up the fitness for each individual to be used in the fitnesseffect callback
 		for (i in 0:(size(sim.subpopulations[0].individuals)-1)) {
 			inds[i].setValue('fitness', fitness[i]);
+
+		// save values in files
+		// save pop size 
+    	writeFile(output_pop_size, asString(sim.subpopulations[0].individualCount), append = T);
+		//save additive genetic variance
+    	writeFile(output_va, asString(VA), append = T);
+		// save phenotipic variance
+    	writeFile(output_vpheno, asString(var(phenotype)), append = T);
+		// save mean fitness and variance of fitness
+    	writeFile(output_mfitness, asString(mean(fitness)), append = T);
+    	writeFile(output_vfitness, asString(var(fitness)), append = T);
         }
 	}
 }
@@ -134,8 +145,6 @@ initialize() {
 
 2:9 late(){
 
-    writeFile(output_pop_size, asString(sim.subpopulations[0].individualCount), append = T);
-	
 	if (sim.subpopulations[0].individualCount > 0){
 		// if after the survival event the population size is too big adjust it 
 		if (sim.subpopulations[0].individualCount > 900){
@@ -153,9 +162,6 @@ initialize() {
 
 
 10 late() {
-
-    writeFile(output_pop_size, asString(sim.subpopulations[0].individualCount), append = T);
-
 	if (sim.subpopulations[0].individualCount > 1){
 		
 		// if after the survival event the population size is too big adjust it 

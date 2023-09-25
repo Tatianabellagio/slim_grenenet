@@ -6,7 +6,10 @@ selection="${snakemake_params[selection]}"
 output_tree="${snakemake_output[output_tree]}"
 output_file="${snakemake_output[output_tree]}"
 output_pop_size="${snakemake_output[output_pop_size]}"
- 
+output_va="${snakemake_output[output_va]}"
+output_vpheno="${snakemake_output[output_vpheno]}"
+output_mfitness="${snakemake_output[output_mfitness]}"
+output_vfitness="${snakemake_output[output_vfitness]}"
 # Map 'selection' to its numeric value using a case statement
 case "$selection" in
   'strongsel')
@@ -42,6 +45,10 @@ slim \
     -d "variance_file='$variance_values'" \
     -d "output_file='$output_tree'" \
     -d "output_pop_size='$output_pop_size'" \
+    -d "output_va='$output_va'" \
+    -d "output_vpheno='$output_vpheno'" \
+    -d "output_mfitness='$output_mfitness'" \
+    -d "output_vfitness='$output_vfitness'" \
     scripts/arabidopsis_evolve_treeseq.slim 
 
 

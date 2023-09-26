@@ -72,7 +72,7 @@ rule run_slim_simulation:
         optima_index=lambda wildcards: str(wildcards.optima_index),        
         selection=lambda wildcards: str(wildcards.selection),
     resources:
-        mem_mb=20480,
+        mem_mb=40960,
     conda:
         "envs/base_env.yaml"
     script:

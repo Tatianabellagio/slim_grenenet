@@ -3,6 +3,9 @@ optima_values="${snakemake_input[optima_values]}"
 variance_values="${snakemake_input[variance_values]}"
 optima_index="${snakemake_params[optima_index]}"
 selection="${snakemake_params[selection]}"
+heritability_state="${snakemake_params[heritability]}"
+h2="${snakemake_params[heritability_state]}"
+
 output_tree="${snakemake_output[output_tree]}"
 output_file="${snakemake_output[output_tree]}"
 output_pop_size="${snakemake_output[output_pop_size]}"
@@ -27,6 +30,8 @@ case "$selection" in
     ;;
 esac
 
+echo $heritability_state
+echo $h2
 #echo "tree_seq_causalloci: $tree_seq_causalloci" #>> "${snakemake_log[0]}"
 #echo "optima_values: $optima_values" #>> "${snakemake_log[0]}"
 #echo "variance_values: $variance_values" #>> "${snakemake_log[0]}"
@@ -39,6 +44,7 @@ esac
 
 slim \
     -d "tree='$tree_seq_causalloci'" \
+    -d "h2='$h2'" \
     -d "optima_index='$optima_index'" \
     -d "optima_file='$optima_values'" \
     -d "variance_index='$variance_index'" \

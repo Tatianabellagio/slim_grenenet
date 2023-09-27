@@ -4,6 +4,14 @@ og_tree_offset: 'data/og_tree_offset.trees'
 mapper_realid_metadataid: 'data/mapper_realid_metadataid_wholegenomeoffset.csv'
 pos_vcf_og: 'data/pos_vcf_og_nooffset.csv'
 
+heritability: ['lowh', 
+               'mediumh',
+               'highh']
+
+lowh: 0.1
+mediumh: 0.5
+highh: 0.9
+
 allele_freq: ['lowfreq',
               'mediumfreq',
               'highfreq']

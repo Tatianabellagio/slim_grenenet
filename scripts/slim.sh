@@ -4,7 +4,7 @@ variance_values="${snakemake_input[variance_values]}"
 optima_index="${snakemake_params[optima_index]}"
 selection="${snakemake_params[selection]}"
 heritability_state="${snakemake_params[heritability]}"
-h2="${snakemake_params[heritability_state]}"
+h2="${snakemake_params["$heritability_state"]}"
 
 output_tree="${snakemake_output[output_tree]}"
 output_file="${snakemake_output[output_tree]}"

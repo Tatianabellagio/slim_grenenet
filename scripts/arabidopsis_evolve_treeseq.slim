@@ -74,7 +74,7 @@ initialize() {
 		additive = inds.sumOfMutationsOfType(m0);
 		VA = sd(additive)^2;
 		// from h2 and VA calculate VE
-		VE = (VA - h2 * VA) / h2;    // from h2 = VA / (VA + VE)   
+		VE = (VA - asFloat(h2) * VA) / asFloat(h2);    // from h2 = VA / (VA + VE)   
 		// save it for this tick 
 		env_noise = rnorm(size(inds), 0.0, sqrt(VE));
 		//calculate phenotype

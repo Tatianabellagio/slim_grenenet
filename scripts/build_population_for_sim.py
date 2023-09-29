@@ -25,7 +25,6 @@ upper_bound = float(allele_freq[1])
 
 #get the actual values
 optima_qty = str(snakemake.params['optima_qty']) 
-
 output_tree_seq_causalloci = snakemake.output["tree_seq_causalloci"]
 output_loci_effectsize = snakemake.output["loci_effectsize"]
 output_phenotypes = snakemake.output["phenotypes"]
@@ -43,38 +42,19 @@ def calc_pos_sc(alt_al_per_pos, pos, n_ecotypes, allele_freq, pi, beta):
     pos_sc = pd.DataFrame({'pos': selected_sites, 'sc': sc})
     return pos_sc
 
-def calc_phenotypes(pos,pos_sc, alt_al_per_pos):
+def calc_phenotypes_st(pos,pos_sc, alt_al_per_pos):
     mask_positions = pd.Series(pos).isin(pos_sc['pos'])
     alt_al_per_pos_selected_sites = alt_al_per_pos[mask_positions]
     phenotypes = []
     for i in range(alt_al_per_pos_selected_sites.shape[1]):
         gen_effectsize = np.multiply(alt_al_per_pos_selected_sites[:, i] , pos_sc['sc'])
         phenotypes.append(gen_effectsize.sum())
-    return phenotypes
+    ## calcualte mean and std of phenotypes to standarize them 
+    pheno_mean = np.array(phenotypes).mean()
+    pheno_std = np.array(phenotypes).std()
 
-def calc_optima(phenotypes):
-    max_pheno = max(phenotypes)
-    min_pheno = min(phenotypes)
-
-    length = max_pheno - min_pheno
-    step = length/(int(optima_qty) - 1)
-    optima = [round(min_pheno + i * step, 4) for i in range(0, int(optima_qty))]
-    return optima
-
-def calc_variances(phenotypes, optima):
-    range_pheno =  max(phenotypes) - min(phenotypes)
-    dist_between_env = range_pheno / len(optima)
-    ## Strong selection, fitness 0 in the adyacent environemnt
-    sd1 = dist_between_env / 3
-    variance1 = sd1**2
-    ## moderate selection, fitness 0 in the other extremee environemnt 
-    sd2 = (dist_between_env * 4) / 3 ## 3 sd will be in between 4  environments 
-    variance2 = sd2**2
-    ## weak selection, half fitness in the other extreme environment 
-    sd3 = (dist_between_env * 8) / 3
-    variance3 = sd3**2
-    variances = [sd1, sd2, sd3]
-    return variances
+    phenotypes_st = (phenotypes - pheno_mean)/ pheno_std
+    return phenotypes_st
 
 def keep_only_causal_sites_and_mutations(og_tree_offset, pos_sc):
     ts = tskit.load(og_tree_offset)
@@ -129,30 +109,12 @@ alt_al_per_pos = geno_og.sum(axis=2)
 
 pos_sc = calc_pos_sc(alt_al_per_pos, pos, n_ecotypes, allele_freq, pi, beta)
 
-phenotypes = calc_phenotypes(pos,pos_sc, alt_al_per_pos)
-
-optima = calc_optima(phenotypes)
-
-variances = calc_variances(phenotypes, optima)
-
-variances
-
-pd.DataFrame(index =  ['strongsel','moderatesel','lowsel'],data = { 'var': variances}).to_csv('sel_var.csv')
-
-pd.DataFrame(data = {'selection': ['strongsel','moderatesel','lowsel'], 'var': variances}).to_csv('sel_var.csv')
+phenotypes = calc_phenotypes_st(pos,pos_sc, alt_al_per_pos)
 
 ## save 
 
 pd.Series(phenotypes).to_csv(output_phenotypes)
 pos_sc.to_csv(output_loci_effectsize)
-
-with open(output_optima_values, 'w') as file:
-    for element in optima:
-        file.write(str(element) + '\n')  # Write element followed by a newline
-
-with open(output_variance_values, 'w') as file:
-    for element in variances:
-        file.write(str(round(element,4)) + '\n')  # Write element followed by a newline
 
 ### filter tree
 

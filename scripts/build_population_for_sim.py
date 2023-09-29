@@ -24,7 +24,6 @@ upper_bound = float(allele_freq[1])
 
 
 #get the actual values
-optima_qty = str(snakemake.params['optima_qty']) 
 output_tree_seq_causalloci = snakemake.output["tree_seq_causalloci"]
 output_loci_effectsize = snakemake.output["loci_effectsize"]
 output_phenotypes = snakemake.output["phenotypes"]

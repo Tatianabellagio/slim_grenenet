@@ -10,15 +10,6 @@ initialize() {
 	// tree file
 	if (!exists("tree"))defineConstant('tree', 'test3august25.trees');
 
-	// for the optima and variances i will import the files containign the values and the index coming from the bash script to refer to them
-	if (!exists("optima_index"))defineConstant('optima_index', 0);  
-	optima_values = readFile(optima_file);                                                                
-	defineConstant('optima_value', asFloat(optima_values[asInteger(optima_index)]));    
-
-	if (!exists("variance_index"))defineConstant('variance_index', 0);  
-	variance_values = readFile(variance_file);                                                                
-	defineConstant('variance_value', asFloat(variance_values[asInteger(variance_index)]));    
-	
 	initializeSLiMModelType("nonWF");
 	initializeTreeSeq(retainCoalescentOnly=F);
 	initializeMutationRate(0);
@@ -81,7 +72,7 @@ initialize() {
 		phenotype = additive + env_noise;
    
 		//calculate fitness 
-		fitness = exp(-0.5 * ((phenotype - asFloat(optima_value))^2)/variance_value);
+		fitness = exp(-0.5 * ((phenotype - asFloat(optima))^2)/asFloat(variance));
 
 		// set up the fitness of the population to be usen in the reproduction callback
         

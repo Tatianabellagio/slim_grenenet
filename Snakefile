@@ -6,21 +6,21 @@
 configfile: "config.yaml"
 
 
-## this rule runs a python script that will generate the bed file containing the contributing loci and their effect sizes based on values of beta dn alpha
+## this rule runs a python script that will generate the bed file containing the contributing loci and their effect sizes based on values of dn alpha
 ## the bed file will be then used to annotate a vcf file that will be used by SliM to run the simulations
 
 
 rule all:
     input:
         expand(
-            'results/arq_{allele_freq}_{pi}_{beta}_{heritability}/{selection}/optima{optima}/subp{replicates}_tree_output.trees',
+            'results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_tree_output.trees',
             allele_freq=config['allele_freq'],
             pi=config["pi"],
-            beta=config["beta"],
             selection=config["selection"],
             heritability=config["heritability"],
             optima=config["optima"],
-            replicates=config["replicates"],
+            replicates_sim=config["replicates_sim"],
+            replicates_arq=config["replicates_arq"],
         ),
 
 rule build_population_for_sim:
@@ -28,12 +28,12 @@ rule build_population_for_sim:
         og_tree_offset=config["og_tree_offset"],
         og_vcf_offset=config["og_vcf_offset"],
     output:
-        tree_seq_causalloci="results/arq_{allele_freq}_{pi}_{beta}_{heritability}/tree_seq_causalloci.trees",
-        loci_effectsize="results/arq_{allele_freq}_{pi}_{beta}_{heritability}/loci_effectsize.csv",
-        phenotypes="results/arq_{allele_freq}_{pi}_{beta}_{heritability}/phenotypes.csv",
+        tree_seq_causalloci="results/arq_{allele_freq}_{pi}_{replicates_arq}/tree_seq_causalloci.trees",
+        loci_effectsize="results/arq_{allele_freq}_{pi}_{replicates_arq}/loci_effectsize.csv",
+        phenotypes="results/arq_{allele_freq}_{pi}_{replicates_arq}/phenotypes.csv",
     params:
         pi=lambda wildcards: str(wildcards.pi),
-        beta=lambda wildcards: str(wildcards.beta),
+        replicates_arq=lambda wildcards: str(wildcards.replicates_arq),
         allele_freq=lambda wildcards: str(wildcards.allele_freq),
         lowfreq=config["lowfreq"],
         mediumfreq=config["mediumfreq"],
@@ -42,8 +42,7 @@ rule build_population_for_sim:
         fivepoly=config["fivepoly"],
         twentypoly=config["twentypoly"],
         onehpoly=config["onehpoly"],
-        lowbeta=config["lowbeta"],
-        highbeta=config["highbeta"],
+        beta=config["beta"],
     resources:
         mem_mb=30720,
     conda:
@@ -53,14 +52,14 @@ rule build_population_for_sim:
 
 rule run_slim_simulation:
     input:
-        tree_seq_causalloci="results/arq_{allele_freq}_{pi}_{beta}_{heritability}/tree_seq_causalloci.trees",
+        tree_seq_causalloci="results/arq_{allele_freq}_{pi}_{replicates_arq}/tree_seq_causalloci.trees",
     output: 
-        output_tree="results/arq_{allele_freq}_{pi}_{beta}_{heritability}/{selection}/optima{optima}/subp{replicates}_tree_output.trees",
-        output_pop_size="results/arq_{allele_freq}_{pi}_{beta}_{heritability}/{selection}/optima{optima}/subp{replicates}_pop_size.txt",
-        output_va="results/arq_{allele_freq}_{pi}_{beta}_{heritability}/{selection}/optima{optima}/subp{replicates}_va.txt",
-        output_vpheno="results/arq_{allele_freq}_{pi}_{beta}_{heritability}/{selection}/optima{optima}/subp{replicates}_vpheno.txt",
-        output_mfitness="results/arq_{allele_freq}_{pi}_{beta}_{heritability}/{selection}/optima{optima}/subp{replicates}_mfitness.txt",
-        output_vfitness="results/arq_{allele_freq}_{pi}_{beta}_{heritability}/{selection}/optima{optima}/subp{replicates}_vfitness.txt",
+        output_tree="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_tree_output.trees",
+        output_pop_size="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_pop_size.txt",
+        output_va="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_va.txt",
+        output_vpheno="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_vpheno.txt",
+        output_mfitness="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_mfitness.txt",
+        output_vfitness="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_vfitness.txt",
 
     params:
         optima=lambda wildcards: str(wildcards.optima),        

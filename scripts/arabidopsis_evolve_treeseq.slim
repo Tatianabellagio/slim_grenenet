@@ -9,7 +9,7 @@ initialize() {
 	//defineConstant('h2', 0.4);
 	// tree file
 	if (!exists("tree"))defineConstant('tree', 'test3august25.trees');
-
+	
 	initializeSLiMModelType("nonWF");
 	initializeTreeSeq(retainCoalescentOnly=F);
 	initializeMutationRate(0);
@@ -49,14 +49,14 @@ initialize() {
 }
 
 2 early(){
-   // here i convert all individuals to 0 age, since this is actually my first tick, 
+	// here i convert all individuals to 0 age, since this is actually my first tick, 
 	// the previous one i just use to clone individuals 
 	sim.subpopulations.individuals.age = rep(0, sim.subpopulations[0].individualCount);
 }
 
 2:999 early(){
 	// before calculating fitness for this population, kill the 'parents' after the repduction stage
-	inds = sim.subpopulations.individuals; 
+	inds = sim.subpopulations.individuals;
 	sim.killIndividuals(inds[inds.age > 0]);
 	if (sim.subpopulations[0].individualCount > 1){
 		// This callback is the one actually caclulating fitness in a vectorized way so it can be used in the fitnessEffect and reproduciton callback 
@@ -72,13 +72,13 @@ initialize() {
 		phenotype = additive + env_noise;
 		// standarize phenotype
 		mean_pheno = mean(phenotype);
-		sd_pheno = sd(phenotype)
+		sd_pheno = sd(phenotype);
 		st_phenotype = (phenotype-mean_pheno)/sd_pheno;
 		//calculate fitness 
 		fitness = exp(-0.5 * ((st_phenotype - asFloat(optima))^2)/asFloat(variance));
-
+		
 		// set up the fitness of the population to be usen in the reproduction callback
-        
+		
 		sim.subpopulations[0].setValue('fitness', fitness);
 		//set up the fitness for each individual to be used in the fitnesseffect callback
 		for (i in 0:(size(sim.subpopulations[0].individuals)-1)) {
@@ -86,15 +86,15 @@ initialize() {
 		}
 		// save values in files
 		// save pop size 
-    	writeFile(output_pop_size, asString(sim.subpopulations[0].individualCount), append = T);
+		writeFile(output_pop_size, asString(sim.subpopulations[0].individualCount), append = T);
 		//save additive genetic variance
-    	writeFile(output_va, asString(VA), append = T);
+		writeFile(output_va, asString(VA), append = T);
 		// save phenotipic variance
-    	writeFile(output_vpheno, asString(var(st_phenotype)), append = T);
+		writeFile(output_vpheno, asString(var(st_phenotype)), append = T);
 		// save mean fitness and variance of fitness
-    	writeFile(output_mfitness, asString(mean(fitness)), append = T);
-    	writeFile(output_vfitness, asString(var(fitness)), append = T);
-        
+		writeFile(output_mfitness, asString(mean(fitness)), append = T);
+		writeFile(output_vfitness, asString(var(fitness)), append = T);
+	
 	}
 }
 
@@ -114,9 +114,9 @@ initialize() {
 		
 		// lamda based on field experiment 
 		rpois_offspring = rpois(sim.subpopulations[0].individualCount, 5.772);
-
+		
 		// number of offspring based on fitness time random drwas from poisson 
-		offspring = fitness * rpois_offspring;   
+		offspring = fitness * rpois_offspring;
 		offspring = asInteger(floor((offspring)));
 		print(offspring);
 		
@@ -143,7 +143,7 @@ initialize() {
 }
 
 2:9 late(){
-
+	
 	if (sim.subpopulations[0].individualCount > 0){
 		// if after the survival event the population size is too big adjust it 
 		if (sim.subpopulations[0].individualCount > 900){
@@ -152,7 +152,7 @@ initialize() {
 		}
 		// if all individuals died finish the simulation
 		else {
-            writeFile(output_file, '');
+			writeFile(output_file, '');
 			sim.simulationFinished();
 		}
 	
@@ -178,10 +178,10 @@ initialize() {
 	}
 	// if there are no individuals create an empty file for the trees file
 	else {
-	writeFile(output_file, '');
-	//writeFile('output_selection/var' + variance + '_optima' + optima_value + '_popsize.txt', asString(sim.subpopulations[0].individualCount));
-
-	sim.simulationFinished(); 
+		writeFile(output_file, '');
+		//writeFile('output_selection/var' + variance + '_optima' + optima_value + '_popsize.txt', asString(sim.subpopulations[0].individualCount));
+		
+		sim.simulationFinished();
 	
 	}
 

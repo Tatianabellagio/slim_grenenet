@@ -110,18 +110,15 @@ initialize() {
 	// only run this if population size if greater than 0, would run into error otherwise 
 	if (sim.subpopulations[0].individualCount > 0){
 		
-		fitness = sim.subpopulations[0].getValue("fitness");
-		
-		// lamda based on field experiment 
-		rpois_offspring = rpois(sim.subpopulations[0].individualCount, 5.772);
-		
-		// number of offspring based on fitness time random drwas from poisson 
-		offspring = fitness * rpois_offspring;
-		offspring = asInteger(floor((offspring)));
-		print(offspring);
+		inds =  sim.subpopulations.individuals;
 		
 		// loop over each of the individuals in the population
 		for (j in 0:(size(sim.subpopulations[0].individuals)-1)) {
+			//lambda from field experiment
+			p = rpois(1, 5.772);
+			fitness = inds[j].getValue('fitness');
+			offspring = asInteger(floor(p*fitness));
+
 			// for each individual cehck their expected offspring size and based on that
 			// for each offspring based on a chance of 97% make it a selfer offscpring or an outcross offspring 
 			for (k in seqLen(offspring[j])) {

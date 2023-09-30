@@ -24,8 +24,6 @@ upper_bound = float(allele_freq[1])
 output_tree_seq_causalloci = snakemake.output["tree_seq_causalloci"]
 output_loci_effectsize = snakemake.output["loci_effectsize"]
 output_phenotypes = snakemake.output["phenotypes"]
-output_optima_values = snakemake.output["optima_values"]
-output_variance_values = snakemake.output["variance_values"]
 
 def calc_pos_sc(alt_al_per_pos, pos, n_ecotypes, allele_freq, pi, beta):
     alt_al_count = alt_al_per_pos.sum(axis=1)

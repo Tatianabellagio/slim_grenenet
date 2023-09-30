@@ -12,8 +12,7 @@ og_tree_offset = snakemake.input['og_tree_offset']
 pi_option =  snakemake.params['pi']
 pi = int(snakemake.params[pi_option])
 
-beta_option = snakemake.params['beta']
-beta = int(snakemake.params[beta_option])
+beta = int(snakemake.params['beta'])
 
 alelle_freq_option = snakemake.params['allele_freq']
 allele_freq = snakemake.params[alelle_freq_option]

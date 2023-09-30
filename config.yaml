@@ -29,7 +29,7 @@ twentypoly: 20
 onehpoly: 100
 
 # standard deviation of effect sizÍes of contributing loci 
-beta: ['beta']
+# beta: ['beta']
 
 ## this si standard deviation which makes de variance 1 and 4 
 beta: 2

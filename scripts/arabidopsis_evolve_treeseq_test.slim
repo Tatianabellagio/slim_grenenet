@@ -2,23 +2,12 @@
 // simulate evolution of qtl under different environments defined by an optima file using tree seq from grenenet vcf file
 
 initialize() {
-	setSeed(1455193095666);
+	//setSeed(1455193095666); //commented for now so each replicate is different
 	//constants
-	
 	//heritability 
-	defineConstant('h2', 0.4);
+	//defineConstant('h2', 0.4);
 	// tree file
-	if (!exists("tree"))defineConstant('tree', 'test3august25.trees');
-
-	// for the optima and variances i will import the files containign the values and the index coming from the bash script to refer to them
-	if (!exists("optima_index"))defineConstant('optima_index', 0);  
-	optima_values = readFile(optima_file);                                                                
-	defineConstant('optima_value', asFloat(optima_values[asInteger(optima_index)]));    
-	
-	if (!exists("variance_index"))defineConstant('variance_index', 0);  
-	variance_values = readFile(variance_file);                                                                
-	defineConstant('variance_value', asFloat(variance_values[asInteger(variance_index)]));    
-
+	if (!exists("tree"))defineConstant('tree', 'tree_seq_causalloci.trees');
 	
 	initializeSLiMModelType("nonWF");
 	initializeTreeSeq(retainCoalescentOnly=F);
@@ -59,38 +48,102 @@ initialize() {
 }
 
 2 early(){
-   // here i convert all individuals to 0 age, since this is actually my first tick, 
+	// here i convert all individuals to 0 age, since this is actually my first tick, 
 	// the previous one i just use to clone individuals 
 	sim.subpopulations.individuals.age = rep(0, sim.subpopulations[0].individualCount);
 }
 
-2:999 early(){
+2 early(){
 	// before calculating fitness for this population, kill the 'parents' after the repduction stage
-	inds = sim.subpopulations.individuals; 
+	inds = sim.subpopulations.individuals;
 	sim.killIndividuals(inds[inds.age > 0]);
 	if (sim.subpopulations[0].individualCount > 1){
 		// This callback is the one actually caclulating fitness in a vectorized way so it can be used in the fitnessEffect and reproduciton callback 
 		inds =  sim.subpopulations.individuals;
 		// calculate their additive genetic value 
 		additive = inds.sumOfMutationsOfType(m0);
-		//print(additive);
 		VA = sd(additive)^2;
 		// from h2 and VA calculate VE
-		VE = (VA - h2 * VA) / h2;    // from h2 = VA / (VA + VE)   
+		VE = (VA - asFloat(0.5) * VA) / asFloat(0.5);    // from h2 = VA / (VA + VE)   
+		//defineConstant("simID", getSeed());
+		//defineConstant('VE', VE);
+		defineConstant("VE_constant", VE);
+		print(VE_constant);
 		// save it for this tick 
 		env_noise = rnorm(size(inds), 0.0, sqrt(VE));
 		//calculate phenotype
 		phenotype = additive + env_noise;
+		// standarize phenotype
+		mean_pheno = mean(phenotype);
+		sd_pheno = sd(phenotype);
+		defineConstant("mean_pheno_constant", mean_pheno);
+		defineConstant("sd_pheno_constant", sd_pheno);
+		st_phenotype = (phenotype-mean_pheno)/sd_pheno;
 		//calculate fitness 
-		fitness = exp(-0.5 * ((phenotype - asFloat(optima_value))^2)/variance_value);
+		fitness = exp(-0.5 * ((st_phenotype - asFloat(1))^2)/asFloat(5));
+		
 		// set up the fitness of the population to be usen in the reproduction callback
+		
 		sim.subpopulations[0].setValue('fitness', fitness);
 		//set up the fitness for each individual to be used in the fitnesseffect callback
 		for (i in 0:(size(sim.subpopulations[0].individuals)-1)) {
 			inds[i].setValue('fitness', fitness[i]);
 		}
+		// save values in files
+		// save pop size 
+		//writeFile(output_pop_size, asString(sim.subpopulations[0].individualCount), append = T);
+		//save additive genetic variance
+		//writeFile(output_va, asString(VA), append = T);
+		// save phenotipic variance
+		//writeFile(output_vpheno, asString(var(st_phenotype)), append = T);
+		// save mean fitness and variance of fitness
+		//writeFile(output_mfitness, asString(mean(fitness)), append = T);
+		//writeFile(output_vfitness, asString(var(fitness)), append = T);
+	
 	}
 }
+
+3:999 early(){
+	// before calculating fitness for this population, kill the 'parents' after the repduction stage
+	inds = sim.subpopulations.individuals;
+	sim.killIndividuals(inds[inds.age > 0]);
+	if (sim.subpopulations[0].individualCount > 1){
+		// This callback is the one actually caclulating fitness in a vectorized way so it can be used in the fitnessEffect and reproduciton callback 
+		inds =  sim.subpopulations.individuals;
+		// calculate their additive genetic value 
+		additive = inds.sumOfMutationsOfType(m0);
+		print(VE_constant);
+		// save it for this tick 
+		env_noise = rnorm(size(inds), 0.0, sqrt(VE_constant));
+		//calculate phenotype
+		phenotype = additive + env_noise;
+		// standarize phenotype
+		st_phenotype = (phenotype-mean_pheno_constant)/sd_pheno_constant;
+		//calculate fitness 
+		fitness = exp(-0.5 * ((st_phenotype - asFloat(1))^2)/asFloat(5));
+		
+		// set up the fitness of the population to be usen in the reproduction callback
+		
+		sim.subpopulations[0].setValue('fitness', fitness);
+		//set up the fitness for each individual to be used in the fitnesseffect callback
+		for (i in 0:(size(sim.subpopulations[0].individuals)-1)) {
+			inds[i].setValue('fitness', fitness[i]);
+		}
+		// save values in files
+		// save pop size 
+		//writeFile(output_pop_size, asString(sim.subpopulations[0].individualCount), append = T);
+		//save additive genetic variance
+		//writeFile(output_va, asString(VA), append = T);
+		// save phenotipic variance
+		//writeFile(output_vpheno, asString(var(st_phenotype)), append = T);
+		// save mean fitness and variance of fitness
+		//writeFile(output_mfitness, asString(mean(fitness)), append = T);
+		//writeFile(output_vfitness, asString(var(fitness)), append = T);
+	
+	}
+}
+
+
 
 
 2:999 fitnessEffect() {
@@ -102,17 +155,14 @@ initialize() {
 3:999 reproduction() {
 	// only run this if population size if greater than 0, would run into error otherwise 
 	if (sim.subpopulations[0].individualCount > 0){
-		
-		fitness = sim.subpopulations[0].getValue("fitness");
-		
-		offspring = fitness * 5;  //max number of offsrping 
-		offspring = asInteger(floor((offspring)));
-		
+
+		inds =  sim.subpopulations.individuals;
 		// loop over each of the individuals in the population
 		for (j in 0:(size(sim.subpopulations[0].individuals)-1)) {
+			offspring = rpois(1, 7.247);
 			// for each individual cehck their expected offspring size and based on that
 			// for each offspring based on a chance of 97% make it a selfer offscpring or an outcross offspring 
-			for (k in seqLen(offspring[j])) {
+			for (k in seqLen(offspring)) {
 				
 				if (runif(1) < 0.97)
 				{
@@ -130,16 +180,25 @@ initialize() {
 	self.active = 0;
 }
 
-2:4 late(){
-	// if after the survival event the population size is too big adjust it 
-	if (sim.subpopulations[0].individualCount > 900){
-		number_to_kill = sim.subpopulations[0].individualCount - 900;
-		sim.killIndividuals(sim.subpopulations[0].sampleIndividuals(number_to_kill));
+2:9 late(){
+	
+	if (sim.subpopulations[0].individualCount > 0){
+		// if after the survival event the population size is too big adjust it 
+		if (sim.subpopulations[0].individualCount > 900){
+			number_to_kill = sim.subpopulations[0].individualCount - 900;
+			sim.killIndividuals(sim.subpopulations[0].sampleIndividuals(number_to_kill));
+		}
+		// if all individuals died finish the simulation
+		else {
+			//writeFile(output_file, '');
+			sim.simulationFinished();
+		}
+	
 	}
-
 }
 
-5 late() {
+
+10 late() {
 	if (sim.subpopulations[0].individualCount > 1){
 		
 		// if after the survival event the population size is too big adjust it 
@@ -157,10 +216,10 @@ initialize() {
 	}
 	// if there are no individuals create an empty file for the trees file
 	else {
-	writeFile(output_file, '');
-	//writeFile('output_selection/var' + variance + '_optima' + optima_value + '_popsize.txt', asString(sim.subpopulations[0].individualCount));
-
-	sim.simulationFinished(); 
+		writeFile(output_file, '');
+		//writeFile('output_selection/var' + variance + '_optima' + optima_value + '_popsize.txt', asString(sim.subpopulations[0].individualCount));
+		
+		sim.simulationFinished();
 	
 	}
 

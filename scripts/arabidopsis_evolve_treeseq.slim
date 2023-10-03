@@ -4,7 +4,6 @@
 initialize() {
 	//setSeed(1455193095666); //commented for now so each replicate is different
 	//constants
-	print(h2);
 	//heritability 
 	//defineConstant('h2', 0.4);
 	// tree file
@@ -54,7 +53,7 @@ initialize() {
 	sim.subpopulations.individuals.age = rep(0, sim.subpopulations[0].individualCount);
 }
 
-2:999 early(){
+2 early(){
 	// before calculating fitness for this population, kill the 'parents' after the repduction stage
 	inds = sim.subpopulations.individuals;
 	sim.killIndividuals(inds[inds.age > 0]);
@@ -66,6 +65,9 @@ initialize() {
 		VA = sd(additive)^2;
 		// from h2 and VA calculate VE
 		VE = (VA - asFloat(h2) * VA) / asFloat(h2);    // from h2 = VA / (VA + VE)   
+		//save values for use across the simulation
+		defineConstant("VE_constant", VE);
+		print(VE_constant);
 		// save it for this tick 
 		env_noise = rnorm(size(inds), 0.0, sqrt(VE));
 		//calculate phenotype
@@ -73,6 +75,8 @@ initialize() {
 		// standarize phenotype
 		mean_pheno = mean(phenotype);
 		sd_pheno = sd(phenotype);
+		defineConstant("mean_pheno_constant", mean_pheno);
+		defineConstant("sd_pheno_constant", sd_pheno);
 		st_phenotype = (phenotype-mean_pheno)/sd_pheno;
 		//calculate fitness 
 		fitness = exp(-0.5 * ((st_phenotype - asFloat(optima))^2)/asFloat(variance));
@@ -97,6 +101,44 @@ initialize() {
 	
 	}
 }
+3:999 early(){
+	// before calculating fitness for this population, kill the 'parents' after the repduction stage
+	inds = sim.subpopulations.individuals;
+	sim.killIndividuals(inds[inds.age > 0]);
+	if (sim.subpopulations[0].individualCount > 1){
+		// This callback is the one actually caclulating fitness in a vectorized way so it can be used in the fitnessEffect and reproduciton callback 
+		inds =  sim.subpopulations.individuals;
+		// calculate their additive genetic value 
+		additive = inds.sumOfMutationsOfType(m0);
+		// save it for this tick 
+		env_noise = rnorm(size(inds), 0.0, sqrt(VE_constant));
+		//calculate phenotype
+		phenotype = additive + env_noise;
+		// standarize phenotype
+		st_phenotype = (phenotype-mean_pheno_constant)/sd_pheno_constant;
+		//calculate fitness 
+		fitness = exp(-0.5 * ((st_phenotype - asFloat(optima))^2)/asFloat(variance));
+		
+		// set up the fitness of the population to be usen in the reproduction callback
+		
+		sim.subpopulations[0].setValue('fitness', fitness);
+		//set up the fitness for each individual to be used in the fitnesseffect callback
+		for (i in 0:(size(sim.subpopulations[0].individuals)-1)) {
+			inds[i].setValue('fitness', fitness[i]);
+		}
+		// save values in files
+		// save pop size 
+		//writeFile(output_pop_size, asString(sim.subpopulations[0].individualCount), append = T);
+		//save additive genetic variance
+		//writeFile(output_va, asString(VA), append = T);
+		// save phenotipic variance
+		//writeFile(output_vpheno, asString(var(st_phenotype)), append = T);
+		// save mean fitness and variance of fitness
+		//writeFile(output_mfitness, asString(mean(fitness)), append = T);
+		//writeFile(output_vfitness, asString(var(fitness)), append = T);
+	
+	}
+}
 
 
 
@@ -111,13 +153,10 @@ initialize() {
 	if (sim.subpopulations[0].individualCount > 0){
 		
 		inds =  sim.subpopulations.individuals;
-		
 		// loop over each of the individuals in the population
 		for (j in 0:(size(sim.subpopulations[0].individuals)-1)) {
 			//lambda from field experiment
-			p = rpois(1, 5.772);
-			fitness = inds[j].getValue('fitness');
-			offspring = asInteger(floor(p*fitness));
+			offspring = rpois(1, 7.247);
 
 			// for each individual cehck their expected offspring size and based on that
 			// for each offspring based on a chance of 97% make it a selfer offscpring or an outcross offspring 

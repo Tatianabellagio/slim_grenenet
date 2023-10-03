@@ -36,19 +36,15 @@ def calc_pos_sc(alt_al_per_pos, pos, n_ecotypes, allele_freq, pi, beta):
     pos_sc = pd.DataFrame({'pos': selected_sites, 'sc': sc})
     return pos_sc
 
-def calc_phenotypes_st(pos,pos_sc, alt_al_per_pos):
+def calc_phenotypes(pos,pos_sc, alt_al_per_pos):
     mask_positions = pd.Series(pos).isin(pos_sc['pos'])
     alt_al_per_pos_selected_sites = alt_al_per_pos[mask_positions]
     phenotypes = []
     for i in range(alt_al_per_pos_selected_sites.shape[1]):
         gen_effectsize = np.multiply(alt_al_per_pos_selected_sites[:, i] , pos_sc['sc'])
         phenotypes.append(gen_effectsize.sum())
-    ## calcualte mean and std of phenotypes to standarize them 
-    pheno_mean = np.array(phenotypes).mean()
-    pheno_std = np.array(phenotypes).std()
 
-    phenotypes_st = (phenotypes - pheno_mean)/ pheno_std
-    return phenotypes_st
+    return phenotypes
 
 def keep_only_causal_sites_and_mutations(og_tree_offset, pos_sc):
     ts = tskit.load(og_tree_offset)
@@ -103,7 +99,7 @@ alt_al_per_pos = geno_og.sum(axis=2)
 
 pos_sc = calc_pos_sc(alt_al_per_pos, pos, n_ecotypes, allele_freq, pi, beta)
 
-phenotypes = calc_phenotypes_st(pos,pos_sc, alt_al_per_pos)
+phenotypes = calc_phenotypes(pos,pos_sc, alt_al_per_pos)
 
 ## save 
 

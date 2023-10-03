@@ -110,6 +110,7 @@ initialize() {
 		inds =  sim.subpopulations.individuals;
 		// calculate their additive genetic value 
 		additive = inds.sumOfMutationsOfType(m0);
+		VA = sd(additive)^2;
 		// save it for this tick 
 		env_noise = rnorm(size(inds), 0.0, sqrt(VE_constant));
 		//calculate phenotype

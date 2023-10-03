@@ -13,7 +13,7 @@ configfile: "config.yaml"
 rule all:
     input:
         expand(
-            'results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_tree_output.trees',
+            'results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_tree_output_gen10.trees',
             allele_freq=config['allele_freq'],
             pi=config["pi"],
             selection=config["selection"],
@@ -54,7 +54,8 @@ rule run_slim_simulation:
     input:
         tree_seq_causalloci="results/arq_{allele_freq}_{pi}_{replicates_arq}/tree_seq_causalloci.trees",
     output: 
-        output_tree="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_tree_output.trees",
+        output_tree_gen4="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_tree_output_gen4.trees",
+        output_tree_gen10="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_tree_output_gen10.trees",
         output_pop_size="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_pop_size.txt",
         output_va="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_va.txt",
         output_vpheno="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_vpheno.txt",

@@ -128,14 +128,14 @@ initialize() {
 		}
 		// save values in files
 		// save pop size 
-		//writeFile(output_pop_size, asString(sim.subpopulations[0].individualCount), append = T);
+		writeFile(output_pop_size, asString(sim.subpopulations[0].individualCount), append = T);
 		//save additive genetic variance
-		//writeFile(output_va, asString(VA), append = T);
+		writeFile(output_va, asString(VA), append = T);
 		// save phenotipic variance
-		//writeFile(output_vpheno, asString(var(st_phenotype)), append = T);
+		writeFile(output_vpheno, asString(var(st_phenotype)), append = T);
 		// save mean fitness and variance of fitness
-		//writeFile(output_mfitness, asString(mean(fitness)), append = T);
-		//writeFile(output_vfitness, asString(var(fitness)), append = T);
+		writeFile(output_mfitness, asString(mean(fitness)), append = T);
+		writeFile(output_vfitness, asString(var(fitness)), append = T);
 	
 	}
 }
@@ -186,13 +186,20 @@ initialize() {
 			number_to_kill = sim.subpopulations[0].individualCount - 900;
 			sim.killIndividuals(sim.subpopulations[0].sampleIndividuals(number_to_kill));
 		}
-		// if all individuals died finish the simulation
+		// if all individuals died finish the simulation and wirte both files
 		else {
-			writeFile(output_file, '');
+			writeFile(output_tree_gen4, '');
+			writeFile(output_tree_gen10, '');
 			sim.simulationFinished();
 		}
 	
 	}
+}
+
+4 late(){
+	// write a middle tree
+	if (sim.subpopulations[0].individualCount > 0){
+			writeFile(output_tree_gen4, '');}
 }
 
 
@@ -205,7 +212,7 @@ initialize() {
 			sim.killIndividuals(sim.subpopulations[0].sampleIndividuals(number_to_kill));
 		}
 		//output tree seq 
-		sim.treeSeqOutput(output_file);
+		sim.treeSeqOutput(output_tree_gen10);
 		
 		//output population size
 		//writeFile('output_selection/var' + variance + '_optima' + optima_value + '_popsize.txt', asString(sim.subpopulations[0].individualCount));
@@ -214,7 +221,7 @@ initialize() {
 	}
 	// if there are no individuals create an empty file for the trees file
 	else {
-		writeFile(output_file, '');
+		writeFile(output_tree_gen10, '');
 		//writeFile('output_selection/var' + variance + '_optima' + optima_value + '_popsize.txt', asString(sim.subpopulations[0].individualCount));
 		
 		sim.simulationFinished();

@@ -13,13 +13,11 @@ configfile: "config.yaml"
 rule all:
     input:
         expand(
-            'results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_tree_output_gen10.trees',
+            'results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq.csv',
             allele_freq=config['allele_freq'],
             pi=config["pi"],
             selection=config["selection"],
             heritability=config["heritability"],
-            optima=config["optima"],
-            replicates_sim=config["replicates_sim"],
             replicates_arq=config["replicates_arq"],
         ),
 
@@ -75,3 +73,47 @@ rule run_slim_simulation:
         "envs/base_env.yaml"
     script:
         "scripts/slim.sh"
+
+rule tree_postprocessing:
+    input:
+        og_tree_offset=config["og_tree_offset"],
+        mapper_ids=config['mapper_realid_metadataid'],
+        output_sim_tree="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_tree_output_gen4.trees",
+    output:
+        output_sim_tree_wm ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_tree_output_gen4_wm.trees",
+        output_vcf ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_vcfgen4_output.vcf",
+    resources:
+        mem_mb=30720,
+    conda:
+        "envs/base_env.yaml"
+    script:
+        "scripts/tree_postprocessing.py"
+
+rule fix_positions_vcf:
+    input:
+        output_vcf ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_vcfgen4_output.vcf",
+    output: 
+        output_vcf_fixpos ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_vcfgen4_output_rp.vcf",
+    resources:
+        mem_mb=10240,
+    conda:
+        "envs/base_env.yaml"
+    script:
+        "scripts/fix_positions.sh"
+
+rule gen_allele_freq:
+    input:
+        pos_vcf_og=config['pos_vcf_og'],
+        output_vcf_fixpos = expand(
+            "results/arq_{{allele_freq}}_{{pi}}_{{replicates_arq}}/{{heritability}}/{{selection}}/optima{optima}/subp{replicates_sim}_vcfgen4_output_rp.vcf",
+            optima=config["optima"],
+            replicates_sim=config["replicates_sim"],    
+        ),
+    output:
+        allele_freq ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq.csv",
+    resources:
+        mem_mb=30720,
+    conda:
+        "envs/base_env.yaml"
+    script:
+        "scripts/allele_freq_calc.py"

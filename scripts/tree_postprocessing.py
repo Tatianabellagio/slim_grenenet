@@ -9,14 +9,10 @@ import pyslim
 import os
 
 og_tree_offset = snakemake.input['og_tree_offset'] 
-print(og_tree_offset)
 mapper_realid_metadataid = snakemake.input['mapper_ids'] 
 output_sim_tree = snakemake.input['output_sim_tree'] 
-print(output_sim_tree)
 output_sim_tree_wm = snakemake.output['output_sim_tree_wm'] 
-print(output_sim_tree_wm)
 output_vcf = snakemake.output['output_vcf'] 
-print(output_vcf)
 
 def overlap_neutral_mut (ts_new, ts, mapper_realid_metadataid):
     ## extract surviving ndoes and comapre them to our old ndoes to place mtuations in the right place
@@ -87,10 +83,6 @@ def convert_tree_to_vcf (tree,name_vcf):
 ts_old = tskit.load(og_tree_offset)
 #import mapper old nodes to new nodes
 mapper_realid_metadataid = pd.read_csv(mapper_realid_metadataid)
-
-## ts new
-print('ACAAAA')
-print(output_sim_tree)
 
 if os.path.exists(output_sim_tree) and os.path.getsize(output_sim_tree) <= 1:
     print('empty_tree')

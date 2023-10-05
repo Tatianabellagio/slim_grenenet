@@ -84,7 +84,7 @@ rule run_slim_simulation:
         mem_mb=40960,
     conda:
         "envs/base_env.yaml"
-    script:
+    run:
         "scripts/slim.sh"
 
 rule tree_postprocessing:
@@ -111,7 +111,7 @@ rule fix_positions_vcf:
         mem_mb=10240,
     conda:
         "envs/base_env.yaml"
-    script:
+    run:
         "scripts/fix_positions.sh"
 
 rule gen_allele_freq:

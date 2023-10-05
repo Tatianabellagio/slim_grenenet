@@ -180,7 +180,7 @@ initialize() {
 }
 
 2:9 late(){
-	
+	print("generation" + sim.cycle);
 	if (sim.subpopulations[0].individualCount > 0){
 		// if after the survival event the population size is too big adjust it 
 		if (sim.subpopulations[0].individualCount > 900){
@@ -188,8 +188,9 @@ initialize() {
 			sim.killIndividuals(sim.subpopulations[0].sampleIndividuals(number_to_kill));
 		}
 		// if all individuals died finish the simulation and wirte both files
-		else {
-			writeFile(output_tree_gen4, '');
+		else { 
+			// here i should check that gen 4 doesnt exist
+			// writeFile(output_tree_gen4, '');
 			writeFile(output_tree_gen10, '');
 			sim.simulationFinished();
 		}
@@ -205,6 +206,7 @@ initialize() {
 
 
 10 late() {
+	print("generation" + sim.cycle);
 	if (sim.subpopulations[0].individualCount > 1){
 		
 		// if after the survival event the population size is too big adjust it 
@@ -222,7 +224,9 @@ initialize() {
 	}
 	// if there are no individuals create an empty file for the trees file
 	else {
+		print('wirting final file');
 		writeFile(output_tree_gen10, '');
+		print('finish writing final file');
 		//writeFile('output_selection/var' + variance + '_optima' + optima_value + '_popsize.txt', asString(sim.subpopulations[0].individualCount));
 		
 		sim.simulationFinished();

@@ -6,7 +6,6 @@ echo $tree_seq_causalloci
 optima="$2"
 selection="$3"
 heritability_state="$4"
-output_tree_gen4="$5"
 output_tree_gen10="$6"
 output_pop_size="$7"
 output_va="$8"
@@ -60,7 +59,6 @@ slim \
     -d "h2='$h2'" \
     -d "optima='$optima'" \
     -d "variance='$variance'" \
-    -d "output_tree_gen4='$output_tree_gen4'" \
     -d "output_tree_gen10='$output_tree_gen10'" \
     -d "output_pop_size='$output_pop_size'" \
     -d "output_va='$output_va'" \

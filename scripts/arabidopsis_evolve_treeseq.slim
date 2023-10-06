@@ -138,7 +138,7 @@ initialize() {
 		writeFile(output_mfitness, asString(mean(fitness)), append = T);
 		print('wirting vtiness');
 		writeFile(output_vfitness, asString(var(fitness)), append = T);
-		print('done wirting vtiness');
+		print('donewirting vtiness');
 	
 	}
 }
@@ -204,7 +204,9 @@ initialize() {
 4 late(){
 	// write a middle tree
 	if (sim.subpopulations[0].individualCount > 0){
-			writeFile(output_tree_gen4, '');
+			print(output_tree_gen10[:-8]);
+			print(output_tree_gen10[:-8]+ 'gen4.trees');
+			writeFile(output_tree_gen10[:-8] + 'gen4.trees', '');
 			print('finish writing 4gen file empty');}
 }
 

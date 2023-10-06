@@ -187,27 +187,29 @@ initialize() {
 			number_to_kill = sim.subpopulations[0].individualCount - 900;
 			sim.killIndividuals(sim.subpopulations[0].sampleIndividuals(number_to_kill));
 		}
+	}
 		// if all individuals died finish the simulation and wirte both files
-		else { 
-			// here i should check that gen 4 doesnt exist
-			// writeFile(output_tree_gen4, '');
-			writeFile(output_tree_gen10, '');
-			sim.simulationFinished();
+	else { 
+		writeFile(output_tree_gen10, '');
+		print(' writing final file empty');
+		sim.simulationFinished();
+		print('finish writing final file empty');
+
 		}
 	
-	}
 }
 
 4 late(){
 	// write a middle tree
 	if (sim.subpopulations[0].individualCount > 0){
-			writeFile(output_tree_gen4, '');}
+			writeFile(output_tree_gen4, '');
+			print('finish writing 4gen file empty');}
 }
 
 
 10 late() {
 	print("generation" + sim.cycle);
-	if (sim.subpopulations[0].individualCount > 1){
+	if (sim.subpopulations[0].individualCount > 0){
 		
 		// if after the survival event the population size is too big adjust it 
 		if (sim.subpopulations[0].individualCount > 900){
@@ -217,20 +219,15 @@ initialize() {
 		//output tree seq 
 		print('wirting final file');
 		sim.treeSeqOutput(output_tree_gen10);
-		print('finish writing final file');
-
-		//output population size
-		//writeFile('output_selection/var' + variance + '_optima' + optima_value + '_popsize.txt', asString(sim.subpopulations[0].individualCount));
-		
+		print('finish writing final file');		
 		sim.simulationFinished();
 	}
 	// if there are no individuals create an empty file for the trees file
 	else {
-		print('wirting final file');
+		print('wirting final file empty');
 		writeFile(output_tree_gen10, '');
-		print('finish writing final file');
+		print('finish writing final file empty');
 		//writeFile('output_selection/var' + variance + '_optima' + optima_value + '_popsize.txt', asString(sim.subpopulations[0].individualCount));
-		
 		sim.simulationFinished();
 	
 	}

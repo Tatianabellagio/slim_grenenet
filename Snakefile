@@ -24,7 +24,7 @@ configfile: "config.yaml"
 rule all:
     input:
         expand(
-            'results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_tree_output_gen10.trees',
+            'results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_tree_output_gen4.trees',
             allele_freq=config['allele_freq'],
             pi=config["pi"],
             selection=config["selection"],

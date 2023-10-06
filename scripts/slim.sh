@@ -1,6 +1,8 @@
 #!/bin/bash
+echo 'hola'
 
 tree_seq_causalloci="$1"
+echo $tree_seq_causalloci
 optima="$2"
 selection="$3"
 heritability_state="$4"
@@ -12,9 +14,9 @@ output_vpheno="$9"
 output_mfitness="$10"
 output_vfitness="$11"
 
-
+echo $heritability_state
 # Map 'selection' to its numeric value using a case statement
-case "$heritability_state" in
+case "$selection" in
   'strongsel')
     variance=0.1
     ;;
@@ -30,8 +32,9 @@ case "$heritability_state" in
     ;;
 esac
 
+echo 'hola2'
 
-case "$selection" in
+case "$heritability_state" in
   'lowh')
     h2=0.1
     ;;

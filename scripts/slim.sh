@@ -11,8 +11,8 @@ output_tree_gen10="$6"
 output_pop_size="$7"
 output_va="$8"
 output_vpheno="$9"
-output_mfitness="$10"
-output_vfitness="$11"
+output_mfitness="${10}"
+output_vfitness="${11}"
 
 echo $output_mfitness
 echo $output_vfitness

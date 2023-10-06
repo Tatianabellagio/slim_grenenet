@@ -6,12 +6,12 @@ echo $tree_seq_causalloci
 optima="$2"
 selection="$3"
 heritability_state="$4"
-output_tree_gen10="$6"
-output_pop_size="$7"
-output_va="$8"
-output_vpheno="$9"
-output_mfitness="${10}"
-output_vfitness="${11}"
+output_tree_gen10="$5"
+output_pop_size="$6"
+output_va="$7"
+output_vpheno="$8"
+output_mfitness="$9"
+output_vfitness="${10}"
 
 echo $output_mfitness
 echo $output_vfitness

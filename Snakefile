@@ -85,7 +85,7 @@ rule run_slim_simulation:
     conda:
         "envs/base_env.yaml"
     shell:
-        "scripts/slim.sh"
+        "scripts/slim.sh {input} {output}"
 
 rule tree_postprocessing:
     input:

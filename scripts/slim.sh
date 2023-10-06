@@ -1,3 +1,11 @@
+#!/bin/bash
+echo 'made'
+snakemake@input[0]
+echo $1
+echo "$1"
+echo snakemake@input['tree_seq_causalloci']
+echo snakemake@input["tree_seq_causalloci"]
+echo snakemake@input[0]
 tree_seq_causalloci="${snakemake_input[tree_seq_causalloci]}"
 optima="${snakemake_params[optima]}"
 selection="${snakemake_params[selection]}"

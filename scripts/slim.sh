@@ -22,6 +22,9 @@ case "$selection" in
   'strongsel')
     variance=0.1
     ;;
+  'strongmod')
+    variance=0.5
+    ;;
   'moderatesel')
     variance=1
     ;;

@@ -35,11 +35,12 @@ onehpoly: 100
 beta: 2
 
 # variances to simulate different strength of selection 
-selection: ['strongsel', 'moderatesel', 'lowsel']
+selection: ['strongsel', 'strongmod', 'moderatesel', 'lowsel']
 
-strongsel: 1
-moderatesel: 3
-lowsel: 5
+strongsel: 0.1
+strongmod: 0.5
+moderatesel: 1
+lowsel: 3
 
 # number of replicates of each simulation to run
 replicates_sim: [1,2,3,4,5]

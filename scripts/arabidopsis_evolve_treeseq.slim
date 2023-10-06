@@ -215,8 +215,10 @@ initialize() {
 			sim.killIndividuals(sim.subpopulations[0].sampleIndividuals(number_to_kill));
 		}
 		//output tree seq 
+		print('wirting final file');
 		sim.treeSeqOutput(output_tree_gen10);
-		
+		print('finish writing final file');
+
 		//output population size
 		//writeFile('output_selection/var' + variance + '_optima' + optima_value + '_popsize.txt', asString(sim.subpopulations[0].individualCount));
 		

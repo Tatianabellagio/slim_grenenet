@@ -136,7 +136,9 @@ initialize() {
 		writeFile(output_vpheno, asString(var(st_phenotype)), append = T);
 		// save mean fitness and variance of fitness
 		writeFile(output_mfitness, asString(mean(fitness)), append = T);
+		print('wirting vtiness');
 		writeFile(output_vfitness, asString(var(fitness)), append = T);
+		print('done wirting vtiness');
 	
 	}
 }
@@ -228,6 +230,7 @@ initialize() {
 		writeFile(output_tree_gen10, '');
 		print('finish writing final file empty');
 		//writeFile('output_selection/var' + variance + '_optima' + optima_value + '_popsize.txt', asString(sim.subpopulations[0].individualCount));
+
 		sim.simulationFinished();
 	
 	}

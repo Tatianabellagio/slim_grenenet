@@ -14,6 +14,9 @@ output_vpheno="$9"
 output_mfitness="$10"
 output_vfitness="$11"
 
+echo $output_mfitness
+echo $output_vfitness
+
 echo $heritability_state
 # Map 'selection' to its numeric value using a case statement
 case "$selection" in

@@ -1,26 +1,20 @@
 #!/bin/bash
-echo 'made'
-snakemake@input[0]
-echo $1
-echo "$1"
-echo snakemake@input['tree_seq_causalloci']
-echo snakemake@input["tree_seq_causalloci"]
-echo snakemake@input[0]
-tree_seq_causalloci="${snakemake_input[tree_seq_causalloci]}"
-optima="${snakemake_params[optima]}"
-selection="${snakemake_params[selection]}"
-heritability_state="${snakemake_params[heritability]}"
-h2="${snakemake_params["$heritability_state"]}"
-output_tree_gen4="${snakemake_output[output_tree_gen4]}"
-output_tree_gen10="${snakemake_output[output_tree_gen10]}"
-output_pop_size="${snakemake_output[output_pop_size]}"
-output_va="${snakemake_output[output_va]}"
-output_vpheno="${snakemake_output[output_vpheno]}"
-output_mfitness="${snakemake_output[output_mfitness]}"
-output_vfitness="${snakemake_output[output_vfitness]}"
+
+tree_seq_causalloci="$1"
+optima="$2"
+selection="$3"
+heritability_state="$4"
+output_tree_gen4="$5"
+output_tree_gen10="$6"
+output_pop_size="$7"
+output_va="$8"
+output_vpheno="$9"
+output_mfitness="$10"
+output_vfitness="$11"
+
 
 # Map 'selection' to its numeric value using a case statement
-case "$selection" in
+case "$heritability_state" in
   'strongsel')
     variance=0.1
     ;;
@@ -29,6 +23,23 @@ case "$selection" in
     ;;
   'lowsel')
     variance=3
+    ;;
+  *)
+    echo "Invalid selection"
+    exit 1
+    ;;
+esac
+
+
+case "$selection" in
+  'lowh')
+    h2=0.1
+    ;;
+  'mediumh')
+    h2=0.5
+    ;;
+  'highh')
+    h2=0.9
     ;;
   *)
     echo "Invalid selection"

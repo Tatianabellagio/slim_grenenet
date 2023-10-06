@@ -77,15 +77,13 @@ rule run_slim_simulation:
         optima=lambda wildcards: str(wildcards.optima),        
         selection=lambda wildcards: str(wildcards.selection),
         heritability=lambda wildcards: str(wildcards.heritability),
-        lowh=config["lowh"],
-        mediumh=config["mediumh"],
-        highh=config["highh"],
+
     resources:
         mem_mb=40960,
     conda:
         "envs/base_env.yaml"
     shell:
-        "scripts/slim.sh {input} {output}"
+        "scripts/slim.sh {input} {params} {output}"
 
 rule tree_postprocessing:
     input:

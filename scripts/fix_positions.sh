@@ -1,3 +1,4 @@
+#!/bin/bash
 output_vcf="${snakemake_input[output_vcf]}"
 output_vcf_fixpos="${snakemake_output[output_vcf_fixpos]}"
 

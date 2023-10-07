@@ -204,9 +204,10 @@ initialize() {
 4 late(){
 	// write a middle tree
 	if (sim.subpopulations[0].individualCount > 0){
-			print(output_tree_gen10[1:-8]);
-			print(output_tree_gen10[1:-8]+ 'gen4.trees');
-			writeFile(output_tree_gen10[1:-8] + 'gen4.trees', '');
+			print(substr(output_tree_gen10, 0, nchar(output_tree_gen10) -9));
+			print(substr(output_tree_gen10, 0, nchar(output_tree_gen10) -9) + '4.trees');
+			file_gen4 = substr(output_tree_gen10, 0, nchar(output_tree_gen10) -9) + '4.trees';
+			writeFile(file_gen4, '');
 			print('finish writing 4gen file empty');}
 }
 

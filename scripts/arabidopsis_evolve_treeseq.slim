@@ -136,9 +136,7 @@ initialize() {
 		writeFile(output_vpheno, asString(var(st_phenotype)), append = T);
 		// save mean fitness and variance of fitness
 		writeFile(output_mfitness, asString(mean(fitness)), append = T);
-		print('wirting vtiness');
 		writeFile(output_vfitness, asString(var(fitness)), append = T);
-		print('donewirting vtiness');
 	
 	}
 }
@@ -160,7 +158,6 @@ initialize() {
 		for (j in 0:(size(sim.subpopulations[0].individuals)-1)) {
 			//lambda from field experiment
 			offspring = rpois(1, 7.247);
-
 			// for each individual cehck their expected offspring size and based on that
 			// for each offspring based on a chance of 97% make it a selfer offscpring or an outcross offspring 
 			for (k in seqLen(offspring)) {
@@ -182,8 +179,7 @@ initialize() {
 }
 
 2:9 late(){
-	print("generation" + sim.cycle);
-	if (sim.subpopulations[0].individualCount > 0){
+		if (sim.subpopulations[0].individualCount > 0){
 		// if after the survival event the population size is too big adjust it 
 		if (sim.subpopulations[0].individualCount > 900){
 			number_to_kill = sim.subpopulations[0].individualCount - 900;
@@ -192,28 +188,23 @@ initialize() {
 	}
 		// if all individuals died finish the simulation and wirte both files
 	else { 
+		// for the 10th generation directly write an empty file 
 		writeFile(output_tree_gen10, '');
-		print(' writing final file empty');
+		// for the 4th generation check if it already exists and then write 
+		if (fileExists(output_tree_gen4)){};
+		else {writeFile(output_tree_gen4, '')};
 		sim.simulationFinished();
-		print('finish writing final file empty');
-
 		}
-	
 }
 
 4 late(){
 	// write a middle tree
 	if (sim.subpopulations[0].individualCount > 0){
-			print(substr(output_tree_gen10, 0, nchar(output_tree_gen10) -9));
-			print(substr(output_tree_gen10, 0, nchar(output_tree_gen10) -9) + '4.trees');
-			file_gen4 = substr(output_tree_gen10, 0, nchar(output_tree_gen10) -9) + '4.trees';
-			writeFile(file_gen4, '');
-			print('finish writing 4gen file empty');}
+		sim.treeSeqOutput(output_tree_gen4)};
 }
 
 
 10 late() {
-	print("generation" + sim.cycle);
 	if (sim.subpopulations[0].individualCount > 0){
 		
 		// if after the survival event the population size is too big adjust it 
@@ -222,18 +213,13 @@ initialize() {
 			sim.killIndividuals(sim.subpopulations[0].sampleIndividuals(number_to_kill));
 		}
 		//output tree seq 
-		print('wirting final file');
 		sim.treeSeqOutput(output_tree_gen10);
-		print('finish writing final file');		
 		sim.simulationFinished();
 	}
 	// if there are no individuals create an empty file for the trees file
 	else {
-		print('wirting final file empty');
 		writeFile(output_tree_gen10, '');
-		print('finish writing final file empty');
 		//writeFile('output_selection/var' + variance + '_optima' + optima_value + '_popsize.txt', asString(sim.subpopulations[0].individualCount));
-
 		sim.simulationFinished();
 	
 	}

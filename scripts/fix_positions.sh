@@ -25,3 +25,4 @@ awk -F'\t' 'BEGIN{OFS="\t"}
         $2=pos;
         print
     }' $output_vcf > $output_vcf_fixpos
+

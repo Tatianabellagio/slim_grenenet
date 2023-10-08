@@ -81,7 +81,7 @@ rule tree_postprocessing:
         output_sim_tree_wm ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_tree_output_gen4_wm.trees",
         output_vcf ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_vcfgen4_output.vcf",
     log:
-        "logs/tree_postproccessing.log"
+        "logs/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_tree_output_gen4.log"
     resources:
         mem_mb=30720,
     conda:

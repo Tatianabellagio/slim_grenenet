@@ -20,7 +20,7 @@ rule all:
             heritability=config["heritability"],
             replicates_arq=config["replicates_arq"],
         ),
-        
+
 rule build_population_for_sim:
     input:
         og_tree_offset=config["og_tree_offset"],
@@ -97,7 +97,7 @@ rule fix_positions_vcf:
     conda:
         "envs/base_env.yaml"
     shell:
-        "scripts/fix_positions.sh"
+        "scripts/fix_positions.sh {input} {output}"
 
 rule gen_allele_freq:
     input:

@@ -49,7 +49,8 @@ case "$heritability_state" in
     ;;
 esac
 
-echo $optima
+echo $selection
+echo $variance
 
 slim \
     -d "tree='$tree_seq_causalloci'" \

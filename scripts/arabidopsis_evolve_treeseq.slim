@@ -119,7 +119,7 @@ initialize() {
 		st_phenotype = (phenotype-mean_pheno_constant)/sd_pheno_constant;
 		//calculate fitness 
 		fitness = exp(-0.5 * ((st_phenotype - asFloat(optima))^2)/asFloat(variance));
-		
+		print(variance);
 		// set up the fitness of the population to be usen in the reproduction callback
 		
 		sim.subpopulations[0].setValue('fitness', fitness);

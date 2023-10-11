@@ -38,8 +38,11 @@ onehpoly: 100
 beta: 2
 
 # variances to simulate different strength of selection 
-selection: ['estrongsel', 'vstrongsel', 'strongsel', 'strongmod', 'moderatesel', 'lowsel']
+selection: ['exstrongsel', 'estrongsel',  'strongsel',  'moderatesel']  #lowsel 'strongmod','vstrongsel', 
 
+exstrongsel: 0.001
+estrongsel: 0.01
+vstrongsel: 0.05
 strongsel: 0.1
 strongmod: 0.5
 moderatesel: 1

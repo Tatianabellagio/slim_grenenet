@@ -15,6 +15,9 @@ output_vfitness="${11}"
 
 # Map 'selection' to its numeric value using a case statement
 case "$selection" in
+  'exstrongsel')
+    variance=0.001
+    ;;
   'estrongsel')
     variance=0.01
     ;;

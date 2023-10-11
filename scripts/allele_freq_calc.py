@@ -3,8 +3,8 @@ import allel
 import os
 import numpy as np
 
-output_vcf_fixpos = snakemake.input['output_vcf_fixpos'] 
-pos_vcf_og = snakemake.input['pos_vcf_og'] 
+output_vcf_fixpos = snakemake.input['output_vcf'] 
+pos_vcf_og = snakemake.input['pos_vcf_og_offset'] 
 output_allele_freq = snakemake.output['allele_freq'] 
 output_allele_counts = snakemake.output['allele_counts'] 
 
@@ -23,7 +23,7 @@ def extract_allele_freq(samples, geno_array, pos, chrom, name):
     alt_allele_freq = pd.DataFrame(data = {'chrom_pos': chrom_pos, name: alt_freq})
     return alt_allele_count, alt_allele_freq
 
-for i in output_vcf_fixpos:
+for i in output_vcf:
     print(i)
     name = i.split('/')[-2] + '_' + i.split('/')[-1][0:5]
     if os.path.exists(i) and os.path.getsize(i) <= 1:

@@ -3,6 +3,7 @@ og_vcf_offset: 'data/wholegenome_offset.vcf'
 og_tree_offset: 'data/og_tree_offset.trees'
 mapper_realid_metadataid: 'data/mapper_realid_metadataid_wholegenomeoffset.csv'
 pos_vcf_og: 'data/pos_vcf_og_nooffset.csv'
+pos_vcf_og_offset: 'data/pos_vcf_og_offset.csv'
 
 ecotypes_grenenet: 'data/ecotypes_grenenet.csv'
 nonhet_pos: 'data/nonhet_pos_wholegenome_offset.csv'
@@ -38,7 +39,7 @@ onehpoly: 100
 beta: 2
 
 # variances to simulate different strength of selection 
-selection: ['moderatesel']  #lowsel 'strongmod','vstrongsel', 
+selection: ['exstrongsel','estrongsel', 'moderatesel']  #lowsel 'strongmod','vstrongsel', 
 #'exstrongsel',
 # 'estrongsel', 
 

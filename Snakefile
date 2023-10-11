@@ -114,24 +114,11 @@ rule calc_ecotype_counts:
     script:
         "scripts/calc_ecotype_counts.py"
 
-
-rule fix_positions_vcf:
-    input:
-        output_vcf="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_vcfgen4_output.vcf",
-    output: 
-        output_vcf_fixpos=temp("results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_vcfgen4_output_rp.vcf"),
-    resources:
-        mem_mb=20480,
-    conda:
-        "envs/base_env.yaml"
-    shell:
-        "scripts/fix_positions.sh {input} {output}"
-
 rule gen_allele_freq:
     input:
-        pos_vcf_og=config['pos_vcf_og'],
-        output_vcf_fixpos = expand(
-            "results/arq_{{allele_freq}}_{{pi}}_{{replicates_arq}}/{{heritability}}/{{selection}}/optima{optima}/subp{replicates_sim}_vcfgen4_output_rp.vcf",
+        pos_vcf_og_offset=config['pos_vcf_og_offset'],
+        output_vcf = expand(
+            "results/arq_{{allele_freq}}_{{pi}}_{{replicates_arq}}/{{heritability}}/{{selection}}/optima{optima}/subp{replicates_sim}_vcfgen4_output.vcf",
             optima=config["optima"],
             replicates_sim=config["replicates_sim"],    
         ),
@@ -144,3 +131,7 @@ rule gen_allele_freq:
         "envs/base_env.yaml"
     script:
         "scripts/allele_freq_calc.py"
+
+
+
+

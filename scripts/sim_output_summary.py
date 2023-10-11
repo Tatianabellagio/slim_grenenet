@@ -3,6 +3,8 @@ import numpy as np
 import os
 import glob
 
+path2 = '/home/tbellagi/bigscratch/slim_grenenet/results/'
+
 def arrange_dataset(files):
     joint = pd.DataFrame()
     for i in files:
@@ -14,32 +16,19 @@ def arrange_dataset(files):
     #joint_meansubp = joint.reset_index().groupby('index')[joint.columns].mean()
     return joint
 
-path2 = '/home/tbellagi/bigscratch/slim_grenenet/'
+def generatefile(file_type, part1_pat, part2_pat, final_name):
+    pattern = os.path.join(path2, part1_pat, file_type)
+    files1 = glob.glob(pattern, recursive=True)
+    pattern = os.path.join(path2, part2_pat, file_type)
+    files2 = glob.glob(pattern, recursive=True)
+    files = files1 + files2
+    dataset = arrange_dataset(files)
+    dataset.to_csv(final_name)  
+    return None
 
-# Use the glob module to search for files in subfolders
-pattern = os.path.join(path2, '**', '*_pop_size.txt')
-pop_size_files = glob.glob(pattern, recursive=True)
-pop_size = arrange_dataset(pop_size_files)
-pop_size.to_csv('to_transfer/pop_size_oct10.csv')
 
-pattern = os.path.join(path2, '**', '*_va.txt')
-va_files = glob.glob(pattern, recursive=True)
-va = arrange_dataset(va_files)
-va.to_csv('to_transfer/va_oct10.csv')
-
-# Use the glob module to search for files in subfolders
-pattern = os.path.join(path2, '**', '*_mfitness.txt')
-mfitness_files = glob.glob(pattern, recursive=True)
-mfitness = arrange_dataset(mfitness_files)
-mfitness.to_csv('to_transfer/mfitnes_oct10.csv')
-
-# Use the glob module to search for files in subfolders
-pattern = os.path.join(path2, '**', '*_vfitness.txt')
-vfitness_files = glob.glob(pattern, recursive=True)
-vfitness = arrange_dataset(vfitness_files)
-vfitness.to_csv('to_transfer/vfitnes_oct10.csv')
-
-pattern = os.path.join(path2, '**', '*_vpheno.txt')
-vpheno_files = glob.glob(pattern, recursive=True)
-vpheno = arrange_dataset(vpheno_files)
-vpheno.to_csv('to_transfer/vpheno_oct10.csv')
+generatefile('*_pop_size.txt', '**/**/estrongsel/**/','**/**/vstrongsel/**/', 'to_transfer/pop_size_oct11.csv')
+generatefile('*_va.txt', '**/**/estrongsel/**/','**/**/vstrongsel/**/', 'to_transfer/va_oct11.csv')
+generatefile('*_mfitness.txt', '**/**/estrongsel/**/','**/**/vstrongsel/**/', 'to_transfer/mfitnes_oct11.csv')
+generatefile('*_vfitness.txt', '**/**/estrongsel/**/','**/**/vstrongsel/**/', 'to_transfer/vfitnes_oct11.csv')
+generatefile('*_vpheno.txt', '**/**/estrongsel/**/','**/**/vstrongsel/**/', 'to_transfer/vpheno_oct11.csv')

@@ -4,6 +4,9 @@ og_tree_offset: 'data/og_tree_offset.trees'
 mapper_realid_metadataid: 'data/mapper_realid_metadataid_wholegenomeoffset.csv'
 pos_vcf_og: 'data/pos_vcf_og_nooffset.csv'
 
+ecotypes_grenenet: 'data/ecotypes_grenenet.csv'
+nonhet_pos: 'data/nonhet_pos_wholegenome_offset.csv'
+
 heritability: ['lowh', 
                'mediumh',
                'highh']

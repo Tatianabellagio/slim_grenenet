@@ -13,16 +13,23 @@ configfile: "config.yaml"
 rule all:
     input:
         expand(
-            'results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_tree_output_gen10.trees',
+            'results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq.csv',
             allele_freq=config['allele_freq'],
             pi=config["pi"],
             selection=config["selection"],
             heritability=config["heritability"],
             replicates_arq=config["replicates_arq"],
-            optima=config["optima"],
-            replicates_sim=config["replicates_sim"],    
         ),
-        
+        expand(
+            'results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/ecotype_counts.csv',
+            allele_freq=config['allele_freq'],
+            pi=config["pi"],
+            selection=config["selection"],
+            heritability=config["heritability"],
+            replicates_arq=config["replicates_arq"],
+        ),
+
+
 rule build_population_for_sim:
     input:
         og_tree_offset=config["og_tree_offset"],
@@ -54,7 +61,7 @@ rule run_slim_simulation:
     input:
         tree_seq_causalloci="results/arq_{allele_freq}_{pi}_{replicates_arq}/tree_seq_causalloci.trees",
     output: 
-        output_tree_gen4="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_tree_output_gen4.trees",
+        output_tree_gen4=temp("results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_tree_output_gen4.trees"),
         output_tree_gen10="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_tree_output_gen10.trees",
         output_pop_size="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_pop_size.txt",
         output_va="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_va.txt",
@@ -80,8 +87,7 @@ rule tree_postprocessing:
         mapper_ids=config['mapper_realid_metadataid'],
         output_sim_tree="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_tree_output_gen4.trees",
     output:
-        output_sim_tree_wm ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_tree_output_gen4_wm.trees",
-        output_vcf ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_vcfgen4_output.vcf",
+        output_vcf=temp("results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_vcfgen4_output.vcf"),
     resources:
         mem_mb=30720,
     conda:
@@ -89,11 +95,31 @@ rule tree_postprocessing:
     script:
         "scripts/tree_postprocessing.py"
 
+rule calc_ecotype_counts:
+    input:
+        nonhet_pos=config['nonhet_pos'],
+        og_vcf_offset=config["og_vcf_offset"],
+        ecotypes_grenenet=config['ecotypes_grenenet'],
+        output_vcf_offset = expand(
+            "results/arq_{{allele_freq}}_{{pi}}_{{replicates_arq}}/{{heritability}}/{{selection}}/optima{optima}/subp{replicates_sim}_vcfgen4_output.vcf",
+            optima=config["optima"],
+            replicates_sim=config["replicates_sim"],    
+        ),
+    output:
+        ecotype_counts ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/ecotype_counts.csv",
+    resources:
+        mem_mb=30720,
+    conda:
+        "envs/base_env.yaml"
+    script:
+        "scripts/calc_ecotype_counts.py"
+
+
 rule fix_positions_vcf:
     input:
-        output_vcf ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_vcfgen4_output.vcf",
+        output_vcf="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_vcfgen4_output.vcf",
     output: 
-        output_vcf_fixpos ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_vcfgen4_output_rp.vcf",
+        output_vcf_fixpos=temp("results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_vcfgen4_output_rp.vcf"),
     resources:
         mem_mb=20480,
     conda:
@@ -110,6 +136,7 @@ rule gen_allele_freq:
             replicates_sim=config["replicates_sim"],    
         ),
     output:
+        allele_counts ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/allele_counts.csv",
         allele_freq ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq.csv",
     resources:
         mem_mb=30720,

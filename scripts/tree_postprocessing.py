@@ -11,7 +11,7 @@ import os
 og_tree_offset = snakemake.input['og_tree_offset'] 
 mapper_realid_metadataid = snakemake.input['mapper_ids'] 
 output_sim_tree = snakemake.input['output_sim_tree'] 
-output_sim_tree_wm = snakemake.output['output_sim_tree_wm'] 
+#output_sim_tree_wm = snakemake.output['output_sim_tree_wm'] 
 output_vcf = snakemake.output['output_vcf'] 
 
 def overlap_neutral_mut (ts_new, ts, mapper_realid_metadataid):
@@ -93,5 +93,5 @@ if os.path.exists(output_sim_tree) and os.path.getsize(output_sim_tree) <= 1:
 elif os.path.exists(output_sim_tree) and os.path.getsize(output_sim_tree) > 1:
     ts_new = tskit.load(output_sim_tree)
     ts_nm = overlap_neutral_mut(ts_new, ts_old, mapper_realid_metadataid)
-    ts_nm.dump(output_sim_tree_wm)
+    #ts_nm.dump(output_sim_tree_wm)  ## commenting dumping the tree dont see any utility right now 
     convert_tree_to_vcf(ts_nm, output_vcf)

@@ -13,14 +13,20 @@ configfile: "config.yaml"
 rule all:
     input:
         expand(
-            'results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_tree_output_gen10.trees',
+            'results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq.csv',
             allele_freq=config['allele_freq'],
             pi=config["pi"],
             selection=config["selection"],
             heritability=config["heritability"],
             replicates_arq=config["replicates_arq"],
-            optima=config["optima"],
-            replicates_sim=config["replicates_sim"],    
+        ),
+        expand(
+            'results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/ecotype_counts.csv',
+            allele_freq=config['allele_freq'],
+            pi=config["pi"],
+            selection=config["selection"],
+            heritability=config["heritability"],
+            replicates_arq=config["replicates_arq"],
         ),
 
 

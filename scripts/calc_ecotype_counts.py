@@ -58,6 +58,7 @@ for i in output_vcf_offset:
         print('empty_vcf')
         ecotypes_grenenet[name] = np.nan
     elif os.path.exists(i) and os.path.getsize(i) > 1:
+        print('no empty_vcf')
         ## import each of teh vcf 
         vcf_new = allel.read_vcf(i, fields = ['calldata/GT', 'variants/POS'])
         ##extract the posisions and the geno array
@@ -67,7 +68,8 @@ for i in output_vcf_offset:
         geno_og_rpos, geno_new_rpos = filtering_pos(nonhet_pos, pos_new, geno_og, geno_new)
         ecotype_geno_mapper = get_ecotype_geno_mapper(geno_og_rpos)
         ecotype_countsdf = get_ecotype_counts(geno_new_rpos, f'drift{i}')
+        print(ecotype_countsdf)
         ## merge with previous 
         ecotypes_grenenet = ecotypes_grenenet.merge(ecotype_countsdf, how='left', on ='ecotype')
-        
+        print(ecotypes_grenenet)
 ecotypes_grenenet.to_csv(ecotype_counts)

@@ -35,3 +35,4 @@ testing.ipynb
 /slurm-logs/
 .vscode/settings.json
 /profiles/slurm/__pycache__/
+/to_transfer/

@@ -9,7 +9,10 @@ output_allele_freq = snakemake.output['allele_freq']
 output_allele_counts = snakemake.output['allele_counts'] 
 
 pos_vcf_og_counts = pd.read_csv(pos_vcf_og)
+pos_vcf_og_counts['chrom_pos'] = pos_vcf_og_counts['chrom_pos'].astype('int')
 pos_vcf_og_freq = pd.read_csv(pos_vcf_og)
+pos_vcf_og_freq['chrom_pos'] = pos_vcf_og_freq['chrom_pos'].astype('int')
+
 
 
 def extract_allele_freq(samples, geno_array, pos, chrom, name):
@@ -17,10 +20,10 @@ def extract_allele_freq(samples, geno_array, pos, chrom, name):
     alt_count = geno_array.sum(axis=2).sum(axis=1)
     alt_freq = alt_count / total_alleles
 
-    chrom_pos = pd.Series(chrom.astype(str)) + '_' +  pd.Series(pos.astype(str))
+    #chrom_pos = pd.Series(chrom.astype(str)) + '_' +  pd.Series(pos.astype(str))
 
-    alt_allele_count = pd.DataFrame(data = {'chrom_pos': chrom_pos, name: alt_count})
-    alt_allele_freq = pd.DataFrame(data = {'chrom_pos': chrom_pos, name: alt_freq})
+    alt_allele_count = pd.DataFrame(data = {'chrom_pos': pos, name: alt_count})
+    alt_allele_freq = pd.DataFrame(data = {'chrom_pos': pos, name: alt_freq})
     return alt_allele_count, alt_allele_freq
 
 for i in output_vcf:

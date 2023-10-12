@@ -90,7 +90,7 @@ rule tree_postprocessing:
         output_vcf=temp("results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_vcfgen4_output.vcf"),
     resources:
         mem_mb=30720,
-        limit_space=25,
+        limit_space=1,
     priority: 1
     conda:
         "envs/base_env.yaml"

@@ -88,8 +88,8 @@ if os.path.exists(output_sim_tree) and os.path.getsize(output_sim_tree) <= 1:
     print('empty_tree')
     with open(output_vcf, "w"):
         pass  # Create an empty vcf file 
-    with open(output_sim_tree_wm, "w"):
-        pass  # Create an empty tree file 
+    #with open(output_sim_tree_wm, "w"):
+    #    pass  # Create an empty tree file 
 elif os.path.exists(output_sim_tree) and os.path.getsize(output_sim_tree) > 1:
     ts_new = tskit.load(output_sim_tree)
     ts_nm = overlap_neutral_mut(ts_new, ts_old, mapper_realid_metadataid)

@@ -3,7 +3,7 @@ import allel
 import os
 import numpy as np
 
-output_vcf_fixpos = snakemake.input['output_vcf'] 
+output_vcf = snakemake.input['output_vcf'] 
 pos_vcf_og = snakemake.input['pos_vcf_og_offset'] 
 output_allele_freq = snakemake.output['allele_freq'] 
 output_allele_counts = snakemake.output['allele_counts'] 

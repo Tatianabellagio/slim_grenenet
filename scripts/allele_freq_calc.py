@@ -29,7 +29,7 @@ for i in output_vcf:
     if os.path.exists(i) and os.path.getsize(i) <= 1:
         print('empty_vcf')
         pos_vcf_og_counts[name] = np.nan
-        pos_vcf_og_freq[name] = np.nan    
+    
     elif os.path.exists(i) and os.path.getsize(i) > 1:
         vcf = allel.read_vcf(i)
         samples = vcf['samples']
@@ -44,6 +44,7 @@ for i in output_vcf:
 
 
 
-print(len(pos_vcf_og))
+print(len(pos_vcf_og_counts))
+print(len(pos_vcf_og_freq))
 pos_vcf_og_counts.to_csv(output_allele_counts)
 pos_vcf_og_freq.to_csv(output_allele_freq)

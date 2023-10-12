@@ -57,7 +57,7 @@ initialize() {
 	// before calculating fitness for this population, kill the 'parents' after the repduction stage
 	inds = sim.subpopulations.individuals;
 	sim.killIndividuals(inds[inds.age > 0]);
-	if (sim.subpopulations[0].individualCount > 1){
+	if (sim.subpopulations[0].individualCount > 0){
 		// This callback is the one actually caclulating fitness in a vectorized way so it can be used in the fitnessEffect and reproduciton callback 
 		inds =  sim.subpopulations.individuals;
 		// calculate their additive genetic value 
@@ -100,12 +100,20 @@ initialize() {
 		writeFile(output_vfitness, asString(var(fitness)), append = T);
 	
 	}
+		else { 
+		// for the 10th generation directly write an empty file 
+		writeFile(output_tree_gen10, '');
+		// for the 4th generation check if it already exists and then write 
+		if (fileExists(output_tree_gen4)){}
+		else {writeFile(output_tree_gen4, '');};
+		sim.simulationFinished();
+		}
 }
 3:999 early(){
 	// before calculating fitness for this population, kill the 'parents' after the repduction stage
 	inds = sim.subpopulations.individuals;
 	sim.killIndividuals(inds[inds.age > 0]);
-	if (sim.subpopulations[0].individualCount > 1){
+	if (sim.subpopulations[0].individualCount > 0){
 		// This callback is the one actually caclulating fitness in a vectorized way so it can be used in the fitnessEffect and reproduciton callback 
 		inds =  sim.subpopulations.individuals;
 		// calculate their additive genetic value 
@@ -139,6 +147,14 @@ initialize() {
 		writeFile(output_vfitness, asString(var(fitness)), append = T);
 	
 	}
+		else { 
+		// for the 10th generation directly write an empty file 
+		writeFile(output_tree_gen10, '');
+		// for the 4th generation check if it already exists and then write 
+		if (fileExists(output_tree_gen4)){}
+		else {writeFile(output_tree_gen4, '');};
+		sim.simulationFinished();
+		}
 }
 
 

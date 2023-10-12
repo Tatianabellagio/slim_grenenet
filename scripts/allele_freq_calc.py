@@ -19,7 +19,7 @@ def extract_allele_freq(samples, geno_array, pos, chrom, name):
     total_alleles = len(samples) * 2 
     alt_count = geno_array.sum(axis=2).sum(axis=1)
     alt_freq = alt_count / total_alleles
-
+    alt_freq = alt_freq.round(4)
     #chrom_pos = pd.Series(chrom.astype(str)) + '_' +  pd.Series(pos.astype(str))
 
     alt_allele_count = pd.DataFrame(data = {'chrom_pos': pos, name: alt_count})

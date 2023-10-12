@@ -28,6 +28,7 @@ rule all:
             heritability=config["heritability"],
             replicates_arq=config["replicates_arq"],
         ),
+    priority: 4
 
 
 rule build_population_for_sim:
@@ -109,7 +110,7 @@ rule calc_ecotype_counts:
         ),
     output:
         ecotype_counts ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/ecotype_counts.csv",
-    priority: 100
+    priority: 2
     resources:
         mem_mb=30720,
     conda:
@@ -130,7 +131,7 @@ rule gen_allele_freq:
         allele_freq ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq.csv",
     resources:
         mem_mb=30720,
-    priority: 100
+    priority: 3
     conda:
         "envs/base_env.yaml"
     script:

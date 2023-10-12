@@ -28,8 +28,6 @@ rule all:
             heritability=config["heritability"],
             replicates_arq=config["replicates_arq"],
         ),
-    priority: 4
-
 
 rule build_population_for_sim:
     input:

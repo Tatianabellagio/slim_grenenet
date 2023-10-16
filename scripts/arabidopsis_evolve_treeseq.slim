@@ -90,7 +90,7 @@ initialize() {
 		}
 		// save values in files
 		// save pop size 
-		writeFile(output_pop_size, asString(sim.subpopulations[0].individualCount), append = T);
+		// writeFile(output_pop_size, asString(sim.subpopulations[0].individualCount), append = T);
 		//save additive genetic variance
 		writeFile(output_va, asString(VA), append = T);
 		// save phenotipic variance
@@ -137,7 +137,7 @@ initialize() {
 		}
 		// save values in files
 		// save pop size 
-		writeFile(output_pop_size, asString(sim.subpopulations[0].individualCount), append = T);
+		// writeFile(output_pop_size, asString(sim.subpopulations[0].individualCount), append = T);
 		//save additive genetic variance
 		writeFile(output_va, asString(VA), append = T);
 		// save phenotipic variance
@@ -200,6 +200,8 @@ initialize() {
 		if (sim.subpopulations[0].individualCount > 900){
 			number_to_kill = sim.subpopulations[0].individualCount - 900;
 			sim.killIndividuals(sim.subpopulations[0].sampleIndividuals(number_to_kill));
+		////// write pop size as check 
+		writeFile(output_pop_size, asString(sim.subpopulations[0].individualCount), append = T);		////// write pop size as check 
 		}
 	}
 		// if all individuals died finish the simulation and wirte both files
@@ -230,6 +232,8 @@ initialize() {
 		}
 		//output tree seq 
 		sim.treeSeqOutput(output_tree_gen10);
+		////// write pop size as check 
+		writeFile(output_pop_size, asString(sim.subpopulations[0].individualCount), append = T);
 		sim.simulationFinished();
 	}
 	// if there are no individuals create an empty file for the trees file

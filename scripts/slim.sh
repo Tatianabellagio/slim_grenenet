@@ -7,11 +7,12 @@ selection="$3"
 heritability_state="$4"
 output_tree_gen4="$5"
 output_tree_gen10="$6"
-output_pop_size="$7"
-output_va="$8"
-output_vpheno="$9"
-output_mfitness="${10}"
-output_vfitness="${11}"
+output_pop_size_early="$7"
+output_pop_size_late="$8"
+output_va="$9"
+output_vpheno="${10}"
+output_mfitness="${11}"
+output_vfitness="${12}"
 
 # Map 'selection' to its numeric value using a case statement
 case "$selection" in
@@ -68,7 +69,8 @@ slim \
     -d "variance='$variance'" \
     -d "output_tree_gen4='$output_tree_gen4'" \
     -d "output_tree_gen10='$output_tree_gen10'" \
-    -d "output_pop_size='$output_pop_size'" \
+    -d "output_pop_size_early='$output_pop_size_early'" \
+    -d "output_pop_size_late='$output_pop_size_late'" \
     -d "output_va='$output_va'" \
     -d "output_vpheno='$output_vpheno'" \
     -d "output_mfitness='$output_mfitness'" \

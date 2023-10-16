@@ -90,7 +90,7 @@ initialize() {
 		}
 		// save values in files
 		// save pop size 
-		// writeFile(output_pop_size, asString(sim.subpopulations[0].individualCount), append = T);
+		writeFile(output_pop_size_early, asString(sim.subpopulations[0].individualCount), append = T);
 		//save additive genetic variance
 		writeFile(output_va, asString(VA), append = T);
 		// save phenotipic variance
@@ -137,7 +137,7 @@ initialize() {
 		}
 		// save values in files
 		// save pop size 
-		// writeFile(output_pop_size, asString(sim.subpopulations[0].individualCount), append = T);
+		writeFile(output_pop_size_early, asString(sim.subpopulations[0].individualCount), append = T);
 		//save additive genetic variance
 		writeFile(output_va, asString(VA), append = T);
 		// save phenotipic variance
@@ -201,8 +201,8 @@ initialize() {
 			number_to_kill = sim.subpopulations[0].individualCount - 900;
 			sim.killIndividuals(sim.subpopulations[0].sampleIndividuals(number_to_kill));
 		////// write pop size as check 
-		writeFile(output_pop_size, asString(sim.subpopulations[0].individualCount), append = T);		////// write pop size as check 
 		}
+
 	}
 		// if all individuals died finish the simulation and wirte both files
 	else { 
@@ -210,7 +210,8 @@ initialize() {
 		writeFile(output_tree_gen10, '');
 		// for the 4th generation check if it already exists and then write 
 		if (fileExists(output_tree_gen4)){}
-		else {writeFile(output_tree_gen4, '');};
+		else {writeFile(output_tree_gen4, '');
+			  writeFile(output_pop_size_late, '');};
 		sim.simulationFinished();
 		}
 }
@@ -218,6 +219,7 @@ initialize() {
 4 late(){
 	// write a middle tree
 	if (sim.subpopulations[0].individualCount > 0){
+		writeFile(output_pop_size_late, asString(sim.subpopulations[0].individualCount), append = T);		////// write pop size as check 
 		sim.treeSeqOutput(output_tree_gen4);};
 }
 
@@ -232,8 +234,6 @@ initialize() {
 		}
 		//output tree seq 
 		sim.treeSeqOutput(output_tree_gen10);
-		////// write pop size as check 
-		writeFile(output_pop_size, asString(sim.subpopulations[0].individualCount), append = T);
 		sim.simulationFinished();
 	}
 	// if there are no individuals create an empty file for the trees file

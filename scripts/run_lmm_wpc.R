@@ -9,7 +9,7 @@ registerDoParallel(cl)
 env_sites = snakemake@input[["env_sites"]]
 p_norm = snakemake@input[["p_norm"]]
 pop_structure = snakemake@input[["pop_structure"]]
-lmm_results = snakemake@input[["lmm_results"]]
+lmm_results = snakemake@output[["lmm_results"]]
 print(lmm_results)
 env_sites = read.csv(env_sites, row.names = 1, )
 p_norm = read.csv(p_norm)

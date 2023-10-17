@@ -13,15 +13,7 @@ configfile: "config.yaml"
 rule all:
     input:
         expand(
-            'results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq.csv',
-            allele_freq=config['allele_freq'],
-            pi=config["pi"],
-            selection=config["selection"],
-            heritability=config["heritability"],
-            replicates_arq=config["replicates_arq"],
-        ),
-        expand(
-            'results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/ecotype_counts.csv',
+            'results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/lmm_pc_results.csv',
             allele_freq=config['allele_freq'],
             pi=config["pi"],
             selection=config["selection"],
@@ -91,7 +83,6 @@ rule tree_postprocessing:
     resources:
         mem_mb=30720,
         limit_space=1,
-    priority: 1
     conda:
         "envs/base_env.yaml"
     script:
@@ -109,7 +100,6 @@ rule calc_ecotype_counts:
         ),
     output:
         ecotype_counts ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/ecotype_counts.csv",
-    priority: 2
     resources:
         mem_mb=30720,
     conda:
@@ -130,11 +120,44 @@ rule gen_allele_freq:
         allele_freq ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq.csv",
     resources:
         mem_mb=30720,
-    priority: 3
     conda:
         "envs/base_env.yaml"
     script:
         "scripts/allele_freq_calc.py"
+
+rule prep_lmm:
+    input:
+        allele_freq_founder=config['allele_freq_founder'],
+        pc_founders=config['pc_founders'],
+        ecotype_counts ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/ecotype_counts.csv",
+        allele_freq ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq.csv",
+    output:
+        env_variable ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/env_variable.csv",
+        allele_freq_norm="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq_norm.csv",
+        pop_structure ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/pop_structure.csv",
+    resources:
+        mem_mb=30720,
+    conda:
+        "envs/base_env.yaml"
+    script:
+        "scripts/prep_lmm.py"
+
+rule run_lmm:
+    input:
+        env_sites="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/env_variable.csv",
+        p_norm="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq_norm.csv",
+        pop_structure ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/pop_structure.csv",
+    output:
+        lmm_results ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/lmm_pc_results.csv",
+    benchmark:
+        "benchmarks/lmm/arq_{allele_freq}_{pi}_{replicates_arq}_{heritability}_{selection}.txt"
+    resources:
+        mem_mb=30720,
+    threads: 20,
+    conda:
+        "envs/base_env.yaml"
+    script:
+        "scripts/run_lmm_wpc.R"
 
 
 

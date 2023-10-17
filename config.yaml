@@ -4,6 +4,8 @@ og_tree_offset: 'data/og_tree_offset.trees'
 mapper_realid_metadataid: 'data/mapper_realid_metadataid_wholegenomeoffset.csv'
 pos_vcf_og: 'data/pos_vcf_og_nooffset.csv'
 pos_vcf_og_offset: 'data/pos_vcf_og_offset.csv'
+allele_freq_founder: 'data/allele_freq_founder.csv'
+pc_founders: 'data/pc_founders'
 
 ecotypes_grenenet: 'data/ecotypes_grenenet.csv'
 nonhet_pos: 'data/nonhet_pos_wholegenome_offset.csv'

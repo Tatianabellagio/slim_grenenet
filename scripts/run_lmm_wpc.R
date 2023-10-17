@@ -10,7 +10,7 @@ env_sites = snakemake@input[["env_sites"]]
 p_norm = snakemake@input[["p_norm"]]
 pop_structure = snakemake@input[["pop_structure"]]
 lmm_results = snakemake@input[["lmm_results"]]
-
+print(lmm_results)
 env_sites = read.csv(env_sites, row.names = 1, )
 p_norm = read.csv(p_norm)
 deltap = subset(p_norm, select = -chrom_pos)
@@ -38,15 +38,6 @@ envvar = 'env'
 myfm = as.formula(paste0('yy ~ ', paste(c(paste0('PC',1:3), envvar), collapse = ' + ')))
 print(myfm)
 
-yy = as.numeric(unlist(deltap[1,]))
-print(yy)
-#.GlobalEnv$myfm <- myfm # fix a global env bug
-mydata = prep_lmm(yy, env_sites, envvar, pop_strc) 
-print(mydata)
-model = nlme::lme(fixed = myfm, random = ~ 1|sites, data = mydata) # no popstr PCs
-format_lmm(model, envvar) # output model result
-
-
 lmeres = foreach(ii = 1:nrow(deltap), .combine = 'rbind', .errorhandling = 'remove') %dopar% {
   yy = as.numeric(unlist(deltap[ii,]))
   print(yy)
@@ -65,4 +56,5 @@ dimnames(lmeres)[[2]] = c('R2m', 'R2c', 'beta', 'beta_p', 'BIC')
 print(dim(deltap))
 print(dim(lmeres))
 
+print(lmm_results)
 write.csv(lmeres, file = lmm_results)

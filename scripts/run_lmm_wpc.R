@@ -12,13 +12,13 @@ pop_structure = snakemake@input[["pop_structure"]]
 lmm_results = snakemake@output[["lmm_results"]]
 
 env_sites = read.csv(env_sites, row.names = 1, )
-print(env_sites.shape)
+print(dim(env_sites))
 p_norm = read.csv(p_norm)
-print(p_norm.shape)
+print(dim(p_norm))
 deltap = subset(p_norm, select = -chrom_pos)
-print(deltap.shape)
+print(dim(deltap))
 pop_strc = read.csv(pop_structure,row.names = 1)
-print(pop_strc.shape)
+print(dim(pop_strc))
 
 # assemble lmm objects
 prep_lmm <- function(yy, env_sites, envvar, pop_strc) {

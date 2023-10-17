@@ -13,7 +13,7 @@ pop_structure_file = snakemake.output['pop_structure']
 ## import allele freq and founders allele freq 
 allele_freq = pd.read_csv(allele_freq_file).drop(columns = 'Unnamed: 0')
 allele_freq_founder = pd.read_csv(allele_freq_founder)
-allele_freq_founder = allele_freq_founder['chrom_pos'].astype(int)
+allele_freq_founder['chrom_pos'] = allele_freq_founder['chrom_pos'].astype(int)
 ## eliminate duplciates basically positions where the allele freq is the same in all 
 allele_freq = allele_freq.round(6)
 allele_freq = allele_freq.set_index('chrom_pos').drop_duplicates()

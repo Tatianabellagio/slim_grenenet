@@ -36,6 +36,7 @@ format_lmm <- function(mymodel, envvar) {
 ## set up the model
 envvar = 'env'
 myfm = as.formula(paste0('yy ~ ', paste(c(paste0('PC',1:3), envvar), collapse = ' + ')))
+print(myfm)
 
 lmeres = foreach(ii = 1:nrow(deltap), .combine = 'rbind', .errorhandling = 'remove') %dopar% {
   yy = as.numeric(unlist(deltap[ii,]))
@@ -47,7 +48,9 @@ lmeres = foreach(ii = 1:nrow(deltap), .combine = 'rbind', .errorhandling = 'remo
   #summary(mymodel)
   format_lmm(model, envvar) # output model results
 }
-
+print(lmeres)
+print(dim(deltap))
+print(dim(lmeres))
 dimnames(lmeres)[[2]] = c('R2m', 'R2c', 'beta', 'beta_p', 'BIC')
 
 print(dim(deltap))

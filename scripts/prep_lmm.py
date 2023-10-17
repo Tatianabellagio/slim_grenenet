@@ -21,10 +21,6 @@ allele_freq = allele_freq.reset_index()
 allele_freq = allele_freq.fillna(0)
 
 ## first calculate delta p norm 
-print(allele_freq_founder.head())
-print(allele_freq_founder.dtypes)
-print(allele_freq.head())
-print(allele_freq.dtypes)
 ## imoport allele freq of the founder and normalize 
 allele_freq = pd.merge(allele_freq,allele_freq_founder, on ='chrom_pos')
 allele_freq = allele_freq.set_index('chrom_pos')
@@ -66,12 +62,12 @@ ecotype_deltapn_t = ecotype_deltapn.T
 ### matrix multiplciation between the  ecotype freq and the pcs, constrcut population structure correction 
 
 pc_founders = pd.read_csv(pc_founders, sep = ' ', header=None)
+print(pc_founders.shape)
+print(pc_founders.head())
 pc_founders = pc_founders[[1,2,3,4]].rename(columns = {1: 'ecotype'})
 pc_founders = pc_founders.set_index('ecotype')
-print(ecotype_deltapn_t.shape)
 print(pc_founders.shape)
 pop_structure = np.dot(ecotype_deltapn_t, pc_founders)
-print(pop_structure)
 pop_structure = pd.DataFrame(pop_structure)
 pop_structure.columns = ['PC1', 'PC2', 'PC3']
 

@@ -68,7 +68,10 @@ ecotype_deltapn_t = ecotype_deltapn.T
 pc_founders = pd.read_csv(pc_founders, sep = ' ', header=None)
 pc_founders = pc_founders[[1,2,3,4]].rename(columns = {1: 'ecotype'})
 pc_founders = pc_founders.set_index('ecotype')
+print(ecotype_deltapn_t.shape)
+print(pc_founders.shape)
 pop_structure = np.dot(ecotype_deltapn_t, pc_founders)
+print(pop_structure)
 pop_structure = pd.DataFrame(pop_structure)
 pop_structure.columns = ['PC1', 'PC2', 'PC3']
 
@@ -80,9 +83,9 @@ sites = env.map(mapenv)
 repl = p_norm.columns.str.split('_subp').str[1].astype(int)
 sites_env = pd.DataFrame({'sites': sites, 'repl': repl, 'env': env})
 
-print(env_file)
-print(p_norm_file)
-print(pop_structure_file)
+print(env_file.shape)
+print(p_norm_file.shape)
+print(pop_structure_file.shape)
 # save sites ande nv varaibel 
 sites_env.to_csv(env_file)
 # save p norm 

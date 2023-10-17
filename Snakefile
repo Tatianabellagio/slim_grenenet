@@ -127,7 +127,7 @@ rule gen_allele_freq:
 
 rule prep_lmm:
     input:
-        allele_freq_founder=config['allele_freq_founder'],
+        allele_freq_founder_offset=config['allele_freq_founder_offset'],
         pc_founders=config['pc_founders'],
         ecotype_counts ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/ecotype_counts.csv",
         allele_freq ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq.csv",

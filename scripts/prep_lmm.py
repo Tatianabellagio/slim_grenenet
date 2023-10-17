@@ -3,7 +3,7 @@ import pandas as pd
 
 ecotype_counts = snakemake.input['ecotype_counts'] 
 allele_freq_file = snakemake.input['allele_freq'] 
-allele_freq_founder = snakemake.input['allele_freq_founder'] 
+allele_freq_founder = snakemake.input['allele_freq_founder_offset'] 
 pc_founders = snakemake.input['pc_founders'] 
 
 env_file = snakemake.output['env_variable'] 
@@ -25,6 +25,7 @@ print(allele_freq.shape)
 ## first calculate delta p norm 
 ## imoport allele freq of the founder and normalize 
 allele_freq = pd.merge(allele_freq,allele_freq_founder, on ='chrom_pos')
+print(allele_freq.shape)
 allele_freq = allele_freq.set_index('chrom_pos')
 print(allele_freq.shape)
 p_norm = pd.DataFrame(index = allele_freq.index)

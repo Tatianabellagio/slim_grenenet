@@ -8,7 +8,7 @@ pc_founders = snakemake.input['pc_founders']
 
 env_file = snakemake.output['env_variable'] 
 p_norm_file = snakemake.output['allele_freq_norm'] 
-pop_structure_file = snakemake.ouput['pop_structure'] 
+pop_structure_file = snakemake.output['pop_structure'] 
 
 ## import allele freq and founders allele freq 
 allele_freq = pd.read_csv(allele_freq_file).drop(columns = 'Unnamed: 0')

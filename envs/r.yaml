@@ -5,9 +5,9 @@ channels:
   - defaults
   - r 
 dependencies:
-  - r-base=4.1
-  - r-doParallel=1.0.17
-  - r-iterators=1.0.14
+  - r-base=3.6.2
+  - r-doParallel=1.0.15
+  - r-iterators=1.0.12
   - r-foreach=1.5.0
   - r-data.table=1.14.2 
   - r-dplyr=1.0.7

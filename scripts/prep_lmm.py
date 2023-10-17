@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 
 ecotype_counts = snakemake.input['ecotype_counts'] 
-print(ecotype_counts)
 allele_freq_file = snakemake.input['allele_freq'] 
 allele_freq_founder = snakemake.input['allele_freq_founder'] 
 pc_founders = snakemake.input['pc_founders'] 
@@ -17,10 +16,11 @@ allele_freq_founder = pd.read_csv(allele_freq_founder)
 allele_freq_founder['chrom_pos'] = allele_freq_founder['chrom_pos'].astype(int)
 ## eliminate duplciates basically positions where the allele freq is the same in all 
 allele_freq = allele_freq.round(6)
+print(allele_freq.shape)
 allele_freq = allele_freq.set_index('chrom_pos').drop_duplicates()
 allele_freq = allele_freq.reset_index()
 allele_freq = allele_freq.fillna(0)
-
+print(allele_freq.shape)
 ## first calculate delta p norm 
 ## imoport allele freq of the founder and normalize 
 allele_freq = pd.merge(allele_freq,allele_freq_founder, on ='chrom_pos')
@@ -30,15 +30,16 @@ p_norm = pd.DataFrame(index = allele_freq.index)
 for col in allele_freq.columns:
     p_norm[col] = (allele_freq[col] - allele_freq['allele_freq_founder']) / allele_freq['deno_norm']
 p_norm = p_norm.drop(['allele_freq_founder','deno_norm'],axis=1)
+print(p_norm.shape)
 p_norm = p_norm.round(6)
 ## eliminate rows with all the same values
 p_norm = p_norm[p_norm.std(axis=1) > 0]
+print(p_norm.shape)
 
 
 
 ### ecotype freq normalized 
 ecotype_counts = pd.read_csv(ecotype_counts)
-print(ecotype_counts.shape)
 ## from ectoype counts to 
 ecotype_counts = ecotype_counts.drop(columns = 'Unnamed: 0')
 ## calculate inital ecotype freq 
@@ -61,16 +62,13 @@ ecotype_deltapn = ecotype_deltapn.drop(['freq', 'deno_norm'],axis=1)
 ecotype_deltapn = ecotype_deltapn.drop('other')
 ecotype_deltapn_t = ecotype_deltapn.T
 
-print('ecotype_deltapn_t')
-print(ecotype_deltapn_t.shape)
 ### matrix multiplciation between the  ecotype freq and the pcs, constrcut population structure correction 
 
 pc_founders = pd.read_csv(pc_founders, sep = ' ', header=None)
-print(pc_founders.shape)
-print(pc_founders.head())
+
 pc_founders = pc_founders[[1,2,3,4]].rename(columns = {1: 'ecotype'})
 pc_founders = pc_founders.set_index('ecotype')
-print(pc_founders.shape)
+
 pop_structure = np.dot(ecotype_deltapn_t, pc_founders)
 pop_structure = pd.DataFrame(pop_structure)
 pop_structure.columns = ['PC1', 'PC2', 'PC3']
@@ -83,9 +81,6 @@ sites = env.map(mapenv)
 repl = p_norm.columns.str.split('_subp').str[1].astype(int)
 sites_env = pd.DataFrame({'sites': sites, 'repl': repl, 'env': env})
 
-print(sites_env.shape)
-print(p_norm.shape)
-print(pop_structure.shape)
 # save sites ande nv varaibel 
 sites_env.to_csv(env_file)
 # save p norm 

@@ -38,6 +38,15 @@ envvar = 'env'
 myfm = as.formula(paste0('yy ~ ', paste(c(paste0('PC',1:3), envvar), collapse = ' + ')))
 print(myfm)
 
+yy = as.numeric(unlist(deltap[1,]))
+print(yy)
+#.GlobalEnv$myfm <- myfm # fix a global env bug
+mydata = prep_lmm(yy, env_sites, envvar, pop_strc) 
+print(mydata)
+model = nlme::lme(fixed = myfm, random = ~ 1|sites, data = mydata) # no popstr PCs
+format_lmm(model, envvar) # output model result
+
+
 lmeres = foreach(ii = 1:nrow(deltap), .combine = 'rbind', .errorhandling = 'remove') %dopar% {
   yy = as.numeric(unlist(deltap[ii,]))
   print(yy)

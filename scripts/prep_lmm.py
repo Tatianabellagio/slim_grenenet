@@ -83,9 +83,9 @@ sites = env.map(mapenv)
 repl = p_norm.columns.str.split('_subp').str[1].astype(int)
 sites_env = pd.DataFrame({'sites': sites, 'repl': repl, 'env': env})
 
-print(env_file.shape)
-print(p_norm_file.shape)
-print(pop_structure_file.shape)
+print(sites_env.shape)
+print(p_norm.shape)
+print(pop_structure.shape)
 # save sites ande nv varaibel 
 sites_env.to_csv(env_file)
 # save p norm 

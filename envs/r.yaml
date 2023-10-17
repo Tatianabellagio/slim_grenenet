@@ -10,5 +10,5 @@ dependencies:
   - r-iterators=1.0.12
   - r-foreach=1.5.0
   - r-data.table=1.14.2 
-  - r-dplyr=1.0.7
+  - dplyr=1.1.3
 

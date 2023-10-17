@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 
 ecotype_counts = snakemake.input['ecotype_counts'] 
+print(ecotype_counts)
 allele_freq_file = snakemake.input['allele_freq'] 
 allele_freq_founder = snakemake.input['allele_freq_founder'] 
 pc_founders = snakemake.input['pc_founders'] 
@@ -37,6 +38,7 @@ p_norm = p_norm[p_norm.std(axis=1) > 0]
 
 ### ecotype freq normalized 
 ecotype_counts = pd.read_csv(ecotype_counts)
+print(ecotype_counts.shape)
 ## from ectoype counts to 
 ecotype_counts = ecotype_counts.drop(columns = 'Unnamed: 0')
 ## calculate inital ecotype freq 

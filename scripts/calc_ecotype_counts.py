@@ -36,7 +36,7 @@ def get_ecotype_counts(geno_new_rpos, pop_name):
         sample = i.tobytes()
         ecotype = ecotype_geno_mapper.get(sample, 'other')
         ecotype_counts[ecotype] += 1
-    name = 'count'+ pop_name
+    name = pop_name
     ecotype_countsdf = pd.DataFrame(list(ecotype_counts.items()), columns=['ecotype', name])
     ecotype_countsdf['ecotype'] = ecotype_countsdf['ecotype'].str.split('_').str[0]
     return ecotype_countsdf
@@ -53,7 +53,7 @@ ecotypes_grenenet = pd.concat([ecotypes_grenenet, pd.DataFrame(data = {'ecotype'
 
 for i in output_vcf_offset:
     print(i)
-    name = i.split('/optima')[1].split('_vcfgen')[0].replace('/', '_')
+    name = i.split('/')[-2] + '_' + i.split('/')[-1][0:5]
     if os.path.exists(i) and os.path.getsize(i) <= 1:
         print('empty_vcf')
         ecotypes_grenenet[name] = np.nan
@@ -67,7 +67,7 @@ for i in output_vcf_offset:
         ## for each of them create the ecotype geno mapper, depending on the positions that made it 
         geno_og_rpos, geno_new_rpos = filtering_pos(nonhet_pos, pos_new, geno_og, geno_new)
         ecotype_geno_mapper = get_ecotype_geno_mapper(geno_og_rpos)
-        ecotype_countsdf = get_ecotype_counts(geno_new_rpos, f'drift{i}')
+        ecotype_countsdf = get_ecotype_counts(geno_new_rpos, name)
         print(ecotype_countsdf)
         ## merge with previous 
         ecotypes_grenenet = ecotypes_grenenet.merge(ecotype_countsdf, how='left', on ='ecotype')

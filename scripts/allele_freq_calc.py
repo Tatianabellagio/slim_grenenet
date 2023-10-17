@@ -13,8 +13,6 @@ pos_vcf_og_counts['chrom_pos'] = pos_vcf_og_counts['chrom_pos'].astype('int')
 pos_vcf_og_freq = pd.read_csv(pos_vcf_og)
 pos_vcf_og_freq['chrom_pos'] = pos_vcf_og_freq['chrom_pos'].astype('int')
 
-
-
 def extract_allele_freq(samples, geno_array, pos, chrom, name):
     total_alleles = len(samples) * 2 
     alt_count = geno_array.sum(axis=2).sum(axis=1)
@@ -32,6 +30,7 @@ for i in output_vcf:
     if os.path.exists(i) and os.path.getsize(i) <= 1:
         print('empty_vcf')
         pos_vcf_og_counts[name] = np.nan
+        pos_vcf_og_freq[name] = np.nan
     
     elif os.path.exists(i) and os.path.getsize(i) > 1:
         vcf = allel.read_vcf(i)
@@ -46,8 +45,5 @@ for i in output_vcf:
         pos_vcf_og_freq = pos_vcf_og_freq.merge(alt_allele_freq, on ='chrom_pos', how='outer')
 
 
-
-print(len(pos_vcf_og_counts))
-print(len(pos_vcf_og_freq))
 pos_vcf_og_counts.to_csv(output_allele_counts)
 pos_vcf_og_freq.to_csv(output_allele_freq)

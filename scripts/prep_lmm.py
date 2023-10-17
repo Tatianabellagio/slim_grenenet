@@ -59,6 +59,8 @@ ecotype_deltapn = ecotype_deltapn.drop(['freq', 'deno_norm'],axis=1)
 ecotype_deltapn = ecotype_deltapn.drop('other')
 ecotype_deltapn_t = ecotype_deltapn.T
 
+print('ecotype_deltapn_t')
+print(ecotype_deltapn_t.shape)
 ### matrix multiplciation between the  ecotype freq and the pcs, constrcut population structure correction 
 
 pc_founders = pd.read_csv(pc_founders, sep = ' ', header=None)

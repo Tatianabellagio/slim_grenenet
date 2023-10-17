@@ -25,10 +25,13 @@ print(allele_freq.shape)
 ## imoport allele freq of the founder and normalize 
 allele_freq = pd.merge(allele_freq,allele_freq_founder, on ='chrom_pos')
 allele_freq = allele_freq.set_index('chrom_pos')
+print(allele_freq.shape)
 p_norm = pd.DataFrame(index = allele_freq.index)
+print(p_norm.shape)
 #p_norm.set_index(allele_freq.index)
 for col in allele_freq.columns:
     p_norm[col] = (allele_freq[col] - allele_freq['allele_freq_founder']) / allele_freq['deno_norm']
+print(p_norm.shape)
 p_norm = p_norm.drop(['allele_freq_founder','deno_norm'],axis=1)
 print(p_norm.shape)
 p_norm = p_norm.round(6)

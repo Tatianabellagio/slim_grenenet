@@ -155,7 +155,7 @@ rule run_lmm:
         mem_mb=30720,
     threads: 20,
     conda:
-        "envs/base_env.yaml"
+        "envs/r.yaml"
     script:
         "scripts/run_lmm_wpc.R"
 

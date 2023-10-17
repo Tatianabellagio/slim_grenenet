@@ -7,7 +7,7 @@ allele_freq_founder = snakemake.input['allele_freq_founder']
 pc_founders = snakemake.input['pc_founders'] 
 
 env_file = snakemake.output['env_variable'] 
-p_norm_file = snakemake.output['p_norm'] 
+p_norm_file = snakemake.output['allele_freq_norm'] 
 pop_structure_file = snakemake.ouput['pop_structure'] 
 
 ## import allele freq and founders allele freq 

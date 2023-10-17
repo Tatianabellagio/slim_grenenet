@@ -20,7 +20,10 @@ allele_freq = allele_freq.reset_index()
 allele_freq = allele_freq.fillna(0)
 
 ## first calculate delta p norm 
-
+print(allele_freq_founder.head())
+print(allele_freq_founder.dtypes)
+print(allele_freq.head())
+print(allele_freq.dtypes)
 ## imoport allele freq of the founder and normalize 
 allele_freq = pd.merge(allele_freq,allele_freq_founder, on ='chrom_pos')
 allele_freq = allele_freq.set_index('chrom_pos')

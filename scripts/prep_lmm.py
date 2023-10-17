@@ -6,9 +6,9 @@ allele_freq_file = snakemake.input['allele_freq']
 allele_freq_founder = snakemake.input['allele_freq_founder'] 
 pc_founders = snakemake.input['pc_founders'] 
 
-env = snakemake.output['env_variable'] 
-p_norm = snakemake.output['p_norm'] 
-pop_structure = snakemake.ouput['pop_structure'] 
+env_file = snakemake.output['env_variable'] 
+p_norm_file = snakemake.output['p_norm'] 
+pop_structure_file = snakemake.ouput['pop_structure'] 
 
 ## import allele freq and founders allele freq 
 allele_freq = pd.read_csv(allele_freq_file).drop(columns = 'Unnamed: 0')
@@ -76,10 +76,12 @@ sites = env.map(mapenv)
 repl = p_norm.columns.str.split('_subp').str[1].astype(int)
 sites_env = pd.DataFrame({'sites': sites, 'repl': repl, 'env': env})
 
-
+print(env_file)
+print(p_norm_file)
+print(pop_structure_file)
 # save sites ande nv varaibel 
-sites_env.to_csv(env)
+sites_env.to_csv(env_file)
 # save p norm 
-p_norm.to_csv(p_norm)
+p_norm.to_csv(p_norm_file)
 ## save pop structure
-pop_structure.to_csv(pop_structure)
+pop_structure.to_csv(pop_structure_file)

@@ -20,6 +20,15 @@ rule all:
             heritability=config["heritability"],
             replicates_arq=config["replicates_arq"],
         ),
+    input:
+        expand(
+            'results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/lmm_nopc_results.csv',
+            allele_freq=config['allele_freq'],
+            pi=config["pi"],
+            selection=config["selection"],
+            heritability=config["heritability"],
+            replicates_arq=config["replicates_arq"],
+        ),
 
 rule build_population_for_sim:
     input:
@@ -159,7 +168,7 @@ rule run_lmm_wpc:
     script:
         "scripts/run_lmm_wpc.R"
 
-rule run_lmm:
+rule run_lmm_nopc:
     input:
         env_sites="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/env_variable.csv",
         p_norm="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq_norm.csv",

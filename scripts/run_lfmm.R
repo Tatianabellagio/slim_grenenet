@@ -1,17 +1,14 @@
-package_name <- "lfmm"
-
 # Check if the package is already installed
-if (!requireNamespace(package_name, quietly = TRUE)) {
+if (!requireNamespace("lfmm", quietly = TRUE)) {
   # If the package is not installed, install it
   library(devtools)
   devtools::install_github("bcm-uga/lfmm")
 }
 
-
 library(lfmm)
 
-geno_file = snakemake@input[['gen']]
-env_file = snakemake@input[['env']]
+geno_file = snakemake@input[['allele_freq_norm']]
+env_file = snakemake@input[['env_var']]
 num_components_file = snakemake@input[['num_components']]
 
 pvalues_file = snakemake@output[['p_values_lfmm']]
@@ -22,7 +19,10 @@ num_components <- readLines(num_components_file, warn = FALSE)
 num_components <- as.integer(num_components[1])
 
 # Read the geno and env tables 
-Y <- as.matrix(read.csv(geno_file, sep = ',', header = FALSE))
+geno <- read.csv(geno_file, sep = ',', header = TRUE)
+geno <- geno[, !colnames(geno) %in% "chrom_pos"]
+geno <- sapply(geno, as.numeric)
+Y <- as.matrix(geno)
 X <- as.matrix(read.csv(env_file, sep = '', header = FALSE))
 
 # Check the number of columns in Y

@@ -2,66 +2,24 @@ import numpy as np
 import pandas as pd
 import os
 
-pheno_og = snakemake.input['pheno_og'] 
-fam_file_path = snakemake.input['og_famfile'] 
-
-allele_freq = snakemake.params['allele_freq'] 
-pi = snakemake.params['pi'] 
-beta = snakemake.params['beta'] 
-
-optima = snakemake.params['optima'] 
-generation = snakemake.params['generation'] 
-
-output_fam = snakemake.output[0]
+fam_file_input = snakemake.input['og_famfile'] 
+ecotype_counts_file = snakemake.input['og_famfile'] 
+fam_file_ouput = snakemake.output['fam_file_ouput'] 
 
 
-fam_file = pd.read_csv(fam_file_path, sep = ' ',header=None)
-pheno_og = pd.read_csv(pheno_og)
-path = 'results/arq_' +  allele_freq + '_' + pi + '_' + beta + '/optima' + str(optima)
+og_fam = pd.read_csv(fam_file_input, sep = ' ', header=None)
 
-## get valid subpaths 
-gen_name = 'generation' + str(generation) + '_phenotypes' 
-subps = [i for i in os.listdir(path) if gen_name in i]
+## eliminate the 'fakephenotpye'
+og_fam = og_fam.drop(5,axis=1)
 
+ecotypes = pd.read_csv(ecotype_counts_file).drop('Unnamed: 0',axis=1)
 
-## calculate the mean freq for all populations 
+ecotypes_counts = ecotypes.set_index('ecotype').sum(axis=1)
 
-all_subp = pd.DataFrame()
-for i in subps:
-    full_path = path + '/' + i
-    supb_number = i.split('_')[0]
-    ## check that the file is not empty 
-    if os.path.getsize(full_path) > 1:
-        
-        eco_evolved = pd.read_csv(full_path,header=None).T.dropna()
-        #print(eco_evolved)
-        num_ind = len(eco_evolved)
-        print(num_ind)
-        eco_evolved = eco_evolved.value_counts() / num_ind
-        eco_evolved.name = 'freq_' + supb_number
-        eco_evolved = eco_evolved.reset_index()
-    ## if it is empty create a dataframe where there is 0 freq of ecotypes
-    else:
-        data = {0: 0.0, 'freq_' + supb_number: 0.0}
-        index = [0]  # Specify the desired index
-        eco_evolved = pd.DataFrame(data, index=index)
-    
-    if all_subp.empty:
-        all_subp =  eco_evolved
-    else:
-        all_subp = all_subp.merge(eco_evolved, on =0, how='outer')
+ecotypes_counts = ecotypes_counts[ecotypes_counts.index != 'other']
 
-all_subp = all_subp.set_index(0).mean(axis=1)
-all_subp.name = 'freq'
-all_subp = all_subp.reset_index()
+ecotypes_counts.index = ecotypes_counts.index.astype(int)
 
+final_fam = pd.concat([og_fam.set_index(0), ecotypes_counts],axis=1).reset_index()
 
-eco_freq_og = pheno_og.merge(all_subp,how='left', left_on='0', right_on = 0 )
-
-eco_freq_og['freq'] = eco_freq_og['freq'].fillna(0)
-
-pheno = eco_freq_og['freq']
-
-fam_file[5] = pheno
-
-fam_file.to_csv(output_fam, sep = ' ',header=None, index= False)
+final_fam.to_csv(fam_file_ouput, header=None, index=None, sep = ' ')

@@ -316,3 +316,36 @@ rule run_gwa:
 
 ## adn for taht i need the orgiinal fasta file with all the chromosomes TAIR10_chr_all.fas.fai
 #bcftools reheader --fai TAIR10_chr_all.fas.fai qtl2_contrib.vcf > output.vcf
+
+
+
+## i think i should average across subp to run the gwas?? 
+
+rule create_famfile_gwa:
+    input:
+        ecotype_counts_file="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/ecotype_counts.csv",
+        fam_file_input=config["fam_file_og"]
+    output:
+        fam_file_ouput = "results/arq_{allele_freq}_{pi}_{beta}/gwas_generation{generation}/optima{optima}/geno.fam",
+    resources:
+        mem_mb=15350,
+    conda:
+        "envs/base_env.yaml"
+    script:
+        "scripts/generate_fam_files.py"
+
+rule run_gwa:
+    input:
+        fam_file="results/arq_{allele_freq}_{pi}_{beta}/gwas_generation{generation}/optima{optima}/geno.fam",
+        
+        bed_file=config['bed_file'],
+        bim_file=config['bim_file'],
+        kinship=config['kinship']
+    output:
+        output_gwas="results/arq_{allele_freq}_{pi}_{beta}/gwas_generation{generation}/optima{optima}/output/results.assoc.txt",
+    resources:
+        mem_mb=30720,
+    conda:
+        "envs/gwas.yaml"
+    script:
+        "scripts/gwas_gemma.sh"

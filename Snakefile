@@ -142,7 +142,7 @@ rule prep_lmm:
     script:
         "scripts/prep_lmm.py"
 
-rule run_lmm:
+rule run_lmm_wpc:
     input:
         env_sites="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/env_variable.csv",
         p_norm="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq_norm.csv",
@@ -158,6 +158,25 @@ rule run_lmm:
         "envs/r.yaml"
     script:
         "scripts/run_lmm_wpc.R"
+
+rule run_lmm:
+    input:
+        env_sites="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/env_variable.csv",
+        p_norm="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq_norm.csv",
+        pop_structure ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/pop_structure.csv",
+    output:
+        lmm_results ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/lmm_nopc_results.csv",
+    benchmark:
+        "benchmarks/lmm_nopc/arq_{allele_freq}_{pi}_{replicates_arq}_{heritability}_{selection}.txt"
+    resources:
+        mem_mb=30720,
+    threads: 20,
+    conda:
+        "envs/r.yaml"
+    script:
+        "scripts/run_lmm_nopc.R"
+
+
 
 
 

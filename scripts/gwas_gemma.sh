@@ -28,3 +28,4 @@ else
     mkdir output
     echo "All individuals died" > "output/results.assoc.txt"
 fi
+ 

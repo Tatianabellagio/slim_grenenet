@@ -9,13 +9,13 @@ fam_dir=$(dirname "$fam_file")
 
 #move to that directory 
 cd "$fam_dir"
-
+echo "$fam_dir"
 ## create the hardlinks to bed bim and kinship matrix
 
-echo "../../../../../$bed_file"
-ln -sf "../../../../../$kinship" kinship.cXX.txt
-ln -sf "../../../../../$bim_file" geno.bim
-ln -sf "../../../../../$bed_file" geno.bed
+echo "../../../../../../$bed_file"
+ln -sf "../../../../../../$kinship" kinship.cXX.txt
+ln -sf "../../../../../../$bim_file" geno.bim
+ln -sf "../../../../../../$bed_file" geno.bed
 
 ## adn now that all the files are in the same folder, run gemma 
 

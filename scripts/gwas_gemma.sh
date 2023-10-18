@@ -22,7 +22,7 @@ ln -sf "../../../../../../$bed_file" geno.bed
 ## Check if all individuals have the phenotype value as 0
 if awk -F ' ' '{print $6}' "geno.fam"| grep -vqE '^0(\.0+)?$'; then
     ## Run GWAS with Gemma gemma -bfile geno -lmm -k kinship.cXX.txt -o results -maf 0.00001
-    gemma -bfile geno -lmm -k kinship.cXX.txt -o results -maf 0.00001 --threads 20
+    gemma -bfile geno -lmm -k kinship.cXX.txt -o results -maf 0.00001
 else
     ## Create a file indicating all individuals died
     mkdir output

@@ -203,7 +203,6 @@ rule run_gwa:
         output_gwas="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/gwa/output/results.assoc.txt",
     resources:
         mem_mb=30720,
-    threads: 20,
     benchmark:
         "benchmarks/gwa/arq_{allele_freq}_{pi}_{replicates_arq}_{heritability}_{selection}_optima{optima}.txt"
     conda:

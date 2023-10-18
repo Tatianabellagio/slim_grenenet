@@ -2,8 +2,8 @@ import numpy as np
 import pandas as pd
 import os
 
-fam_file_input = snakemake.input['og_famfile'] 
-ecotype_counts_file = snakemake.input['og_famfile'] 
+fam_file_input = snakemake.input['fam_file_input'] 
+ecotype_counts_file = snakemake.input['ecotype_counts_file'] 
 fam_file_ouput = snakemake.output['fam_file_ouput'] 
 optima = snakemake.params['optima']
 

@@ -20,7 +20,6 @@ rule all:
             heritability=config["heritability"],
             replicates_arq=config["replicates_arq"],
         ),
-    input:
         expand(
             'results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/lmm_nopc_results.csv',
             allele_freq=config['allele_freq'],

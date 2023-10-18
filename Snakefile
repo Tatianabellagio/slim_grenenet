@@ -13,21 +13,15 @@ configfile: "config.yaml"
 rule all:
     input:
         expand(
-            'results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/lmm_pc_results.csv',
+            'results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/gwa/output/results.assoc.txt',
             allele_freq=config['allele_freq'],
             pi=config["pi"],
             selection=config["selection"],
             heritability=config["heritability"],
             replicates_arq=config["replicates_arq"],
+            optima=config["optima"],
         ),
-        expand(
-            'results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/lmm_nopc_results.csv',
-            allele_freq=config['allele_freq'],
-            pi=config["pi"],
-            selection=config["selection"],
-            heritability=config["heritability"],
-            replicates_arq=config["replicates_arq"],
-        ),
+
 
 rule build_population_for_sim:
     input:
@@ -184,8 +178,35 @@ rule run_lmm_nopc:
     script:
         "scripts/run_lmm_nopc.R"
 
+rule create_famfile_gwa:
+    input:
+        ecotype_counts_file="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/ecotype_counts.csv",
+        fam_file_input=config["fam_file"]
+    output:
+        fam_file_ouput = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/gwa/geno.fam",
+    params:
+        optima=lambda wildcards: str(wildcards.optima),
+    resources:
+        mem_mb=15350,
+    conda:
+        "envs/base_env.yaml"
+    script:
+        "scripts/generate_fam_files.py"
 
-
+rule run_gwa:
+    input:
+        fam_file="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/gwa/geno.fam",
+        bed_file=config['bed_file'],
+        bim_file=config['bim_file'],
+        kinship=config['kinship']
+    output:
+        output_gwas="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/gwa/output/results.assoc.txt",
+    resources:
+        mem_mb=30720,
+    conda:
+        "envs/gwas.yaml"
+    script:
+        "scripts/gwas_gemma.sh"
 
 
 

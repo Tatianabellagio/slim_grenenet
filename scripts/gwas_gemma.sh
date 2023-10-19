@@ -2,6 +2,7 @@ fam_file="${snakemake_input[fam_file]}"
 bed_file="${snakemake_input[bed_file]}"
 bim_file="${snakemake_input[bim_file]}"
 kinship="${snakemake_input[kinship]}"
+wd="${snakemake_param[wd]}"
 
 output="${snakemake_output[output_gwas]}"
 ## extract the directory in which the fam file is 
@@ -11,7 +12,7 @@ fam_dir=$(dirname "$fam_file")
 cd "$fam_dir"
 echo "$fam_dir"
 ## create the hardlinks to bed bim and kinship matrix
-
+echo $wd
 echo "../../../../../../$bed_file"
 ln -sf "../../../../../../$kinship" kinship.cXX.txt
 ln -sf "../../../../../../$bim_file" geno.bim

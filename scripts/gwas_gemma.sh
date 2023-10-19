@@ -7,7 +7,8 @@ wd="${snakemake_param[wd]}"
 output="${snakemake_output[output_gwas]}"
 ## extract the directory in which the fam file is 
 fam_dir=$(dirname "$fam_file")
-
+current_directory=$(pwd)
+echo "Current directory: $current_directory"
 #move to that directoryd 
 cd "$fam_dir"
 echo "$fam_dir"

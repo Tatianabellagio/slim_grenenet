@@ -201,8 +201,6 @@ rule run_gwa:
         kinship=config['kinship']
     output:
         output_gwas="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/gwa/output/results.assoc.txt",
-    params:
-        wd=os.getcwd()
     resources:
         mem_mb=30720,
     benchmark:

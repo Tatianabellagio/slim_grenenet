@@ -17,15 +17,20 @@ ln -sf "${base_directory}${kinship}" kinship.cXX.txt
 ln -sf "${base_directory}${bim_file}" geno.bim
 ln -sf "${base_directory}${bed_file}" geno.bed
 
-## adn now that all the files are in the same folder, run gemma 
-awk 'BEGIN { rows=0; cols=0; } { rows++; cols=NF; } END { print rows, cols; }' geno.fam
+# Count the number of columns in the file
+num_columns=$(awk -F ' ' 'NR==1 {print NF; exit}' "geno.fam")
 
-#if awk -F ' ' 'NF==6 {exit 1}' "../data/greneNet_final_v1.1.recode.fam"; then
-if awk -F ' ' 'NF!=6 {flag=1; exit} END {if (flag) exit 1}' "geno.fam"; then
-    ## Run GWAS with Gemma gemma -bfile geno -lmm -k kinship.cXX.txt -o results -maf 0.00001
-    gemma -bfile geno -lmm -k kinship.cXX.txt -o results -maf 0.00001
+# Check if the number of columns is not 6
+if [ "$num_columns" -ne 6 ]; then
+    echo "fam file wrong dimensions"
+    exit 1
 else
-    ## Create a file indicating all individuals died
-    mkdir output
-    echo "All individuals died" > "output/results.assoc.txt"
+    # Check if all values in the 6th column are 0
+    if awk -F ' ' '{print $6}' "geno.fam" | grep -qE '^[^0]|0[^.].*$'; then
+        gemma -bfile geno -lmm -k kinship.cXX.txt -o results -maf 0.00001
+    else
+        mkdir output
+        echo "All individuals died" > "output/results.assoc.txt"
+    fi
 fi
+

@@ -11,11 +11,11 @@ fam_dir=$(dirname "$fam_file")
 cd "$fam_dir"
 echo "$fam_dir"
 ## create the hardlinks to bed bim and kinship matrix
-echo "${base_directory}${bed_file}"
+echo "${base_directory}/${bed_file}"
 
-ln -sf "${base_directory}${kinship}" kinship.cXX.txt
-ln -sf "${base_directory}${bim_file}" geno.bim
-ln -sf "${base_directory}${bed_file}" geno.bed
+ln -sf "${base_directory}/${kinship}" kinship.cXX.txt
+ln -sf "${base_directory}/${bim_file}" geno.bim
+ln -sf "${base_directory}/${bed_file}" geno.bed
 
 # Count the number of columns in the file
 num_columns=$(awk -F ' ' 'NR==1 {print NF; exit}' "geno.fam")

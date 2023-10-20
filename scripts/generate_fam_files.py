@@ -9,7 +9,7 @@ optima = snakemake.params['optima']
 
 optima_full = 'optima' + optima
 
-og_fam = pd.read_csv(fam_file, sep = ' ', header=None)
+og_fam = pd.read_csv(fam_file_input, sep = ' ', header=None)
 
 ## eliminate the 'fakephenotpye'
 og_fam = og_fam.drop(5,axis=1)

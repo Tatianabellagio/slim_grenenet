@@ -21,6 +21,22 @@ rule all:
             replicates_arq=config["replicates_arq"],
             optima=config["optima"],
         ),
+        expand(
+            'results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/lmm_pc_results.csv',
+            allele_freq=config['allele_freq'],
+            pi=config["pi"],
+            selection=config["selection"],
+            heritability=config["heritability"],
+            replicates_arq=config["replicates_arq"],
+        ),
+        expand(
+            'results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/lmm_nopc_results.csv',
+            allele_freq=config['allele_freq'],
+            pi=config["pi"],
+            selection=config["selection"],
+            heritability=config["heritability"],
+            replicates_arq=config["replicates_arq"],
+        ),
 
 
 rule build_population_for_sim:

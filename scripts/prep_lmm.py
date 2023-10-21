@@ -13,33 +13,29 @@ pop_structure_file = snakemake.output['pop_structure']
 ## import allele freq and founders allele freq 
 allele_freq = pd.read_csv(allele_freq_file).drop(columns = 'Unnamed: 0')
 allele_freq_founder = pd.read_csv(allele_freq_founder)
-print(allele_freq_founder.shape)
+## convert allele allele_freq_founder chrom pos to int so it can be merged with allele_freq
 allele_freq_founder['chrom_pos'] = allele_freq_founder['chrom_pos'].astype(int)
 ## eliminate duplciates basically positions where the allele freq is the same in all 
-allele_freq = allele_freq.round(6)
-print(allele_freq.shape)
+allele_freq = allele_freq.round(10)
 allele_freq = allele_freq.set_index('chrom_pos').drop_duplicates()
+## convert back chrom pos to a column
 allele_freq = allele_freq.reset_index()
+## all the values where there is no allele freq is because thea llele freq is basically 0 
 allele_freq = allele_freq.fillna(0)
-print(allele_freq.shape)
 ## first calculate delta p norm 
 ## imoport allele freq of the founder and normalize 
 allele_freq = pd.merge(allele_freq,allele_freq_founder, on ='chrom_pos')
-print(allele_freq.shape)
 allele_freq = allele_freq.set_index('chrom_pos')
-print(allele_freq.shape)
-p_norm = pd.DataFrame(index = allele_freq.index)
-print(p_norm.shape)
-#p_norm.set_index(allele_freq.index)
+
+p_norm = pd.DataFrame()
 for col in allele_freq.columns:
     p_norm[col] = (allele_freq[col] - allele_freq['allele_freq_founder']) / allele_freq['deno_norm']
-print(p_norm.shape)
+
 p_norm = p_norm.drop(['allele_freq_founder','deno_norm'],axis=1)
-print(p_norm.shape)
-p_norm = p_norm.round(6)
+
+p_norm = p_norm.round(10)
 ## eliminate rows with all the same values
 p_norm = p_norm[p_norm.std(axis=1) > 0]
-print(p_norm.shape)
 
 
 
@@ -49,7 +45,9 @@ ecotype_counts = pd.read_csv(ecotype_counts)
 ecotype_counts = ecotype_counts.drop(columns = 'Unnamed: 0')
 ## calculate inital ecotype freq 
 ecotypep0 = ecotype_counts['ecotype'].copy()
-ecotypep0 = pd.DataFrame({'ecotypep0': ecotypep0, 'freq': 11/2541})
+## all thee cotypes had the same initial freq 
+initial_freq = 11/2541
+ecotypep0 = pd.DataFrame({'ecotypep0': ecotypep0, 'freq': initial_freq})
 ## other has initial freq. 0 
 ecotypep0.loc[ecotypep0['ecotypep0'] == 'other', 'freq'] = 0
 ecotype_counts = ecotype_counts.set_index('ecotype')

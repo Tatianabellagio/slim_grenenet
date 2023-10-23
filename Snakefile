@@ -13,7 +13,7 @@ configfile: "config.yaml"
 rule all:
     input:
         expand(
-            'results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/gwa/output/results.assoc.txt',
+            'results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/gwa/output/results_nmaf.assoc.txt',
             allele_freq=config['allele_freq'],
             pi=config["pi"],
             selection=config["selection"],

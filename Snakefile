@@ -216,11 +216,11 @@ rule run_gwa:
         bim_file=config['bim_file'],
         kinship=config['kinship']
     output:
-        output_gwas="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/gwa/output/results.assoc.txt",
+        output_gwas="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/gwa/output/results_nmaf.assoc.txt",
     resources:
         mem_mb=30720,
     benchmark:
-        "benchmarks/gwa/arq_{allele_freq}_{pi}_{replicates_arq}_{heritability}_{selection}_optima{optima}.txt"
+        "benchmarks/gwa_nmaf/arq_{allele_freq}_{pi}_{replicates_arq}_{heritability}_{selection}_optima{optima}.txt"
     conda:
         "envs/gwas.yaml"
     script:

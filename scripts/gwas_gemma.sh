@@ -27,10 +27,10 @@ if [ "$num_columns" -ne 6 ]; then
 else
     # Check if all values in the 6th column are 0
     if awk -F ' ' '{print $6}' "geno.fam" | grep -qE '^[^0]|0[^.].*$'; then
-        gemma -bfile geno -lmm -k kinship.cXX.txt -o results -maf 0.00001
+        gemma -bfile geno -lmm -k kinship.cXX.txt -o results_nmaf
     else
         mkdir output
-        echo "All individuals died" > "output/results.assoc.txt"
+        echo "All individuals died" > "output/results_nmaf.assoc.txt"
     fi
 fi
 

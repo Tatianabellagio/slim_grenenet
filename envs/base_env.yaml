@@ -4,11 +4,11 @@ channels:
   - bioconda
   - defaults
 dependencies:
+  - python=3.9
   - Bash=5.2.15 
   - BCFtools=1.10.2
   - HTSlib=1.10.2
   - SLiM=4.0.1
-  - python=3.9
   - pip=23.1.2=pyhd8ed1ab_0
   - pip:
     - jsonschema==4.18.6

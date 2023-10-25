@@ -68,7 +68,7 @@ replicates_sim: [1,2,3,4,5]
 replicates_arq: [1,2,3,4,5]
 
 # number of different environments to simulate
-optima: [-2,-1,0,1,2]
+optima: [-5,-4,-3,-2,-1,0,1,2,3,4,5]
 
 
 

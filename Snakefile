@@ -138,8 +138,8 @@ rule prep_lmm:
     input:
         allele_freq_founder_offset=config['allele_freq_founder_offset'],
         pc_founders=config['pc_founders'],
-        ecotype_counts ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/ecotype_counts.csv",
-        allele_freq ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq.csv",
+        ecotype_counts ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/ecotype_counts10env.csv",
+        allele_freq ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq10env.csv",
     output:
         env_variable ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/env_variable10env.csv",
         allele_freq_norm="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq_norm10env.csv",

@@ -69,7 +69,7 @@ replicates_arq: [1,2,3,4,5]
 
 # number of different environments to simulate
 optima: [-5,-4,-3,-2,-1,0,1,2,3,4,5]
-mapenv: {-5:0, -4:1, -3:2, -2:3, -1:4, 0:5, 1:6, 2:7, 3:8 , 4:9 ,5:10}
+mapenv: '{-5:0, -4:1, -3:2, -2:3, -1:4, 0:5, 1:6, 2:7, 3:8 , 4:9 ,5:10}'
 
 
 ### for gwas

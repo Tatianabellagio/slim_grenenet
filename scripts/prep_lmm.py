@@ -37,7 +37,7 @@ p_norm = p_norm.drop(['allele_freq_founder','deno_norm'],axis=1)
 #p_norm = p_norm.round(10)
 ## eliminate rows with all the same valuesbecause the linear model will just nor tun 
 p_norm = p_norm[p_norm.round(5).std(axis=1) > 0]
-
+print(p_norm.head())
 
 
 ### ecotype freq normalized 

@@ -13,6 +13,7 @@ pop_structure_file = snakemake.output['pop_structure']
 
 ## import allele freq and founders allele freq 
 allele_freq = pd.read_csv(allele_freq_file).drop(columns = 'Unnamed: 0')
+print(allele_freq.head())
 allele_freq_founder = pd.read_csv(allele_freq_founder)
 ## convert allele allele_freq_founder chrom pos to int so it can be merged with allele_freq
 allele_freq_founder['chrom_pos'] = allele_freq_founder['chrom_pos'].astype(int)
@@ -20,14 +21,14 @@ allele_freq_founder['chrom_pos'] = allele_freq_founder['chrom_pos'].astype(int)
 #allele_freq = allele_freq.round(10)
 #allele_freq = allele_freq.set_index('chrom_pos').drop_duplicates()
 ## convert back chrom pos to a column
-allele_freq = allele_freq.reset_index()
+#allele_freq = allele_freq.reset_index()
 ## all the values where there is no allele freq is because thea llele freq is basically 0 
 allele_freq = allele_freq.fillna(0)
 ## first calculate delta p norm 
 ## imoport allele freq of the founder and normalize 
 allele_freq = pd.merge(allele_freq,allele_freq_founder, on ='chrom_pos')
-allele_freq = allele_freq.set_index('chrom_pos')
-
+#allele_freq = allele_freq.set_index('chrom_pos')
+print(allele_freq.head())
 p_norm = pd.DataFrame()
 for col in allele_freq.columns:
     p_norm[col] = (allele_freq[col] - allele_freq['allele_freq_founder']) / allele_freq['deno_norm']

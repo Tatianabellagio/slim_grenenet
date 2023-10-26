@@ -5,6 +5,7 @@ ecotype_counts = snakemake.input['ecotype_counts']
 allele_freq_file = snakemake.input['allele_freq'] 
 allele_freq_founder = snakemake.input['allele_freq_founder_offset'] 
 pc_founders = snakemake.input['pc_founders'] 
+mapenv = snakemake.input['mapenv'] 
 
 env_file = snakemake.output['env_variable'] 
 p_norm_file = snakemake.output['allele_freq_norm'] 
@@ -79,7 +80,7 @@ pop_structure.columns = ['PC1', 'PC2', 'PC3']
 
 ## create env variable  
 env = p_norm.columns.str.split('_subp').str[0].str.replace('optima', '').astype(int)
-mapenv = {-2:0, -1:1, 0:2, 1:3, 2:4}
+mapenv = eval(mapenv)
 sites = env.map(mapenv)
 repl = p_norm.columns.str.split('_subp').str[1].astype(int)
 sites_env = pd.DataFrame({'sites': sites, 'repl': repl, 'env': env})

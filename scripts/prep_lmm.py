@@ -16,8 +16,8 @@ allele_freq_founder = pd.read_csv(allele_freq_founder)
 ## convert allele allele_freq_founder chrom pos to int so it can be merged with allele_freq
 allele_freq_founder['chrom_pos'] = allele_freq_founder['chrom_pos'].astype(int)
 ## eliminate duplciates basically positions where the allele freq is the same in all 
-allele_freq = allele_freq.round(10)
-allele_freq = allele_freq.set_index('chrom_pos').drop_duplicates()
+#allele_freq = allele_freq.round(10)
+#allele_freq = allele_freq.set_index('chrom_pos').drop_duplicates()
 ## convert back chrom pos to a column
 allele_freq = allele_freq.reset_index()
 ## all the values where there is no allele freq is because thea llele freq is basically 0 
@@ -33,9 +33,9 @@ for col in allele_freq.columns:
 
 p_norm = p_norm.drop(['allele_freq_founder','deno_norm'],axis=1)
 
-p_norm = p_norm.round(10)
-## eliminate rows with all the same values
-p_norm = p_norm[p_norm.std(axis=1) > 0]
+#p_norm = p_norm.round(10)
+## eliminate rows with all the same valuesbecause the linear model will just nor tun 
+p_norm = p_norm[p_norm.round(5).std(axis=1) > 0]
 
 
 

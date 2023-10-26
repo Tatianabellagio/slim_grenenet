@@ -50,7 +50,7 @@ mydata = prep_lmm(yy, env_sites, envvar, pop_strc)
 print(mydata)
 model = nlme::lme(fixed = myfm, random = ~ 1|sites, data = mydata) # no popstr PCs
 format_lmm(model, envvar) # output model results
-
+print('model run')
 lmeres = foreach(ii = 1:nrow(deltap), .combine = 'rbind', .errorhandling = 'remove') %dopar% {
   yy = as.numeric(unlist(deltap[ii,]))
   print(yy)

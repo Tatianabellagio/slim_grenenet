@@ -35,7 +35,7 @@ def load_cluster_config(path):
         dcc["__default__"] = {}
     return dcc
 
-# adapted from format function in snakemake.utils
+# adapted from format function in snakemake.utils test
 def format(_pattern, _quote_all=False, **kwargs):
     """Format a pattern in Snakemake style.
     This means that keywords embedded in braces are replaced by any variable

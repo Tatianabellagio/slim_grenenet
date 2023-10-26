@@ -5,7 +5,7 @@ ecotype_counts = snakemake.input['ecotype_counts']
 allele_freq_file = snakemake.input['allele_freq'] 
 allele_freq_founder = snakemake.input['allele_freq_founder_offset'] 
 pc_founders = snakemake.input['pc_founders'] 
-mapenv = snakemake.input['mapenv'] 
+mapenv = snakemake.params['mapenv'] 
 
 env_file = snakemake.output['env_variable'] 
 p_norm_file = snakemake.output['allele_freq_norm'] 

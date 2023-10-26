@@ -140,11 +140,12 @@ rule prep_lmm:
         pc_founders=config['pc_founders'],
         ecotype_counts ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/ecotype_counts10env.csv",
         allele_freq ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq10env.csv",
-        mapenv=config['mapenv'],
     output:
         env_variable ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/env_variable10env.csv",
         allele_freq_norm="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq_norm10env.csv",
         pop_structure ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/pop_structure10env.csv",
+    params:
+        mapenv=config['mapenv'],
     resources:
         mem_mb=30720,
     conda:

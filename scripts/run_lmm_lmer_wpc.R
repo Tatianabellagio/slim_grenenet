@@ -52,7 +52,10 @@ mydata = prep_lmm(yy, env_sites, envvar, pop_strc)
 print(mydata)
 model <- lmer('yy ~ env + PC1 + PC2 + PC3 + (1|sites)', data=mydata,  REML = FALSE)
 
-format_lmer(model) # output model results
+output = format_lmer(model) # output model results
+print(output)
+
+dimnames(output)[[2]] = c('env_value', 'env_eror', 'p_value_env','intercept_value', 'intercept_eror', 'bic', 'lrt')
 print(output)
 
 lmeres = foreach(ii = 1:nrow(deltap), .combine = 'rbind', .errorhandling = 'remove') %dopar% {

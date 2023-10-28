@@ -60,6 +60,7 @@ lmeres = foreach(ii = 1:3, .combine = 'rbind', .errorhandling = 'remove', .expor
             BIC(model),
             p_value = l_ratio['env', 'Pr(>F)'])
 }
-
+print(lmeres)
+class(lmeres)
 dimnames(lmeres)[[2]] = c('env_value', 'env_eror', 'p_value_env','intercept_value', 'intercept_eror', 'bic', 'lrt')
 write.csv(lmeres, file = lmm_results)

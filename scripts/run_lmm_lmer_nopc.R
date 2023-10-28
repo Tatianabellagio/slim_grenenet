@@ -43,8 +43,9 @@ format_lmer <- function(mymodel) {
 ## set up the model
 myfm = as.formula(paste0('yy ~ env'))
 
-functions_to_export <- c("lmer", "fixef")
-lmeres = foreach(ii = 1:nrow(deltap), .combine = 'rbind', .errorhandling = 'remove', .export = functions_to_export ) %dopar% {
+functions_to_export <- c("lmer", "fixef")  
+#nrow(deltap)
+lmeres = foreach(ii = 1:3, .combine = 'rbind', .errorhandling = 'remove', .export = functions_to_export ) %dopar% {
   yy = as.numeric(unlist(deltap[ii,]))
   .GlobalEnv$myfm <- myfm # fix a global env bug
   mydata = prep_lmm(yy, env_sites, envvar, pop_strc) 

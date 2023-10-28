@@ -53,11 +53,6 @@ print(mydata)
 model <- lmer('yy ~ env + PC1 + PC2 + PC3 + (1|sites)', data=mydata,  REML = FALSE)
 
 format_lmer(model) # output model results
-
-
-
-
-output = format_lmm(model, envvar) # output model results
 print(output)
 
 lmeres = foreach(ii = 1:nrow(deltap), .combine = 'rbind', .errorhandling = 'remove') %dopar% {

@@ -52,7 +52,7 @@ mydata = prep_lmm(yy, env_sites, envvar, pop_strc)
 print(mydata)
 model <- lmer('yy ~ env + PC1 + PC2 + PC3 + (1|sites)', data=mydata,  REML = FALSE)
 
-format_lmm(model, envvar) # output model results
+format_lmer(model, envvar) # output model results
 
 
 
@@ -67,7 +67,7 @@ lmeres = foreach(ii = 1:nrow(deltap), .combine = 'rbind', .errorhandling = 'remo
 
   model <- lmer('yy ~ env + PC1 + PC2 + PC3 + (1|sites)', data=mydata,  REML = FALSE)
 
-  format_lmm(model, envvar) # output model results
+  format_lmer(model) # output model results
 }
 
 dimnames(lmeres)[[2]] = c('env_value', 'env_eror', 'p_value_env','intercept_value', 'intercept_eror', 'bic', 'lrt')

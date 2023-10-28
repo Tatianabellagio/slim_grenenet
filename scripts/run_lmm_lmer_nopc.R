@@ -17,7 +17,6 @@ lmm_results = snakemake@output[["lmm_results"]]
 env_sites = read.csv(env_sites, row.names = 1, )
 p_norm = read.csv(p_norm)
 deltap = subset(p_norm, select = -chrom_pos)
-pop_strc = read.csv(pop_structure,row.names = 1)
 
 
 # assemble lmm objects
@@ -48,7 +47,7 @@ functions_to_export <- c("lmer", "fixef")
 lmeres = foreach(ii = 1:3, .combine = 'rbind', .errorhandling = 'remove', .export = functions_to_export ) %dopar% {
   yy = as.numeric(unlist(deltap[ii,]))
   .GlobalEnv$myfm <- myfm # fix a global env bug
-  mydata = prep_lmm(yy, env_sites, envvar, pop_strc) 
+  mydata = prep_lmm(yy, env_sites, envvar) 
 
   model <- lmer('yy ~ env + (1|sites)', data=mydata,  REML = FALSE)
   l_ratio = drop1(model,test="Chisq") #test="Chisq"

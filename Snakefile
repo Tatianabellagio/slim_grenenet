@@ -168,7 +168,7 @@ rule run_lmm_wpc:
     conda:
         "envs/r.yaml"
     script:
-        "scripts/run_lmm_wpc.R"
+        "scripts/run_lmm_lmer_wpc.R"
 
 rule run_lmm_nopc:
     input:
@@ -185,7 +185,7 @@ rule run_lmm_nopc:
     conda:
         "envs/r.yaml"
     script:
-        "scripts/run_lmm_nopc.R"
+        "scripts/run_lmm_lmer_nopc.R"
 
 rule create_famfile_gwa:
     input:

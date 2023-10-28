@@ -1,6 +1,7 @@
 library(dplyr)
 library(data.table)
 library(doParallel)
+library(stats)
 ## 20 threads
 cl <- makeCluster(20)
 registerDoParallel(cl)

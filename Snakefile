@@ -163,7 +163,7 @@ rule run_lmm_wpc:
     benchmark:
         "benchmarks/lmm10env/arq_{allele_freq}_{pi}_{replicates_arq}_{heritability}_{selection}.txt"
     resources:
-        mem_mb=51200,
+        mem_mb=61440,
     threads: 20,
     conda:
         "envs/r.yaml"
@@ -180,7 +180,7 @@ rule run_lmm_nopc:
     benchmark:
         "benchmarks/lmm_nopc10env/arq_{allele_freq}_{pi}_{replicates_arq}_{heritability}_{selection}.txt"
     resources:
-        mem_mb=51200 ,
+        mem_mb=61440 ,
     threads: 20,
     conda:
         "envs/r.yaml"

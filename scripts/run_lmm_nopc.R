@@ -30,10 +30,12 @@ prep_lmm <- function(yy, env_sites, envvar) {
 format_lmm <- function(mymodel, envvar) {
   lmesum = summary(mymodel)
   lmer2 = MuMIn::r.squaredGLMM(mymodel) # contains two rows
+  l_ratio = drop1(mymodel,test="Chisq") 
   outdt = c(lmer2,
             lmesum$tTable[envvar, "Value"],
             lmesum$tTable[envvar, "p-value"],
-            lmesum$BIC)
+            lmesum$BIC,
+            l_ratio$'Pr(>Chi)'[2])
   return(outdt)
 }
 
@@ -51,5 +53,5 @@ lmeres = foreach(ii = 1:nrow(deltap), .combine = 'rbind', .errorhandling = 'remo
   format_lmm(model, envvar) # output model results
 }
 
-dimnames(lmeres)[[2]] = c('R2m', 'R2c', 'beta', 'beta_p', 'BIC')
+dimnames(lmeres)[[2]] = c('R2m', 'R2c', 'beta', 'beta_p', 'BIC', 'lrt')
 write.csv(lmeres, file = lmm_results)

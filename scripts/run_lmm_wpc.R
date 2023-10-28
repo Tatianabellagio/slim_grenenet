@@ -30,10 +30,13 @@ prep_lmm <- function(yy, env_sites, envvar, pop_strc) {
 format_lmm <- function(mymodel, envvar) {
   lmesum = summary(mymodel)
   lmer2 = MuMIn::r.squaredGLMM(mymodel) # contains two rows
+  l_ratio = drop1(mymodel,test="Chisq") 
   outdt = c(lmer2,
             lmesum$tTable[envvar, "Value"],
             lmesum$tTable[envvar, "p-value"],
-            lmesum$BIC)
+            lmesum$BIC,
+            l_ratio$'Pr(>Chi)'[2]
+            )
   return(outdt)
 }
 
@@ -51,9 +54,9 @@ print(mydata)
 model = nlme::lme(fixed = myfm, random = ~ 1|sites, data = mydata) # no popstr PCs
 output = format_lmm(model, envvar) # output model results
 print(output)
+
 lmeres = foreach(ii = 1:nrow(deltap), .combine = 'rbind', .errorhandling = 'remove') %dopar% {
   yy = as.numeric(unlist(deltap[ii,]))
-  print(yy)
   .GlobalEnv$myfm <- myfm # fix a global env bug
   mydata = prep_lmm(yy, env_sites, envvar, pop_strc) 
   #print(mydata)
@@ -64,7 +67,7 @@ lmeres = foreach(ii = 1:nrow(deltap), .combine = 'rbind', .errorhandling = 'remo
 print(lmeres)
 print(dim(deltap))
 print(dim(lmeres))
-dimnames(lmeres)[[2]] = c('R2m', 'R2c', 'beta', 'beta_p', 'BIC')
+dimnames(lmeres)[[2]] = c('R2m', 'R2c', 'beta', 'beta_p', 'BIC', 'lrt')
 
 print(dim(deltap))
 print(dim(lmeres))

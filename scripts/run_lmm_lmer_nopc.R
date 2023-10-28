@@ -43,14 +43,21 @@ format_lmer <- function(mymodel) {
 ## set up the model
 myfm = as.formula(paste0('yy ~ env'))
 
-lmeres = foreach(ii = 1:nrow(deltap), .combine = 'rbind', .errorhandling = 'remove') %dopar% {
+functions_to_export <- c("lmer", "fixef")
+lmeres = foreach(ii = 1:nrow(deltap), .combine = 'rbind', .errorhandling = 'remove', .export = functions_to_export ) %dopar% {
   yy = as.numeric(unlist(deltap[ii,]))
   .GlobalEnv$myfm <- myfm # fix a global env bug
   mydata = prep_lmm(yy, env_sites, envvar, pop_strc) 
 
   model <- lmer('yy ~ env + (1|sites)', data=mydata,  REML = FALSE)
-
-  format_lmer(model) # output model results
+  l_ratio = drop1(model,test="Chisq") #test="Chisq"
+  outdt = c(fixef(model)['env'],
+            summary(model)$coefficients[, "Std. Error"]['env'],
+            anova(model)['env', 'Pr(>F)'],
+            fixef(model)['(Intercept)'],
+            summary(model)$coefficients[, "Std. Error"]['(Intercept)'],
+            BIC(model),
+            p_value = l_ratio['env', 'Pr(>F)'])
 }
 
 dimnames(lmeres)[[2]] = c('env_value', 'env_eror', 'p_value_env','intercept_value', 'intercept_eror', 'bic', 'lrt')

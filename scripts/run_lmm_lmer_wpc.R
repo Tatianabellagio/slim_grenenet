@@ -57,13 +57,11 @@ print(output)
 
 #nrow(deltap)
 functions_to_export <- c("lmer", "fixef")
-lmeres = foreach(ii = 1:3, .combine = rbind, .export = functions_to_export ) %dopar% {
+lmeres = foreach(ii = 1:nrow(deltap), .combine = rbind, .export = functions_to_export ) %dopar% {
   yy = as.numeric(unlist(deltap[ii,]))
   #.GlobalEnv$myfm <- myfm # fix a global env bug
   mydata = prep_lmm(yy, env_sites, envvar, pop_strc) 
-  print(mydata)
   model <- lmer('yy ~ env + PC1 + PC2 + PC3 + (1|sites)', data=mydata,  REML = FALSE)
-  
   l_ratio = drop1(model,test="Chisq") #test="Chisq"
   outdt = c(fixef(model)['env'],
             summary(model)$coefficients[, "Std. Error"]['env'],

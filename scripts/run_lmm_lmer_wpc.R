@@ -55,8 +55,6 @@ model <- lmer('yy ~ env + PC1 + PC2 + PC3 + (1|sites)', data=mydata,  REML = FAL
 output = format_lmer(model) # output model results
 print(output)
 
-dimnames(output)[[2]] = c('env_value', 'env_eror', 'p_value_env','intercept_value', 'intercept_eror', 'bic', 'lrt')
-print(output)
 #nrow(deltap)
 lmeres = foreach(ii = 1:3, .combine = 'rbind', .errorhandling = 'remove') %dopar% {
   yy = as.numeric(unlist(deltap[ii,]))

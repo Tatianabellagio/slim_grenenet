@@ -57,8 +57,8 @@ print(output)
 
 dimnames(output)[[2]] = c('env_value', 'env_eror', 'p_value_env','intercept_value', 'intercept_eror', 'bic', 'lrt')
 print(output)
-
-lmeres = foreach(ii = 1:nrow(deltap), .combine = 'rbind', .errorhandling = 'remove') %dopar% {
+#nrow(deltap)
+lmeres = foreach(ii = 1:3, .combine = 'rbind', .errorhandling = 'remove') %dopar% {
   yy = as.numeric(unlist(deltap[ii,]))
   .GlobalEnv$myfm <- myfm # fix a global env bug
   mydata = prep_lmm(yy, env_sites, envvar, pop_strc) 
@@ -68,7 +68,10 @@ lmeres = foreach(ii = 1:nrow(deltap), .combine = 'rbind', .errorhandling = 'remo
   format_lmer(model) # output model results
 }
 
+print(lmeres)
+class(lmeres)
 dimnames(lmeres)[[2]] = c('env_value', 'env_eror', 'p_value_env','intercept_value', 'intercept_eror', 'bic', 'lrt')
+#colnames(final_results_lmer) <- c('env_value', 'env_eror', 'p_value_env','intercept_value', 'intercept_eror', 'bic')
 
 print(lmeres)
 print(dim(deltap))

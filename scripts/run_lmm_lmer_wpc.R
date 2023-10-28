@@ -62,8 +62,17 @@ lmeres = foreach(ii = 1:3, .combine = 'rbind', .errorhandling = 'remove') %dopar
   mydata = prep_lmm(yy, env_sites, envvar, pop_strc) 
 
   model <- lmer('yy ~ env + PC1 + PC2 + PC3 + (1|sites)', data=mydata,  REML = FALSE)
-
-  format_lmer(model) # output model results
+  l_ratio = drop1(model,test="Chisq") #test="Chisq"
+  outdt = c(fixef(model)['env'],
+            summary(model)$coefficients[, "Std. Error"]['env'],
+            anova(model)$"Pr(>F)",
+            fixef(model)['(Intercept)'],
+            summary(model)$coefficients[, "Std. Error"]['(Intercept)'],
+            BIC(model),
+            p_value = l_ratio$'Pr(>Chi)'[2]
+  )
+  outdt
+  #format_lmer(model) # output model results
 }
 
 print(lmeres)

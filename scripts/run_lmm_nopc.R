@@ -48,7 +48,7 @@ lmeres = foreach(ii = 1:nrow(deltap), .combine = 'rbind', .errorhandling = 'remo
   .GlobalEnv$myfm <- myfm # fix a global env bug
   mydata = prep_lmm(yy, env_sites, envvar, pop_strc) 
 
-  model = nlme::lme(fixed = myfm, random = ~ 1|sites, data = mydata) # no popstr PCs
+  model = nlme::lme(fixed = myfm, random = ~ 1|sites, data = mydata, method = 'ML') # no popstr PCs
 
   format_lmm(model, envvar) # output model results
 }

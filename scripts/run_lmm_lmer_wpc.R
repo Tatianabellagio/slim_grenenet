@@ -31,7 +31,7 @@ prep_lmm <- function(yy, env_sites, envvar, pop_strc) {
 
 # get lmm model results
 format_lmer <- function(mymodel) {
-  l_ratio = drop1(model,test="Chisq") #test="Chisq"
+  l_ratio = drop1(mymodel,test="Chisq") #test="Chisq"
   outdt = c(fixef(model)['env'],
             summary(model)$coefficients[, "Std. Error"]['env'],
             anova(model)$"Pr(>F)",
@@ -56,24 +56,24 @@ output = format_lmer(model) # output model results
 print(output)
 
 #nrow(deltap)
-lmeres = foreach(ii = 1:3, .combine = 'rbind', .errorhandling = 'remove') %dopar% {
+functions_to_export <- c("lmer", "fixef")
+lmeres = foreach(ii = 1:3, .combine = rbind, .export = functions_to_export ) %dopar% {
   yy = as.numeric(unlist(deltap[ii,]))
-  .GlobalEnv$myfm <- myfm # fix a global env bug
+  #.GlobalEnv$myfm <- myfm # fix a global env bug
   mydata = prep_lmm(yy, env_sites, envvar, pop_strc) 
-
+  print(mydata)
   model <- lmer('yy ~ env + PC1 + PC2 + PC3 + (1|sites)', data=mydata,  REML = FALSE)
+  
   l_ratio = drop1(model,test="Chisq") #test="Chisq"
   outdt = c(fixef(model)['env'],
             summary(model)$coefficients[, "Std. Error"]['env'],
-            anova(model)$"Pr(>F)",
+            anova(model)['env', 'Pr(>F)'],
             fixef(model)['(Intercept)'],
             summary(model)$coefficients[, "Std. Error"]['(Intercept)'],
             BIC(model),
-            p_value = l_ratio$'Pr(>Chi)'[2]
-  )
-  outdt
-  #format_lmer(model) # output model results
+            p_value = l_ratio['env', 'Pr(>F)'])
 }
+
 
 print(lmeres)
 class(lmeres)

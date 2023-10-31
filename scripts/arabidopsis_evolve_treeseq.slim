@@ -57,11 +57,13 @@ initialize() {
 	// before calculating fitness for this population, kill the 'parents' after the repduction stage
 	inds = sim.subpopulations.individuals;
 	sim.killIndividuals(inds[inds.age > 0]);
+	print(sim.subpopulations[0].individualCount);
 	if (sim.subpopulations[0].individualCount > 0){
 		// This callback is the one actually caclulating fitness in a vectorized way so it can be used in the fitnessEffect and reproduciton callback 
 		inds =  sim.subpopulations.individuals;
 		// calculate their additive genetic value 
 		additive = inds.sumOfMutationsOfType(m0);
+		print(additive);
 		VA = sd(additive)^2;
 		// from h2 and VA calculate VE
 		VE = (VA - asFloat(h2) * VA) / asFloat(h2);    // from h2 = VA / (VA + VE)   
@@ -116,11 +118,13 @@ initialize() {
 	// before calculating fitness for this population, kill the 'parents' after the repduction stage
 	inds = sim.subpopulations.individuals;
 	sim.killIndividuals(inds[inds.age > 0]);
+	print(sim.subpopulations[0].individualCount);
 	if (sim.subpopulations[0].individualCount > 0){
 		// This callback is the one actually caclulating fitness in a vectorized way so it can be used in the fitnessEffect and reproduciton callback 
 		inds =  sim.subpopulations.individuals;
 		// calculate their additive genetic value 
 		additive = inds.sumOfMutationsOfType(m0);
+		print(additive);
 		VA = sd(additive)^2;
 		// save it for this tick 
 		env_noise = rnorm(size(inds), 0.0, sqrt(VE_constant));

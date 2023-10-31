@@ -98,6 +98,9 @@ initialize() {
 		// save mean fitness and variance of fitness
 		writeFile(output_mfitness, asString(mean(fitness)), append = T);
 		writeFile(output_vfitness, asString(var(fitness)), append = T);
+		writeFile(mean_pheno, asString(mean_pheno_constant), append = T);
+		writeFile(sd_pheno, asString(sd_pheno_constant), append = T);
+		writeFile(st_pheno, asString(st_phenotype), append = T);
 	
 	}
 		else { 
@@ -145,6 +148,9 @@ initialize() {
 		// save mean fitness and variance of fitness
 		writeFile(output_mfitness, asString(mean(fitness)), append = T);
 		writeFile(output_vfitness, asString(var(fitness)), append = T);
+		writeFile(mean_pheno, asString(mean_pheno_constant), append = T);
+		writeFile(sd_pheno, asString(sd_pheno_constant), append = T);
+		writeFile(st_pheno, asString(st_phenotype), append = T);
 	
 	}
 		else { 

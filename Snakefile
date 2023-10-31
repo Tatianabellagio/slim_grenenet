@@ -13,22 +13,15 @@ configfile: "config.yaml"
 rule all:
     input:
         expand(
-            'results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/lmm_pc_results10env.csv',
+            "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_st_pheno.txt",
             allele_freq=config['allele_freq'],
             pi=config["pi"],
             selection=config["selection"],
             heritability=config["heritability"],
             replicates_arq=config["replicates_arq"],
+            optima=config["optima"],
+            replicates_sim=config["replicates_sim"],   
         ),
-        expand(
-            'results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/lmm_nopc_results10env.csv',
-            allele_freq=config['allele_freq'],
-            pi=config["pi"],
-            selection=config["selection"],
-            heritability=config["heritability"],
-            replicates_arq=config["replicates_arq"],
-        ),
-
 
 rule build_population_for_sim:
     input:
@@ -69,6 +62,9 @@ rule run_slim_simulation:
         output_vpheno="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_vpheno.txt",
         output_mfitness="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_mfitness.txt",
         output_vfitness="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_vfitness.txt",
+        output_mean_pheno="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_mean_pheno.txt",
+        output_sd_pheno="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_sd_pheno.txt",
+        output_st_pheno="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_st_pheno.txt",
 
     params:
         optima=lambda wildcards: str(wildcards.optima),        

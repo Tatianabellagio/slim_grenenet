@@ -13,6 +13,9 @@ output_va="$9"
 output_vpheno="${10}"
 output_mfitness="${11}"
 output_vfitness="${12}"
+output_mean_pheno="${13}"
+output_sd_pheno="${14}"
+output_st_pheno="${15}"
 
 # Map 'selection' to its numeric value using a case statement
 case "$selection" in
@@ -75,6 +78,9 @@ slim \
     -d "output_vpheno='$output_vpheno'" \
     -d "output_mfitness='$output_mfitness'" \
     -d "output_vfitness='$output_vfitness'" \
+    -d "output_mean_pheno='$output_mean_pheno'" \
+    -d "output_sd_pheno='$output_sd_pheno'" \
+    -d "output_st_pheno='$output_st_pheno'" \
     scripts/arabidopsis_evolve_treeseq.slim 
 
 

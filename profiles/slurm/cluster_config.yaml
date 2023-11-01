@@ -4,3 +4,7 @@ __default__:
   cpus-per-task: 10
   nodes: 1
   ntasks: 1
+
+rule run_lmm_nopc:
+    threads: 20
+    time: 2880

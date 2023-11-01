@@ -58,7 +58,7 @@ initialize() {
 	inds = sim.subpopulations.individuals;
 	sim.killIndividuals(inds[inds.age > 0]);
 	print(sim.subpopulations[0].individualCount);
-	if (sim.subpopulations[0].individualCount > 0){
+	if (sim.subpopulations[0].individualCount > 1){  // bigger than 1 because sd would give null if population is one individual
 		// This callback is the one actually caclulating fitness in a vectorized way so it can be used in the fitnessEffect and reproduciton callback 
 		inds =  sim.subpopulations.individuals;
 		// calculate their additive genetic value 
@@ -119,7 +119,7 @@ initialize() {
 	inds = sim.subpopulations.individuals;
 	sim.killIndividuals(inds[inds.age > 0]);
 	print(sim.subpopulations[0].individualCount);
-	if (sim.subpopulations[0].individualCount > 0){
+	if (sim.subpopulations[0].individualCount > 1){  // bigger than 1 because sd would give null if population is one individual
 		// This callback is the one actually caclulating fitness in a vectorized way so it can be used in the fitnessEffect and reproduciton callback 
 		inds =  sim.subpopulations.individuals;
 		// calculate their additive genetic value 

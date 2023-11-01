@@ -13,12 +13,14 @@ configfile: "config.yaml"
 rule all:
     input:
         expand(
-            'results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/lmm_nopc_results10env.csv',
+            "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_st_pheno.txt",
             allele_freq=config['allele_freq'],
             pi=config["pi"],
             selection=config["selection"],
             heritability=config["heritability"],
             replicates_arq=config["replicates_arq"],
+            optima=config["optima"],
+            replicates_sim=config["replicates_sim"],    
         ),
 
 rule build_population_for_sim:

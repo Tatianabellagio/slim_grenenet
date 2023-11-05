@@ -15,7 +15,8 @@ output_mfitness="${11}"
 output_vfitness="${12}"
 output_mean_pheno="${13}"
 output_sd_pheno="${14}"
-output_st_pheno="${15}"
+output_st_phenom="${15}"
+output_st_phenov="${16}"
 
 # Map 'selection' to its numeric value using a case statement
 case "$selection" in
@@ -47,13 +48,19 @@ case "$selection" in
 esac
 
 case "$heritability_state" in
-  'lowh')
+  '1')
     h2=0.1
     ;;
-  'mediumh')
+  '2')
+    h2=0.3
+    ;;
+  '3')
     h2=0.5
     ;;
-  'highh')
+  '4')
+    h2=0.7
+    ;;
+  '5')
     h2=0.9
     ;;
   *)
@@ -80,7 +87,8 @@ slim \
     -d "output_vfitness='$output_vfitness'" \
     -d "output_mean_pheno='$output_mean_pheno'" \
     -d "output_sd_pheno='$output_sd_pheno'" \
-    -d "output_st_pheno='$output_st_pheno'" \
+    -d "output_st_phenom='$output_st_phenom'" \
+    -d "output_st_phenov='$output_st_phenov'" \
     scripts/arabidopsis_evolve_treeseq.slim 
 
 

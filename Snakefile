@@ -27,6 +27,8 @@ rule build_population_for_sim:
     input:
         og_tree_offset=config["og_tree_offset"],
         og_vcf_offset=config["og_vcf_offset"],
+        allele_freq_params=config["allele_freq_params"],
+        polygenicty_params=config["polygenicty_params"],
     output:
         tree_seq_causalloci="results/arq_{allele_freq}_{pi}_{replicates_arq}/tree_seq_causalloci.trees",
         loci_effectsize="results/arq_{allele_freq}_{pi}_{replicates_arq}/loci_effectsize.csv",
@@ -64,7 +66,9 @@ rule run_slim_simulation:
         output_vfitness="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_vfitness.txt",
         output_mean_pheno="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_mean_pheno.txt",
         output_sd_pheno="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_sd_pheno.txt",
-        output_st_pheno="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_st_pheno.txt",
+        output_st_pheno="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_st_phenom.txt",
+        output_st_pheno="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_st_phenov.txt",
+
 
     params:
         optima=lambda wildcards: str(wildcards.optima),        

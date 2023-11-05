@@ -9,16 +9,16 @@ import pyslim
 og_vcf_offset = snakemake.input['og_vcf_offset'] 
 og_tree_offset = snakemake.input['og_tree_offset'] 
 
-pi_option =  snakemake.params['pi']
-pi = int(snakemake.params[pi_option])
-
-beta = int(snakemake.params['beta'])
+allele_freq_params_file = snakemake.input['allele_freq_params'] 
+polygenicty_params_file = snakemake.input['polygenicty_params'] 
 
 alelle_freq_option = snakemake.params['allele_freq']
-allele_freq = snakemake.params[alelle_freq_option]
-lower_bound = float(allele_freq[0])
-upper_bound = float(allele_freq[1])
+allele_freq_params = pd.read_csv(allele_freq_params_file,header=None, usecols=[int(alelle_freq_option)])
+lower_bound = allele_freq_params.iloc[0].values[0]
+upper_bound = allele_freq_params.iloc[1].values[0]
 
+pi_option =  snakemake.params['pi']
+poligenicity_params = pd.read_csv(polygenicty_params_file,header=None, usecols=[int(pi_option)]).values[0][0]
 
 #get the actual values
 output_tree_seq_causalloci = snakemake.output["tree_seq_causalloci"]

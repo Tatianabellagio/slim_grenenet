@@ -102,8 +102,10 @@ initialize() {
 		writeFile(output_vfitness, asString(var(fitness)), append = T);
 		writeFile(output_mean_pheno, asString(mean_pheno_constant), append = T);
 		writeFile(output_sd_pheno, asString(sd_pheno_constant), append = T);
-		writeFile(output_st_pheno, asString(st_phenotype), append = T);
-	
+		writeFile(output_st_phenom, asString(mean(st_phenotype)), append = T);
+		writeFile(output_st_phenov, asString(var(st_phenotype)), append = T);
+
+
 	}
 		else { 
 		// for the 10th generation directly write an empty file 
@@ -152,10 +154,10 @@ initialize() {
 		// save mean fitness and variance of fitness
 		writeFile(output_mfitness, asString(mean(fitness)), append = T);
 		writeFile(output_vfitness, asString(var(fitness)), append = T);
-		writeFile(output_mean_pheno, asString(mean_pheno_constant), append = T);
-		writeFile(output_sd_pheno, asString(sd_pheno_constant), append = T);
-		writeFile(output_st_pheno, asString(st_phenotype), append = T);
-	
+		writeFile(output_st_phenom, asString(mean(st_phenotype)), append = T);
+		writeFile(output_st_phenov, asString(var(st_phenotype)), append = T);
+
+
 	}
 		else { 
 		// for the 10th generation directly write an empty file 

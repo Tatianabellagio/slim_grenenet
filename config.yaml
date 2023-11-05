@@ -1,6 +1,10 @@
 # og tree is the tree with the 3 mill variants, all chromosomes and genomic offset (no overlapping pos)
 og_vcf_offset: 'data/wholegenome_offset.vcf'
 og_tree_offset: 'data/og_tree_offset.trees'
+allele_freq_params: 'data/allele_freq_params.csv'
+heritability_params: 'data/heritability_params.csv'
+polygenicty_params: 'data/polygenicty_params.csv'
+
 mapper_realid_metadataid: 'data/mapper_realid_metadataid_wholegenomeoffset.csv'
 pos_vcf_og: 'data/pos_vcf_og_nooffset.csv'
 pos_vcf_og_offset: 'data/pos_vcf_og_offset.csv'
@@ -16,29 +20,12 @@ kinship: 'data/output/greneNet_final_v1.1.recode.cXX.txt'
 ecotypes_grenenet: 'data/ecotypes_grenenet.csv'
 nonhet_pos: 'data/nonhet_pos_wholegenome_offset.csv'
 
-heritability: ['lowh', 
-               'mediumh',
-               'highh']
+heritability: ['1,2,3,4,5']
 
-lowh: 0.1
-mediumh: 0.5
-highh: 0.9
-
-allele_freq: ['lowfreq',
-              'mediumfreq',
-              'highfreq']
-
-lowfreq: [0, 0.05]
-mediumfreq: [0.05, 0.5]
-highfreq: [0.5, 1]
+allele_freq: ['1,2,3,4,5,6']
 
 # proportion of contributin snps to the trait
-pi: ['monogen','fivepoly', 'twentypoly', 'onehpoly']
-
-monogen: 1
-fivepoly: 5
-twentypoly: 20
-onehpoly: 100
+pi: ['1,2,3,4,5,6']
 
 # standard deviation of effect sizÍes of contributing loci 
 # beta: ['beta']
@@ -48,7 +35,6 @@ beta: 2
 
 # variances to simulate different strength of selection 
 selection: ['moderatesel', 'strongsel', 'estrongsel', 'exstrongsel' ]  # 'exstrongsel', 'estrongsel', 'moderatesel'
-
 
 #lowsel 'strongmod','vstrongsel', 
 #'exstrongsel',
@@ -68,7 +54,7 @@ replicates_sim: [1,2,3,4,5]
 replicates_arq: [1,2,3,4,5]
 
 # number of different environments to simulate
-optima: [-5,-4,-3,-2,-1,0,1,2,3,4,5]
+optima: [-4,-3,-2,-1,0,1,2,3,4]
 mapenv: '{-5:0, -4:1, -3:2, -2:3, -1:4, 0:5, 1:6, 2:7, 3:8 , 4:9 ,5:10}'
 
 

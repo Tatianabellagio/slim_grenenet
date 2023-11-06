@@ -32,7 +32,6 @@ def calc_pos_sc(alt_al_per_pos, pos, n_ecotypes, lower_bound, upper_bound, pi, b
     alelle_dist['alt_al_freq'] = alelle_dist['alt_al_count'] / (n_ecotypes*2)
     sim_freq_pos = alelle_dist[(alelle_dist['alt_al_freq'] < upper_bound) & (alelle_dist['alt_al_freq'] >= lower_bound)]['pos']
     selected_sites = sim_freq_pos.sample(pi).values
-    print(selected_sites)
     sc = np.random.normal(0, beta, pi)
     pos_sc = pd.DataFrame({'pos': selected_sites, 'sc': sc})
     return pos_sc

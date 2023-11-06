@@ -57,19 +57,17 @@ initialize() {
 	// before calculating fitness for this population, kill the 'parents' after the repduction stage
 	inds = sim.subpopulations.individuals;
 	sim.killIndividuals(inds[inds.age > 0]);
-	print(sim.subpopulations[0].individualCount);
 	if (sim.subpopulations[0].individualCount > 1){  // bigger than 1 because sd would give null if population is one individual
 		// This callback is the one actually caclulating fitness in a vectorized way so it can be used in the fitnessEffect and reproduciton callback 
 		inds =  sim.subpopulations.individuals;
 		// calculate their additive genetic value 
 		additive = inds.sumOfMutationsOfType(m0);
-		print(additive);
 		VA = sd(additive)^2;
 		// from h2 and VA calculate VE
 		VE = (VA - asFloat(h2) * VA) / asFloat(h2);    // from h2 = VA / (VA + VE)   
 		//save values for use across the simulation
 		defineConstant("VE_constant", VE);
-		print(VE_constant);
+
 		// save it for this tick 
 		env_noise = rnorm(size(inds), 0.0, sqrt(VE));
 		//calculate phenotype
@@ -120,13 +118,11 @@ initialize() {
 	// before calculating fitness for this population, kill the 'parents' after the repduction stage
 	inds = sim.subpopulations.individuals;
 	sim.killIndividuals(inds[inds.age > 0]);
-	print(sim.subpopulations[0].individualCount);
 	if (sim.subpopulations[0].individualCount > 1){  // bigger than 1 because sd would give null if population is one individual
 		// This callback is the one actually caclulating fitness in a vectorized way so it can be used in the fitnessEffect and reproduciton callback 
 		inds =  sim.subpopulations.individuals;
 		// calculate their additive genetic value 
 		additive = inds.sumOfMutationsOfType(m0);
-		print(additive);
 		VA = sd(additive)^2;
 		// save it for this tick 
 		env_noise = rnorm(size(inds), 0.0, sqrt(VE_constant));
@@ -136,7 +132,6 @@ initialize() {
 		st_phenotype = (phenotype-mean_pheno_constant)/sd_pheno_constant;
 		//calculate fitness 
 		fitness = exp(-0.5 * ((st_phenotype - asFloat(optima))^2)/asFloat(variance));
-		print(variance);
 		// set up the fitness of the population to be usen in the reproduction callback
 		
 		sim.subpopulations[0].setValue('fitness', fitness);

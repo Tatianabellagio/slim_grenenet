@@ -37,13 +37,6 @@ rule build_population_for_sim:
         pi=lambda wildcards: str(wildcards.pi),
         replicates_arq=lambda wildcards: str(wildcards.replicates_arq),
         allele_freq=lambda wildcards: str(wildcards.allele_freq),
-        lowfreq=config["lowfreq"],
-        mediumfreq=config["mediumfreq"],
-        highfreq=config["highfreq"],
-        monogen=config["monogen"],
-        fivepoly=config["fivepoly"],
-        twentypoly=config["twentypoly"],
-        onehpoly=config["onehpoly"],
         beta=config["beta"],
     resources:
         mem_mb=30720,

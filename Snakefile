@@ -13,7 +13,7 @@ configfile: "config.yaml"
 rule all:
     input:
         expand(
-            "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_st_phenom.txt",
+            "results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_st_phenom.txt",
             allele_freq=config['allele_freq'],
             pi=config["pi"],
             selection=config["selection"],
@@ -30,9 +30,9 @@ rule build_population_for_sim:
         allele_freq_params=config["allele_freq_params"],
         polygenicty_params=config["polygenicty_params"],
     output:
-        tree_seq_causalloci="results/arq_{allele_freq}_{pi}_{replicates_arq}/tree_seq_causalloci.trees",
-        loci_effectsize="results/arq_{allele_freq}_{pi}_{replicates_arq}/loci_effectsize.csv",
-        phenotypes="results/arq_{allele_freq}_{pi}_{replicates_arq}/phenotypes.csv",
+        tree_seq_causalloci="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/tree_seq_causalloci.trees",
+        loci_effectsize="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/loci_effectsize.csv",
+        phenotypes="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/phenotypes.csv",
     params:
         pi=lambda wildcards: str(wildcards.pi),
         replicates_arq=lambda wildcards: str(wildcards.replicates_arq),
@@ -47,20 +47,20 @@ rule build_population_for_sim:
 
 rule run_slim_simulation:
     input:
-        tree_seq_causalloci="results/arq_{allele_freq}_{pi}_{replicates_arq}/tree_seq_causalloci.trees",
+        tree_seq_causalloci="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/tree_seq_causalloci.trees",
     output: 
-        output_tree_gen4=temp("results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_tree_output_gen4.trees"),
-        output_tree_gen10="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_tree_output_gen10.trees",
-        output_pop_size_early="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_pop_size_early.txt",
-        output_pop_size_late="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_pop_size_late.txt",
-        output_va="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_va.txt",
-        output_vpheno="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_vpheno.txt",
-        output_mfitness="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_mfitness.txt",
-        output_vfitness="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_vfitness.txt",
-        output_mean_pheno="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_mean_pheno.txt",
-        output_sd_pheno="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_sd_pheno.txt",
-        output_st_phenom="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_st_phenom.txt",
-        output_st_phenov="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_st_phenov.txt",
+        output_tree_gen4="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_tree_output_gen4.trees",
+        output_tree_gen10="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_tree_output_gen10.trees",
+        output_pop_size_early="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_pop_size_early.txt",
+        output_pop_size_late="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_pop_size_late.txt",
+        output_va="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_va.txt",
+        output_vpheno="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_vpheno.txt",
+        output_mfitness="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_mfitness.txt",
+        output_vfitness="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_vfitness.txt",
+        output_mean_pheno="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_mean_pheno.txt",
+        output_sd_pheno="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_sd_pheno.txt",
+        output_st_phenom="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_st_phenom.txt",
+        output_st_phenov="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_st_phenov.txt",
 
 
     params:
@@ -79,9 +79,9 @@ rule tree_postprocessing:
     input:
         og_tree_offset=config["og_tree_offset"],
         mapper_ids=config['mapper_realid_metadataid'],
-        output_sim_tree="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_tree_output_gen4.trees",
+        output_sim_tree="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_tree_output_gen4.trees",
     output:
-        output_vcf=temp("results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_vcfgen4_output.vcf"),
+        output_vcf=temp("results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_vcfgen4_output.vcf"),
     resources:
         mem_mb=30720,
         limit_space=1,
@@ -101,7 +101,7 @@ rule calc_ecotype_counts:
             replicates_sim=config["replicates_sim"],    
         ),
     output:
-        ecotype_counts ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/ecotype_counts10env.csv",
+        ecotype_counts ="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/ecotype_counts10env.csv",
     resources:
         mem_mb=30720,
     conda:
@@ -118,8 +118,8 @@ rule gen_allele_freq:
             replicates_sim=config["replicates_sim"],    
         ),
     output:
-        allele_counts ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/allele_counts10env.csv",
-        allele_freq ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq10env.csv",
+        allele_counts ="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/allele_counts10env.csv",
+        allele_freq ="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq10env.csv",
     resources:
         mem_mb=30720,
     conda:
@@ -131,12 +131,12 @@ rule prep_lmm:
     input:
         allele_freq_founder_offset=config['allele_freq_founder_offset'],
         pc_founders=config['pc_founders'],
-        ecotype_counts ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/ecotype_counts10env.csv",
-        allele_freq ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq10env.csv",
+        ecotype_counts ="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/ecotype_counts10env.csv",
+        allele_freq ="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq10env.csv",
     output:
-        env_variable ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/env_variable10env.csv",
-        allele_freq_norm="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq_norm10env.csv",
-        pop_structure ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/pop_structure10env.csv",
+        env_variable ="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/lmm/env_variable10env.csv",
+        allele_freq_norm="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq_norm10env.csv",
+        pop_structure ="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/lmm/pop_structure10env.csv",
     params:
         mapenv=config['mapenv'],
     resources:
@@ -148,13 +148,13 @@ rule prep_lmm:
 
 rule run_lmm_wpc:
     input:
-        env_sites="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/env_variable10env.csv",
-        p_norm="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq_norm10env.csv",
-        pop_structure ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/pop_structure10env.csv",
+        env_sites="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/lmm/env_variable10env.csv",
+        p_norm="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq_norm10env.csv",
+        pop_structure ="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/lmm/pop_structure10env.csv",
     output:
-        lmm_results ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/lmm_pc_results10env.csv",
+        lmm_results ="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/lmm/lmm_pc_results10env.csv",
     benchmark:
-        "benchmarks/lmm10env/arq_{allele_freq}_{pi}_{replicates_arq}_{heritability}_{selection}.txt"
+        "benchmarks/lmm10env/arq_af{allele_freq}_pi{pi}_{replicates_arq}_{heritability}_{selection}.txt"
     resources:
         mem_mb=61440,
     threads: 20,
@@ -165,13 +165,13 @@ rule run_lmm_wpc:
 
 rule run_lmm_nopc:
     input:
-        env_sites="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/env_variable10env.csv",
-        p_norm="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq_norm10env.csv",
-        pop_structure ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/pop_structure10env.csv",
+        env_sites="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/lmm/env_variable10env.csv",
+        p_norm="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq_norm10env.csv",
+        pop_structure ="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/lmm/pop_structure10env.csv",
     output:
-        lmm_results ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/lmm_nopc_results10env.csv",
+        lmm_results ="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/lmm/lmm_nopc_results10env.csv",
     benchmark:
-        "benchmarks/lmm_nopc10env/arq_{allele_freq}_{pi}_{replicates_arq}_{heritability}_{selection}.txt"
+        "benchmarks/lmm_nopc10env/arq_af{allele_freq}_pi{pi}_{replicates_arq}_{heritability}_{selection}.txt"
     resources:
         mem_mb=61440 ,
     threads: 20,
@@ -182,10 +182,10 @@ rule run_lmm_nopc:
 
 rule create_famfile_gwa:
     input:
-        ecotype_counts_file="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/ecotype_counts.csv",
+        ecotype_counts_file="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/ecotype_counts.csv",
         fam_file_input=config["fam_file"]
     output:
-        fam_file_ouput = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/gwa/geno.fam",
+        fam_file_ouput = "results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/gwa/geno.fam",
     params:
         optima=lambda wildcards: str(wildcards.optima),
     resources:
@@ -197,16 +197,16 @@ rule create_famfile_gwa:
 
 rule run_gwa:
     input:
-        fam_file="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/gwa/geno.fam",
+        fam_file="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/gwa/geno.fam",
         bed_file=config['bed_file'],
         bim_file=config['bim_file'],
         kinship=config['kinship']
     output:
-        output_gwas="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/gwa/output/results_nmaf.assoc.txt",
+        output_gwas="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/gwa/output/results_nmaf.assoc.txt",
     resources:
         mem_mb=30720,
     benchmark:
-        "benchmarks/gwa_nmaf/arq_{allele_freq}_{pi}_{replicates_arq}_{heritability}_{selection}_optima{optima}.txt"
+        "benchmarks/gwa_nmaf/arq_af{allele_freq}_pi{pi}_{replicates_arq}_{heritability}_{selection}_optima{optima}.txt"
     conda:
         "envs/gwas.yaml"
     script:

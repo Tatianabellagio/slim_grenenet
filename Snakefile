@@ -50,7 +50,7 @@ rule run_slim_simulation:
         tree_seq_causalloci="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/tree_seq_causalloci.trees",
     output: 
         output_tree_gen4="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_tree_output_gen4.trees",
-        output_tree_gen10="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_tree_output_gen10.trees",
+        #output_tree_gen10="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_tree_output_gen10.trees",
         output_pop_size_early="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_pop_size_early.txt",
         output_pop_size_late="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_pop_size_late.txt",
         output_va="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_va.txt",

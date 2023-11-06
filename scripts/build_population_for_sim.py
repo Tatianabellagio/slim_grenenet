@@ -8,6 +8,7 @@ import pyslim
 
 og_vcf_offset = snakemake.input['og_vcf_offset'] 
 og_tree_offset = snakemake.input['og_tree_offset'] 
+beta = int(snakemake.params['beta'])
 
 allele_freq_params_file = snakemake.input['allele_freq_params'] 
 polygenicty_params_file = snakemake.input['polygenicty_params'] 
@@ -18,14 +19,14 @@ lower_bound = allele_freq_params.iloc[0].values[0]
 upper_bound = allele_freq_params.iloc[1].values[0]
 
 pi_option =  snakemake.params['pi']
-poligenicity_params = pd.read_csv(polygenicty_params_file,header=None, usecols=[int(pi_option)]).values[0][0]
+pi = pd.read_csv(polygenicty_params_file,header=None, usecols=[int(pi_option)]).values[0][0]
 
 #get the actual values
 output_tree_seq_causalloci = snakemake.output["tree_seq_causalloci"]
 output_loci_effectsize = snakemake.output["loci_effectsize"]
 output_phenotypes = snakemake.output["phenotypes"]
 
-def calc_pos_sc(alt_al_per_pos, pos, n_ecotypes, allele_freq, pi, beta):
+def calc_pos_sc(alt_al_per_pos, pos, n_ecotypes, lower_bound, upper_bound, pi, beta):
     alt_al_count = alt_al_per_pos.sum(axis=1)
     alelle_dist = pd.DataFrame({'alt_al_count':alt_al_count, 'pos':pos})
     alelle_dist['alt_al_freq'] = alelle_dist['alt_al_count'] / (n_ecotypes*2)
@@ -97,7 +98,7 @@ pos = vcf_og['variants/POS']
 n_ecotypes = len(vcf_og['samples'])
 alt_al_per_pos = geno_og.sum(axis=2) 
 
-pos_sc = calc_pos_sc(alt_al_per_pos, pos, n_ecotypes, allele_freq, pi, beta)
+pos_sc = calc_pos_sc(alt_al_per_pos, pos, n_ecotypes,  lower_bound, upper_bound , pi, beta)
 
 phenotypes = calc_phenotypes(pos,pos_sc, alt_al_per_pos)
 

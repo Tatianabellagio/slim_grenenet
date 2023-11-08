@@ -20,6 +20,14 @@ rule all:
             heritability=config["heritability"],
             replicates_arq=config["replicates_arq"],
         ),
+        expand(
+            'results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/lmm_pc_results10env.csv',
+            allele_freq=config['allele_freq'],
+            pi=config["pi"],
+            selection=config["selection"],
+            heritability=config["heritability"],
+            replicates_arq=config["replicates_arq"],
+        ),
 
 rule run_lmm_wpc:
     input:

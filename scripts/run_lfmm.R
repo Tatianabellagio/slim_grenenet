@@ -15,8 +15,9 @@ pvalues_file = snakemake@output[['p_values_lfmm']]
 qqplot_file = snakemake@output[['qq_plot']]
 
 # Read the num_components
-num_components <- readLines(num_components_file, warn = FALSE) 
-num_components <- as.integer(num_components[1])
+num_components <- scan(num_components_file, what = integer(), n = 1)
+#num_components <- readLines(num_components_file, warn = FALSE) 
+#num_components <- as.integer(num_components[1])
 
 # Read the geno and env tables 
 geno <- read.csv(geno_file, sep = ',', header = TRUE)

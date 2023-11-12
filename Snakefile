@@ -95,5 +95,37 @@ rule run_gwa:
     script:
         "scripts/gwas_gemma.sh"
 
+rule gen_lfmm_files:
+    input:
+        allele_freq_norm = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq_norm10env.csv",
+        env_var_env_var_lmmfile = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/env_variable10env.csv",
+    output:
+        env_var_lfmm = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lfmm/env_variable10env.csv",
+        num_components = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lfmm/num_components.csv",
+    params:
+        n_replicates=config["replicates"],
+    resources:
+        mem_mb=15350,
+    conda:
+        "envs/base_env.yaml"
+    script:
+        "scripts/prep_lfmm.py"
+
+
+rule run_lfmm:
+    input:
+        geno_file = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq_norm10env.csv",
+        env_file = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lfmm/env_variable10env.csv",
+        num_components_file = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lfmm/num_components.csv",
+    output:
+        p_values_lfmm = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lfmm/p_values.csv",
+        qq_plot = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lfmm/qq_plot.png"
+    resources:
+        mem_mb=30720,
+    conda:
+        "envs/r.yaml"
+    script:
+        "scripts/run_lfmm.R"
+
 
 

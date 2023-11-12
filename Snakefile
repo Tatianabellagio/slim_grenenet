@@ -90,7 +90,7 @@ rule run_gwa:
 rule gen_lfmm_files:
     input:
         allele_freq_norm = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq_norm10env.csv",
-        env_var_env_var_lmmfile = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/env_variable10env.csv",
+        env_var_lmm = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/env_variable10env.csv",
     output:
         env_var_lfmm = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lfmm/env_variable10env.csv",
         num_components = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lfmm/num_components.csv",

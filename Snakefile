@@ -13,7 +13,7 @@ configfile: "config.yaml"
 rule all:
     input:
         expand(
-            p_values_lfmm = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lfmm/p_values.csv",
+            "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lfmm/p_values.csv",
             allele_freq=config['allele_freq'],
             pi=config["pi"],
             selection=config["selection"],

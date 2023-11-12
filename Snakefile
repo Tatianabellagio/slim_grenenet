@@ -94,8 +94,6 @@ rule gen_lfmm_files:
     output:
         env_var_lfmm = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lfmm/env_variable10env.csv",
         num_components = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lfmm/num_components.csv",
-    params:
-        n_replicates=config["replicates"],
     resources:
         mem_mb=15350,
     conda:
@@ -112,6 +110,8 @@ rule run_lfmm:
     output:
         p_values_lfmm = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lfmm/p_values.csv",
         qq_plot = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lfmm/qq_plot.png"
+    benchmark:
+        "benchmarks/lfmm/arq_{allele_freq}_{pi}_{replicates_arq}_{heritability}_{selection}.txt"
     resources:
         mem_mb=30720,
     conda:

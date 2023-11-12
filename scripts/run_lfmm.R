@@ -14,6 +14,7 @@ num_components_file = snakemake@input[['num_components']]
 pvalues_file = snakemake@output[['p_values_lfmm']]
 qqplot_file = snakemake@output[['qq_plot']]
 
+print(num_components_file)
 # Read the num_components
 num_components <- scan(num_components_file, what = integer(), n = 1)
 #num_components <- readLines(num_components_file, warn = FALSE) 

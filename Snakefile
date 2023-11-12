@@ -93,7 +93,7 @@ rule gen_lfmm_files:
         env_var_lmm = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/env_variable10env.csv",
     output:
         env_var_lfmm = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lfmm/env_variable10env.csv",
-        num_components = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lfmm/num_components.csv",
+        num_components = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lfmm/num_components.txt",
     resources:
         mem_mb=15350,
     conda:

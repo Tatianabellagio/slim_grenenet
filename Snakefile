@@ -106,7 +106,7 @@ rule run_lfmm:
     input:
         geno_file = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq_norm10env.csv",
         env_file = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lfmm/env_variable10env.csv",
-        num_components_file = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lfmm/num_components.csv",
+        num_components_file = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lfmm/num_components.txt",
     output:
         p_values_lfmm = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lfmm/p_values.csv",
         qq_plot = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lfmm/qq_plot.png"

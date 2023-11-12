@@ -115,7 +115,7 @@ rule run_lfmm:
     resources:
         mem_mb=30720,
     conda:
-        "envs/r.yaml"
+        "envs/lfmm.yaml"
     script:
         "scripts/run_lfmm.R"
 

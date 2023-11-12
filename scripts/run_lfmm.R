@@ -20,6 +20,8 @@ num_components <- scan(num_components_file, what = integer(), n = 1)
 #num_components <- readLines(num_components_file, warn = FALSE) 
 #num_components <- as.integer(num_components[1])
 
+print(num_components)
+
 # Read the geno and env tables 
 geno <- read.csv(geno_file, sep = ',', header = TRUE)
 geno <- geno[, !colnames(geno) %in% "chrom_pos"]
@@ -27,6 +29,7 @@ geno <- sapply(geno, as.numeric)
 Y <- as.matrix(geno)
 X <- as.matrix(read.csv(env_file, sep = '', header = FALSE))
 
+print('here')
 # Check the number of columns in Y
 if (ncol(Y) <= 3) {
   # Create the p-values file with 0 inside
@@ -42,6 +45,7 @@ if (ncol(Y) <= 3) {
   
   ## Fit an LFMM, i.e., compute B, U, V estimates
   ## using 5 because that is what I estimated based on the screeplot 
+  print('prefit')
   mod.lfmm <- lfmm_ridge(Y = Y_t, 
                          X = X, 
                          K = num_components)

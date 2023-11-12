@@ -7,8 +7,8 @@ if (!requireNamespace("lfmm", quietly = TRUE)) {
 
 library(lfmm)
 
-geno_file = snakemake@input[['allele_freq_norm']]
-env_file = snakemake@input[['env_var']]
+geno_file = snakemake@input[['geno_file']]
+env_file = snakemake@input[['env_file']]
 num_components_file = snakemake@input[['num_components']]
 
 pvalues_file = snakemake@output[['p_values_lfmm']]

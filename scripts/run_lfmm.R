@@ -44,7 +44,6 @@ if (ncol(Y) <= 3) {
   Y_t <- t(Y)
   
   ## Fit an LFMM, i.e., compute B, U, V estimates
-  ## using 5 because that is what I estimated based on the screeplot 
   print('prefit')
   mod.lfmm <- lfmm_ridge(Y = Y_t, 
                          X = X, 

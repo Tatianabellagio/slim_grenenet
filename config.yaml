@@ -7,11 +7,13 @@ pos_vcf_og_offset: 'data/pos_vcf_og_offset.csv'
 allele_freq_founder_offset: 'data/allele_freq_founder_offset.csv'
 pc_founders: 'data/pc_founders'
 
+
 ## gwas
 fam_file: 'data/greneNet_final_v1.1.recode.fam'
 bed_file: 'data/greneNet_final_v1.1.recode.bed'
 bim_file: 'data/greneNet_final_v1.1.recode.bim'
 kinship: 'data/output/greneNet_final_v1.1.recode.cXX.txt'
+covariates: 'data/10cov_gwas'
 
 ecotypes_grenenet: 'data/ecotypes_grenenet.csv'
 nonhet_pos: 'data/nonhet_pos_wholegenome_offset.csv'

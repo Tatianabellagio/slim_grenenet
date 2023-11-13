@@ -13,12 +13,13 @@ configfile: "config.yaml"
 rule all:
     input:
         expand(
-            "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lfmm/p_values.csv",
+            "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/gwa/output/wcov.assoc.txt",
             allele_freq=config['allele_freq'],
             pi=config["pi"],
             selection=config["selection"],
             heritability=config["heritability"],
             replicates_arq=config["replicates_arq"],
+            optima=config["optima"],
         ),
 
 rule run_lmm_wpc:
@@ -57,7 +58,7 @@ rule run_lmm_nopc:
 
 rule create_famfile_gwa:
     input:
-        ecotype_counts_file="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/ecotype_counts.csv",
+        ecotype_counts_file="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/ecotype_counts10env.csv",
         fam_file_input=config["fam_file"]
     output:
         fam_file_ouput = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/gwa/geno.fam",
@@ -75,9 +76,10 @@ rule run_gwa:
         fam_file="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/gwa/geno.fam",
         bed_file=config['bed_file'],
         bim_file=config['bim_file'],
-        kinship=config['kinship']
+        kinship=config['kinship'],
+        covariates=config['covariates']
     output:
-        output_gwas="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/gwa/output/results_nmaf.assoc.txt",
+        output_gwas="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/gwa/output/wcov.assoc.txt",
     resources:
         mem_mb=30720,
     benchmark:

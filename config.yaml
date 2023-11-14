@@ -13,8 +13,8 @@ fam_file: 'data/greneNet_final_v1.1.recode.fam'
 bed_file: 'data/greneNet_final_v1.1.recode.bed'
 bim_file: 'data/greneNet_final_v1.1.recode.bim'
 kinship: 'data/output/greneNet_final_v1.1.recode.cXX.txt'
-10covariates: 'data/10cov_gwas'
-20covariates: 'data/20cov_gwas'
+covariates10: 'data/10cov_gwas'
+covariates20: 'data/20cov_gwas'
 
 
 ecotypes_grenenet: 'data/ecotypes_grenenet.csv'

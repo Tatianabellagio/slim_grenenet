@@ -50,7 +50,14 @@ print(yy)
 #.GlobalEnv$myfm <- myfm # fix a global env bug
 mydata = prep_lmm(yy, env_sites, envvar, pop_strc) 
 print(mydata)
-model <- lmer('yy ~ env + PC1 + PC2 + PC3 + (1|sites)', data=mydata,  REML = FALSE)
+
+# Combine all parts of the formula
+formula_str <- paste("yy ~ env +", paste0("PC", 1:10, collapse = " + "), "+ (1|sites)")
+# Print the formula string
+print(formula_str)
+
+
+model <- lmer(formula_str, data=mydata,  REML = FALSE)
 
 output = format_lmer(model) # output model results
 print(output)
@@ -61,7 +68,7 @@ lmeres = foreach(ii = 1:nrow(deltap), .combine = rbind, .export = functions_to_e
   yy = as.numeric(unlist(deltap[ii,]))
   #.GlobalEnv$myfm <- myfm # fix a global env bug
   mydata = prep_lmm(yy, env_sites, envvar, pop_strc) 
-  model <- lmer('yy ~ env + PC1 + PC2 + PC3 + (1|sites)', data=mydata,  REML = FALSE)
+  model <- lmer(formula_str, data=mydata,  REML = FALSE)
   l_ratio = drop1(model,test="Chisq") #test="Chisq"
   outdt = c(fixef(model)['env'],
             summary(model)$coefficients[, "Std. Error"]['env'],

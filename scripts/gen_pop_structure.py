@@ -3,6 +3,7 @@ import pandas as pd
 
 ecotype_counts = snakemake.input['ecotype_counts'] 
 pc_founders = snakemake.input['pc_founders'] 
+pop_structure_file = snakemake.output['pop_structure'] 
 
 ### ecotype freq normalized 
 ecotype_counts = pd.read_csv(ecotype_counts)

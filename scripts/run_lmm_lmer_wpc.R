@@ -58,7 +58,7 @@ print(formula_str)
 
 
 model <- lmer(formula_str, data=mydata,  REML = FALSE)
-l_ratio = drop1(mymodel,test="Chisq") #test="Chisq"
+l_ratio = drop1(model,test="Chisq") #test="Chisq"
 
 outdt = c(fixef(model)['env'], '1',
             summary(model)$coefficients[, "Std. Error"]['env'],  '2',

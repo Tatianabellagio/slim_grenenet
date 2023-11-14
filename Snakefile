@@ -83,23 +83,41 @@ rule create_famfile_gwa:
     script:
         "scripts/generate_fam_files.py"
 
-rule run_gwa:
+rule run_gwa_10cov:
     input:
         fam_file="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/gwa/geno.fam",
         bed_file=config['bed_file'],
         bim_file=config['bim_file'],
         kinship=config['kinship'],
-        covariates=config['covariates']
+        covariates=config['covariates10']
     output:
-        output_gwas="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/gwa/output/wcov.assoc.txt",
+        output_gwas="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/gwa/output/w10cov.assoc.txt",
     resources:
         mem_mb=30720,
     benchmark:
-        "benchmarks/gwa_nmaf/arq_{allele_freq}_{pi}_{replicates_arq}_{heritability}_{selection}_optima{optima}.txt"
+        "benchmarks/gwa_10cov/arq_{allele_freq}_{pi}_{replicates_arq}_{heritability}_{selection}_optima{optima}.txt"
     conda:
         "envs/gwas.yaml"
     script:
-        "scripts/gwas_gemma.sh"
+        "scripts/gwas_gemma_10cov.sh"
+
+rule run_gwa_20cov:
+    input:
+        fam_file="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/gwa/geno.fam",
+        bed_file=config['bed_file'],
+        bim_file=config['bim_file'],
+        kinship=config['kinship'],
+        covariates=config['covariates20']
+    output:
+        output_gwas="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/gwa/output/w20cov.assoc.txt",
+    resources:
+        mem_mb=30720,
+    benchmark:
+        "benchmarks/gwa_20cov/arq_{allele_freq}_{pi}_{replicates_arq}_{heritability}_{selection}_optima{optima}.txt"
+    conda:
+        "envs/gwas.yaml"
+    script:
+        "scripts/gwas_gemma_20cov.sh"
 
 rule gen_lfmm_files:
     input:

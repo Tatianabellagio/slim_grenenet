@@ -29,7 +29,7 @@ if [ "$num_columns" -ne 6 ]; then
 else
     # Check if all values in the 6th column are 0
     if awk -F ' ' '{print $6}' "geno.fam" | grep -qE '^[^0]|0[^.].*$'; then
-        gemma -bfile geno -lmm -k kinship.cXX.txt -c covariates -o wcov
+        gemma -bfile geno -lmm -k kinship.cXX.txt -c covariates -o w10cov
     else
         mkdir output
         echo "All individuals died" > "output/wcov.assoc.txt"

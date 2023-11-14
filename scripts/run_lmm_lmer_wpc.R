@@ -16,7 +16,7 @@ lmm_results = snakemake@output[["lmm_results"]]
 
 env_sites = read.csv(env_sites, row.names = 1, )
 print(dim(env_sites))
-p_norm = read.csv(p_norm, nrows=10)
+p_norm = read.csv(p_norm)
 print(dim(p_norm))
 deltap = subset(p_norm, select = -chrom_pos)
 print(dim(deltap))

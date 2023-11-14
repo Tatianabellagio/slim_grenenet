@@ -18,6 +18,7 @@ rule all:
             pi=config["pi"],
             selection=config["selection"],
             heritability=config["heritability"],
+            replicates_arq=config["replicates_arq"],
         ),
 
 rule pop_structure_file:

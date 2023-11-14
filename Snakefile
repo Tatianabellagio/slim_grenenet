@@ -13,7 +13,7 @@ configfile: "config.yaml"
 rule all:
     input:
         expand(
-            "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/lmm_pc_results10env.csv",
+            "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/lmm_pc_results10_pc10env.csv",
             allele_freq=config['allele_freq'],
             pi=config["pi"],
             selection=config["selection"],
@@ -40,7 +40,7 @@ rule run_lmm_wpc:
         p_norm="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq_norm10env.csv",
         pop_structure ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/pop_structure10_pc10env.csv",
     output:
-        lmm_results ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/lmm_pc_results10env.csv",
+        lmm_results ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/lmm_pc_results10_pc10env.csv",
     benchmark:
         "benchmarks/lmm10env/arq_{allele_freq}_{pi}_{replicates_arq}_{heritability}_{selection}.txt"
     resources:

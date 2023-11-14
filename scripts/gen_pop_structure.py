@@ -9,6 +9,9 @@ pop_structure_file = snakemake.output['pop_structure']
 ecotype_counts = pd.read_csv(ecotype_counts)
 ## from ectoype counts to 
 ecotype_counts = ecotype_counts.drop(columns = 'Unnamed: 0')
+## only create pop strcuture for the population where nto all the indivuals died 
+pop_alive = ecotype_counts.sum()[ecotype_counts.sum() != 0 ].index
+ecotype_counts = ecotype_counts[pop_alive]
 ## calculate inital ecotype freq 
 ecotypep0 = ecotype_counts['ecotype'].copy()
 ## all thee cotypes had the same initial freq 

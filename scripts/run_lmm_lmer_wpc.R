@@ -16,7 +16,7 @@ lmm_results = snakemake@output[["lmm_results"]]
 
 env_sites = read.csv(env_sites, row.names = 1, )
 print(dim(env_sites))
-p_norm = read.csv(p_norm)
+p_norm = read.csv(p_norm, nrows=10)
 print(dim(p_norm))
 deltap = subset(p_norm, select = -chrom_pos)
 print(dim(deltap))
@@ -58,6 +58,7 @@ print(formula_str)
 
 
 model <- lmer(formula_str, data=mydata,  REML = FALSE)
+l_ratio = drop1(mymodel,test="Chisq") #test="Chisq"
 
 outdt = c(fixef(model)['env'], '1',
             summary(model)$coefficients[, "Std. Error"]['env'],  '2',

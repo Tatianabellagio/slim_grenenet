@@ -62,7 +62,7 @@ l_ratio = drop1(model,test="Chisq") #test="Chisq"
 
 outdt = c(fixef(model)['env'], '1',
             summary(model)$coefficients[, "Std. Error"]['env'],  '2',
-            anova(model)$"Pr(>F)",  '3',
+            anova(model)['env', 'Pr(>F)'],  '3',
             fixef(model)['(Intercept)'], '4',
             summary(model)$coefficients[, "Std. Error"]['(Intercept)'], '5',
             BIC(model), '6',
@@ -93,16 +93,10 @@ lmeres = foreach(ii = 1:nrow(deltap), .combine = rbind, .export = functions_to_e
 
 
 print(lmeres)
-class(lmeres)
+
 dimnames(lmeres)[[2]] = c('env_value', 'env_eror', 'p_value_env','intercept_value', 'intercept_eror', 'bic', 'lrt')
 #colnames(final_results_lmer) <- c('env_value', 'env_eror', 'p_value_env','intercept_value', 'intercept_eror', 'bic')
 
 print(lmeres)
-print(dim(deltap))
-print(dim(lmeres))
 
-print(dim(deltap))
-print(dim(lmeres))
-
-print(lmm_results)
 write.csv(lmeres, file = lmm_results)

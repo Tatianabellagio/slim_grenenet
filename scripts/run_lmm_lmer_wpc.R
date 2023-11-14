@@ -59,12 +59,12 @@ print(formula_str)
 
 model <- lmer(formula_str, data=mydata,  REML = FALSE)
 
-outdt = c(fixef(model)['env'], '1'
-            summary(model)$coefficients[, "Std. Error"]['env'],  '2'
-            anova(model)$"Pr(>F)",  '3'
-            fixef(model)['(Intercept)'], '4'
-            summary(model)$coefficients[, "Std. Error"]['(Intercept)'], '5'
-            BIC(model), '6'
+outdt = c(fixef(model)['env'], '1',
+            summary(model)$coefficients[, "Std. Error"]['env'],  '2',
+            anova(model)$"Pr(>F)",  '3',
+            fixef(model)['(Intercept)'], '4',
+            summary(model)$coefficients[, "Std. Error"]['(Intercept)'], '5',
+            BIC(model), '6',
             p_value = l_ratio$'Pr(>Chi)'[2], '7'
   )
 

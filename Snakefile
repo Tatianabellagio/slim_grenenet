@@ -19,6 +19,7 @@ rule all:
             selection=config["selection"],
             heritability=config["heritability"],
             replicates_arq=config["replicates_arq"],
+            optima=config["optima"],
         ),
 
 rule pop_structure_file:

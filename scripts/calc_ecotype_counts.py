@@ -12,7 +12,7 @@ output_vcf_offset = snakemake.input['output_vcf_offset']
 #ecotypes_grenenet = snakemake.input['ecotypes_grenenet']
 ecotype_counts = snakemake.output['ecotype_counts']
 
-def filtering_pos (nonhet_pos, pos_new, geno_og, geno_new):
+def filtering_pos (nonhet_pos, pos_new, geno_og, geno_new, pos_og):
     pos_to_keep = np.intersect1d(nonhet_pos, pos_new)
     mask_pos_ogvcf = pd.Series(pos_og).isin(pos_to_keep)
     geno_og_rpos  = geno_og[mask_pos_ogvcf]
@@ -20,7 +20,7 @@ def filtering_pos (nonhet_pos, pos_new, geno_og, geno_new):
     geno_new_rpos  = geno_new[mask_pos_newvcf]
     return geno_og_rpos, geno_new_rpos
 
-def get_ecotype_geno_mapper(geno_og_rpos):
+def get_ecotype_geno_mapper(geno_og_rpos, samples):
     geno_og_rpos = np.swapaxes(geno_og_rpos, 0, 1)
     ecotype_geno_mapper = {}
     for i,j in zip(geno_og_rpos, samples):
@@ -58,8 +58,8 @@ def process_vcf(i, nonhet_pos, geno_og, pos_og, samples):
         pos_new = vcf_new['variants/POS']
         geno_new = vcf_new['calldata/GT']
         ## for each of them create the ecotype geno mapper, depending on the positions that made it 
-        geno_og_rpos, geno_new_rpos = filtering_pos(nonhet_pos, pos_new, geno_og, geno_new)
-        ecotype_geno_mapper = get_ecotype_geno_mapper(geno_og_rpos)
+        geno_og_rpos, geno_new_rpos = filtering_pos(nonhet_pos, pos_new, geno_og, geno_new, pos_og)
+        ecotype_geno_mapper = get_ecotype_geno_mapper(geno_og_rpos, samples)
         ecotype_countsdf = get_ecotype_counts(geno_new_rpos, name, ecotype_geno_mapper)
         print(ecotype_countsdf)
         ## merge with previous 

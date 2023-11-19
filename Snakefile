@@ -13,7 +13,7 @@ configfile: "config.yaml"
 rule all:
     input:
         expand(
-            "results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_vcfgen4_output.vcf",
+            "results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq10env.csv",
             allele_freq=config['allele_freq'],
             pi=config["pi"],
             selection=config["selection"],
@@ -96,7 +96,7 @@ rule calc_ecotype_counts:
         og_vcf_offset=config["og_vcf_offset"],
         ecotypes_grenenet=config['ecotypes_grenenet'],
         output_vcf_offset = expand(
-            "results/arq_{{allele_freq}}_{{pi}}_{{replicates_arq}}/{{heritability}}/{{selection}}/optima{optima}/subp{replicates_sim}_vcfgen4_output.vcf",
+            "results/arq_af{{allele_freq}}_pi{{pi}}_{{replicates_arq}}/{{heritability}}/{{selection}}/optima{optima}/subp{replicates_sim}_vcfgen4_output.vcf",
             optima=config["optima"],
             replicates_sim=config["replicates_sim"],    
         ),
@@ -113,7 +113,7 @@ rule gen_allele_freq:
     input:
         pos_vcf_og_offset=config['pos_vcf_og_offset'],
         output_vcf = expand(
-            "results/arq_{{allele_freq}}_{{pi}}_{{replicates_arq}}/{{heritability}}/{{selection}}/optima{optima}/subp{replicates_sim}_vcfgen4_output.vcf",
+            "results/arq_af{{allele_freq}}_pi{{pi}}_{{replicates_arq}}/{{heritability}}/{{selection}}/optima{optima}/subp{replicates_sim}_vcfgen4_output.vcf",
             optima=config["optima"],
             replicates_sim=config["replicates_sim"],    
         ),

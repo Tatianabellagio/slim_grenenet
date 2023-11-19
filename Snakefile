@@ -104,6 +104,7 @@ rule calc_ecotype_counts:
         ecotype_counts ="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/ecotype_counts10env.csv",
     resources:
         mem_mb=30720,
+    threads: 20,
     conda:
         "envs/base_env.yaml"
     script:

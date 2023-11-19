@@ -28,10 +28,7 @@ for i in output_vcf:
     print(i)
     name = i.split('/')[-2] + '_' + i.split('/')[-1][0:5]
     if os.path.exists(i) and os.path.getsize(i) <= 1:
-        print('empty_vcf')
-        pos_vcf_og_counts[name] = np.nan
-        pos_vcf_og_freq[name] = np.nan
-    
+        pass
     elif os.path.exists(i) and os.path.getsize(i) > 1:
         vcf = allel.read_vcf(i)
         samples = vcf['samples']
@@ -45,5 +42,16 @@ for i in output_vcf:
         pos_vcf_og_freq = pos_vcf_og_freq.merge(alt_allele_freq, on ='chrom_pos', how='outer')
 
 
-pos_vcf_og_counts.to_csv(output_allele_counts)
-pos_vcf_og_freq.to_csv(output_allele_freq)
+try:
+    # Attempt to save DataFrame to CSV
+    pos_vcf_og_counts.to_csv(output_allele_counts)
+except NameError:
+    # If DataFrame doesn't exist, becasue all populations died 
+    open(output_allele_counts, 'a').close()
+
+try:
+    # Attempt to save another DataFrame to CSV
+    pos_vcf_og_freq.to_csv(output_allele_freq)
+except NameError:
+    # If DataFrame doesn't exist, create an empty file
+    open(output_allele_freq, 'a').close()

@@ -72,5 +72,11 @@ elif os.path.exists(output_vcf_offset) and os.path.getsize(output_vcf_offset) > 
     #ecotypes_grenenet = ecotypes_grenenet.merge(ecotype_countsdf, how='left', on ='ecotype')
     #print(ecotypes_grenenet)
 
-print(ecotype_countsdf)
-#ecotype_countsdf.to_csv(ecotype_counts)
+
+try:
+    print(ecotype_countsdf)
+    ecotype_countsdf.to_csv(ecotype_counts)
+except NameError:
+    print('empty')
+    # Create an empty file with the same name if ecotype_countsdf is not defined
+    open(ecotype_counts, 'w').close()

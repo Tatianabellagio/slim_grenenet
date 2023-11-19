@@ -70,18 +70,18 @@ def process_vcf(i):
         ## merge with previous 
         #ecotypes_grenenet = ecotypes_grenenet.merge(ecotype_countsdf, how='left', on ='ecotype')
     return ecotype_countsdf
-
+print('before parallel')
 if __name__ == "__main__":
     # Prepare arguments for each dataset generation
     tasks = [output_vcf_offset]
 
     # Number of CPU cores to use (adjust as needed)
     num_cores = 20
-
+    
     # Create a pool of worker processes
     with multiprocessing.Pool(processes=num_cores) as pool:
         # Use the pool to parallelize the processing of tasks
-        results = pool.map(generate_dataset, tasks)
+        results = pool.map(process_vcf, tasks)
 
 print(results)
 ecotypes_grenenet = pd.concat(results)

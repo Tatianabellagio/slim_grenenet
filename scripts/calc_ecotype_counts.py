@@ -83,10 +83,10 @@ if __name__ == "__main__":
     # Create a pool of worker processes
     with multiprocessing.Pool(processes=num_cores) as pool:
         # Use the pool to parallelize the processing of tasks
-        results = pool.map(process_vcf, output_vcf_offset)
+        results = pool.map(process_vcf, output_vcf_offset[:3])
 
 print(results)
 ecotypes_grenenet = pd.concat(results)
-
+print(ecotypes_grenenet)
 #ecotypes_grenenet = ecotypes_grenenet.merge(ecotype_countsdf, how='left', on ='ecotype')
-ecotypes_grenenet.to_csv(ecotype_counts)
+#ecotypes_grenenet.to_csv(ecotype_counts)

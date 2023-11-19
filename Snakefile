@@ -23,7 +23,7 @@ rule all:
             replicates_sim=config["replicates_sim"],    
         ),
         expand(
-            "results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/ecotype_counts10env.csv",
+            "results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/allele_counts10env.csv",
             allele_freq=config['allele_freq'],
             pi=config["pi"],
             selection=config["selection"],

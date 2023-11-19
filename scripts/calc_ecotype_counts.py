@@ -72,4 +72,5 @@ elif os.path.exists(output_vcf_offset) and os.path.getsize(output_vcf_offset) > 
     #ecotypes_grenenet = ecotypes_grenenet.merge(ecotype_countsdf, how='left', on ='ecotype')
     #print(ecotypes_grenenet)
 
-ecotype_countsdf.to_csv(ecotype_counts)
+print(ecotype_countsdf)
+#ecotype_countsdf.to_csv(ecotype_counts)

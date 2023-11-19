@@ -47,7 +47,7 @@ vcf_og = allel.read_vcf(og_vcf_offset, fields=['calldata/GT', 'variants/POS', 's
 geno_og = vcf_og['calldata/GT']
 pos_og = vcf_og['variants/POS']
 samples = vcf_og['samples']
-
+print(output_vcf_offset)
 #ecotypes_grenenet = pd.read_csv(ecotypes_grenenet, dtype=object)
 #ecotypes_grenenet.columns= ['ecotype']
 #ecotypes_grenenet = pd.concat([ecotypes_grenenet, pd.DataFrame(data = {'ecotype': ['other']}, index=[231])],axis=0)
@@ -71,10 +71,11 @@ def process_vcf(i):
         ## merge with previous 
         #ecotypes_grenenet = ecotypes_grenenet.merge(ecotype_countsdf, how='left', on ='ecotype')
     return ecotype_countsdf
+
 print('before parallel')
 if __name__ == "__main__":
     # Prepare arguments for each dataset generation
-    tasks = [output_vcf_offset]
+    #tasks = [output_vcf_offset]
 
     # Number of CPU cores to use (adjust as needed)
     num_cores = 20
@@ -82,7 +83,7 @@ if __name__ == "__main__":
     # Create a pool of worker processes
     with multiprocessing.Pool(processes=num_cores) as pool:
         # Use the pool to parallelize the processing of tasks
-        results = pool.map(process_vcf, tasks)
+        results = pool.map(process_vcf, output_vcf_offset)
 
 print(results)
 ecotypes_grenenet = pd.concat(results)

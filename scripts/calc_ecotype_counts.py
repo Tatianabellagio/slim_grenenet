@@ -7,9 +7,9 @@ import multiprocessing
 
 ## here all the vcfs from a particular combination of arq herit and selection and expanding all replicates and optimas
 output_vcf_offset = snakemake.input['output_vcf_offset'] 
-nonhet_pos = snakemake.input['nonhet_pos'] 
-og_vcf_offset = snakemake.input['og_vcf_offset']
-ecotypes_grenenet = snakemake.input['ecotypes_grenenet']
+#nonhet_pos = snakemake.input['nonhet_pos'] 
+#og_vcf_offset = snakemake.input['og_vcf_offset']
+#ecotypes_grenenet = snakemake.input['ecotypes_grenenet']
 ecotype_counts = snakemake.output['ecotype_counts']
 
 def filtering_pos (nonhet_pos, pos_new, geno_og, geno_new):
@@ -37,23 +37,17 @@ def get_ecotype_counts(geno_new_rpos, pop_name, ecotype_geno_mapper):
         sample = i.tobytes()
         ecotype = ecotype_geno_mapper.get(sample, 'other')
         ecotype_counts[ecotype] += 1
-    name = pop_name
-    ecotype_countsdf = pd.DataFrame(list(ecotype_counts.items()), columns=['ecotype', name])
+    ecotype_countsdf = pd.DataFrame(list(ecotype_counts.items()), columns=['ecotype', pop_name])
     ecotype_countsdf['ecotype'] = ecotype_countsdf['ecotype'].str.split('_').str[0]
     return ecotype_countsdf
 
-nonhet_pos = np.array(pd.read_csv(nonhet_pos))
-vcf_og = allel.read_vcf(og_vcf_offset, fields=['calldata/GT', 'variants/POS', 'samples'])
-geno_og = vcf_og['calldata/GT']
-pos_og = vcf_og['variants/POS']
-samples = vcf_og['samples']
-print(output_vcf_offset)
 #ecotypes_grenenet = pd.read_csv(ecotypes_grenenet, dtype=object)
 #ecotypes_grenenet.columns= ['ecotype']
 #ecotypes_grenenet = pd.concat([ecotypes_grenenet, pd.DataFrame(data = {'ecotype': ['other']}, index=[231])],axis=0)
 
-def process_vcf(i):
+def process_vcf(i, nonhet_pos, geno_og, pos_og, samples):
     print(i)
+    ecotype_countsdf = pd.DataFrame() 
     name = i.split('/')[-2] + '_' + i.split('/')[-1][0:5]
     if os.path.exists(i) and os.path.getsize(i) <= 1:
         pass
@@ -72,21 +66,26 @@ def process_vcf(i):
         #ecotypes_grenenet = ecotypes_grenenet.merge(ecotype_countsdf, how='left', on ='ecotype')
     return ecotype_countsdf
 
-print('before parallel')
+
 if __name__ == "__main__":
-    # Prepare arguments for each dataset generation
-    #tasks = [output_vcf_offset]
+    nonhet_pos = np.array(pd.read_csv(snakemake.input['nonhet_pos']))
+    vcf_og = allel.read_vcf(snakemake.input['og_vcf_offset'], fields=['calldata/GT', 'variants/POS', 'samples'])
+    geno_og = vcf_og['calldata/GT']
+    pos_og = vcf_og['variants/POS']
+    samples = vcf_og['samples']
 
-    # Number of CPU cores to use (adjust as needed)
     num_cores = 20
-
-    # Create a pool of worker processes
     with multiprocessing.Pool(processes=num_cores) as pool:
+        # Prepare arguments for each dataset generation
+        tasks = [(i, nonhet_pos, geno_og, pos_og, samples) for i in snakemake.input['output_vcf_offset'][:3]]
+
         # Use the pool to parallelize the processing of tasks
-        results = pool.map(process_vcf, output_vcf_offset[:3])
+        results = pool.starmap(process_vcf, tasks)
 
 print(results)
 ecotypes_grenenet = pd.concat(results)
 print(ecotypes_grenenet)
+
+
 #ecotypes_grenenet = ecotypes_grenenet.merge(ecotype_countsdf, how='left', on ='ecotype')
 #ecotypes_grenenet.to_csv(ecotype_counts)

@@ -13,7 +13,7 @@ configfile: "config.yaml"
 rule all:
     input:
         expand(
-            "results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq10env.csv",
+            "results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_ecotype_counts10env.csv",
             allele_freq=config['allele_freq'],
             pi=config["pi"],
             selection=config["selection"],
@@ -106,13 +106,9 @@ rule calc_ecotype_counts:
         nonhet_pos=config['nonhet_pos'],
         og_vcf_offset=config["og_vcf_offset"],
         ecotypes_grenenet=config['ecotypes_grenenet'],
-        output_vcf_offset = expand(
-            "results/arq_af{{allele_freq}}_pi{{pi}}_{{replicates_arq}}/{{heritability}}/{{selection}}/optima{optima}/subp{replicates_sim}_vcfgen4_output.vcf",
-            optima=config["optima"],
-            replicates_sim=config["replicates_sim"],    
-        ),
+        output_vcf_offset=results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_vcfgen4_output.vcf",
     output:
-        ecotype_counts ="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/ecotype_counts10env.csv",
+        ecotype_counts ="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_ecotype_counts10env.csv",
     resources:
         mem_mb=30720,
     threads: 20,

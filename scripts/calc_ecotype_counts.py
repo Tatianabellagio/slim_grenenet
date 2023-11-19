@@ -53,6 +53,7 @@ samples = vcf_og['samples']
 #ecotypes_grenenet = pd.concat([ecotypes_grenenet, pd.DataFrame(data = {'ecotype': ['other']}, index=[231])],axis=0)
 
 def process_vcf(i):
+    print(i)
     name = i.split('/')[-2] + '_' + i.split('/')[-1][0:5]
     if os.path.exists(i) and os.path.getsize(i) <= 1:
         pass
@@ -77,7 +78,7 @@ if __name__ == "__main__":
 
     # Number of CPU cores to use (adjust as needed)
     num_cores = 20
-    
+
     # Create a pool of worker processes
     with multiprocessing.Pool(processes=num_cores) as pool:
         # Use the pool to parallelize the processing of tasks

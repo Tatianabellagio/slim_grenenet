@@ -55,8 +55,7 @@ for i in output_vcf_offset:
     print(i)
     name = i.split('/')[-2] + '_' + i.split('/')[-1][0:5]
     if os.path.exists(i) and os.path.getsize(i) <= 1:
-        print('empty_vcf')
-        ecotypes_grenenet[name] = np.nan
+        pass
     elif os.path.exists(i) and os.path.getsize(i) > 1:
         print('no empty_vcf')
         ## import each of teh vcf 

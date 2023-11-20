@@ -31,7 +31,13 @@ else
     if awk -F ' ' '{print $6}' "geno.fam" | grep -qE '^[^0]|0[^.].*$'; then
         gemma -bfile geno -lmm -k kinship.cXX.txt -c covariates -o w20cov
     else
-        mkdir output
-        echo "All individuals died" > "output/wcov.assoc.txt"
+        if [ -d "output" ]; then
+            # If the output directory exists, just create the file
+            echo "All individuals died" > "output/w20cov.assoc.txt"
+        else
+            # If the output directory does not exist, create it first, then create the file
+            mkdir output
+            echo "All individuals died" > "output/w20cov.assoc.txt"
+        fi
     fi
 fi

@@ -59,19 +59,4 @@ if (ncol(Y) <= 3) {
   
   ## Write p-values
   write.csv(pvalues, file = pvalues_file, row.names = FALSE)
-  
-  # Set the file path and name for the PNG file
-  png_file <- qqplot_file
-  
-  # Open the PNG file device
-  png(filename = png_file)
-  
-  # Generate the plot
-  qqplot(rexp(length(pvalues), rate = log(10)),
-         -log10(pvalues), xlab = "Expected quantile",
-         pch = 19, cex = 0.4)
-  abline(0, 1)
-  
-  # Close the device and save the file
-  dev.off()
 }

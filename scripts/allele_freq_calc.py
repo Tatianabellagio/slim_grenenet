@@ -28,10 +28,7 @@ for i in output_vcf:
     print(i)
     name = i.split('/')[-2] + '_' + i.split('/')[-1][0:5]
     if os.path.exists(i) and os.path.getsize(i) <= 1:
-        print('empty_vcf')
-        pos_vcf_og_counts[name] = np.nan
-        pos_vcf_og_freq[name] = np.nan
-    
+        pass
     elif os.path.exists(i) and os.path.getsize(i) > 1:
         vcf = allel.read_vcf(i)
         samples = vcf['samples']

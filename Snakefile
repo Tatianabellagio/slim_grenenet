@@ -34,7 +34,7 @@ rule all:
 
 
 
- rule build_population_for_sim:
+rule build_population_for_sim:
     input:
         og_tree_offset=config["og_tree_offset"],
         og_vcf_offset=config["og_vcf_offset"],
@@ -53,11 +53,11 @@ rule all:
         fivepoly=config["fivepoly"],
         twentypoly=config["twentypoly"],
         onehpoly=config["onehpoly"],
-        onethpoly=config["onethpoly"],
+        #onethpoly=config["onethpoly"],
         beta=config["beta"],
     resources:
         mem_mb=30720,
-    conda:4/2/moderatesel/optim
+    conda:
         "envs/base_env.yaml"
     script:
         "scripts/build_population_for_sim.py"

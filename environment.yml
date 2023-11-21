@@ -495,4 +495,3 @@ dependencies:
   - zstd=1.5.2=h3eb15da_6
   - pip:
       - imgcat==0.5.0
-prefix: /home/tbellagi/miniforge3/envs/pipeline_snakemake

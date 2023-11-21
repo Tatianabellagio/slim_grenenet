@@ -263,7 +263,7 @@ rule run_lfmm:
 
 rule create_pheno_hapfm:
     input:
-        fam_file = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/gwa/geno.fam",
+        fam_gwas = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/gwa/geno.fam",
     output:
         pheno_hapfm = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/hapfm/pheno.txt",
     resources:

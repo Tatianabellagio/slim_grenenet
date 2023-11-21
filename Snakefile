@@ -166,7 +166,7 @@ rule run_lmm_wpc:
     output:
         lmm_results ="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/lmm_pc_results_20pc_10env.csv",
     benchmark:
-        "benchmarks/lmm10env/arq_{allele_freq}_{pi}_{replicates_arq}_{heritability}_{selection}.txt"
+        "benchmarks/lmer_w20pc/arq_{allele_freq}_{pi}_{replicates_arq}_{heritability}_{selection}.txt"
     resources:
         mem_mb=61440,
     threads: 20,

@@ -10,9 +10,7 @@ library(lfmm)
 geno_file = snakemake@input[['geno_file']]
 env_file = snakemake@input[['env_file']]
 num_components_file = snakemake@input[['num_components']]
-
 pvalues_file = snakemake@output[['p_values_lfmm']]
-qqplot_file = snakemake@output[['qq_plot']]
 
 print(num_components_file)
 # Read the num_components
@@ -39,7 +37,6 @@ if (ncol(Y) <= 3) {
   write.csv(0, file = pvalues_file, row.names = FALSE)
   
   # Create the empty PNG file
-  file.create(qqplot_file)
 } else {
   # Proceed with LFMM analysis
   

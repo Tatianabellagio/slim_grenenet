@@ -39,7 +39,7 @@ mediumfreq: [0.05, 0.5]
 highfreq: [0.5, 1]
 
 # proportion of contributin snps to the trait
-pi: ['monogen','fivepoly', 'twentypoly', 'onehpoly'] # 'onethpoly' 
+pi: ['fivepoly', 'twentypoly', 'onehpoly'] # 'onethpoly' 
 
 monogen: 1
 fivepoly: 5

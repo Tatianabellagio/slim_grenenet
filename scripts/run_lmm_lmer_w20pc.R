@@ -19,8 +19,8 @@ print(dim(env_sites))
 allele_freq = read.csv(allele_freq)
 allele_freq[is.na(allele_freq)] <- 0
 print(dim(allele_freq))
-deltap = subset(allele_freq, select = -chrom_pos)
-print(dim(deltap))
+allele_freq = subset(allele_freq, select = -chrom_pos)
+print(dim(allele_freq))
 pop_strc = read.csv(pop_structure,row.names = 1)
 print(dim(pop_strc))
 
@@ -45,8 +45,8 @@ format_lmer <- function(mymodel) {
 }
 
 # test
-print(dim(deltap))
-yy = as.numeric(unlist(deltap[1,]))
+print(dim(allele_freq))
+yy = as.numeric(unlist(allele_freq[1,]))
 print(yy)
 #.GlobalEnv$myfm <- myfm # fix a global env bug
 mydata = prep_lmm(yy, env_sites, envvar, pop_strc) 
@@ -71,15 +71,14 @@ outdt = c(fixef(model)['env'], '1',
   )
 
 print(outdt)
-dimnames(outdt)[[2]] = c('env_value', 'env_eror', 'p_value_env','intercept_value', 'intercept_eror', 'bic', 'lrt')
-print(outdt)
+print(l_ratio)
 #output = format_lmer(model) # output model results
 #print(output)
 
-#nrow(deltap)
+#nrow(allele_freq)
 functions_to_export <- c("lmer", "fixef")
-lmeres = foreach(ii = 1:nrow(deltap), .combine = rbind, .export = functions_to_export ) %dopar% {
-  yy = as.numeric(unlist(deltap[ii,]))
+lmeres = foreach(ii = 1:nrow(allele_freq), .combine = rbind, .export = functions_to_export ) %dopar% {
+  yy = as.numeric(unlist(allele_freq[ii,]))
   #.GlobalEnv$myfm <- myfm # fix a global env bug
   mydata = prep_lmm(yy, env_sites, envvar, pop_strc) 
   model <- lmer(formula_str, data=mydata,  REML = FALSE)

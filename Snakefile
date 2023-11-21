@@ -8,10 +8,6 @@ configfile: "config.yaml"
 
 ## this rule runs a python script that will generate the bed file containing the contributing loci and their effect sizes based on values of dn alpha
 ## the bed file will be then used to annotate a vcf file that will be used by SliM to run the simulations
-
-
-rule all:
-    input:
 #        expand(
 #            "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/lmm_pc_results_20pc_10env.csv",
 #            allele_freq=config['allele_freq'],
@@ -22,6 +18,9 @@ rule all:
 #            optima=config["optima"],
 #        ),
 
+
+rule all:
+    input:
         expand(
             "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lfmm/p_values.csv",
             allele_freq=config['allele_freq'],

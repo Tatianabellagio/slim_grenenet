@@ -18,7 +18,7 @@ ln -sf "${base_directory}/${covariates}" covariates
 
 # Check if all values in the 6th column are 0
 if grep -qE '^[^0]|0[^.0]|0\.[^0]|0\.0*[1-9]' "pheno.txt"; then
-    python3 ${base_directory}/scripts/hapfm/HapFM_mapping.py -i haplotypeDM -y pheno.txt -o cov3pheno1000 -c covariates
+    python3 ${base_directory}/scripts/hapfm/HapFM_mapping.py -i haplotypeDM -y -v pheno.txt -o cov3pheno1000 -c covariates
 else
     if [ -d "output" ]; then
         # If the output directory exists, just create the file

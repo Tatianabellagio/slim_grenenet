@@ -17,6 +17,7 @@ lmm_results = snakemake@output[["lmm_results"]]
 env_sites = read.csv(env_sites, row.names = 1, )
 print(dim(env_sites))
 allele_freq = read.csv(allele_freq)
+allele_freq[is.na(allele_freq)] <- 0
 print(dim(allele_freq))
 deltap = subset(allele_freq, select = -chrom_pos)
 print(dim(deltap))

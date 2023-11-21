@@ -13,7 +13,7 @@ configfile: "config.yaml"
 rule all:
     input:
         expand(
-            "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/hapfm/pheno.txt",
+            "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/hapfm/cov3pheno1000_block_pip.txt",
             allele_freq=config['allele_freq'],
             pi=config["pi"],
             selection=config["selection"],

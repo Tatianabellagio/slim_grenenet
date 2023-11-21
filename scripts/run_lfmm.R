@@ -25,7 +25,10 @@ print(num_components)
 # Read the geno and env tables 
 geno <- read.csv(geno_file, sep = ',', header = TRUE)
 geno <- geno[, !colnames(geno) %in% "chrom_pos"]
+# Replace NA with 0 in dataframe
+geno[is.na(geno)] <- 0
 geno <- sapply(geno, as.numeric)
+
 Y <- as.matrix(geno)
 X <- as.matrix(read.csv(env_file, sep = '', header = FALSE))
 

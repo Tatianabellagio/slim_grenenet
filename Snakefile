@@ -265,7 +265,7 @@ rule create_pheno_hapfm:
     input:
         fam_file = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/gwa/geno.fam",
     output:
-        pheno_hapfm = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/hapfm/.txt",
+        pheno_hapfm = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/hapfm/pheno.txt",
     resources:
         mem_mb=15350,
     conda:
@@ -276,7 +276,7 @@ rule create_pheno_hapfm:
 
 rule run_hapfm:
     input:
-        pheno_hapfm = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/hapfm/.txt",
+        pheno_hapfm = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/hapfm/pheno.txt",
         haplotypeDM=config['haplotypeDM_hapfm'],
         covariates=config['covariates_hapfm'],
     output:

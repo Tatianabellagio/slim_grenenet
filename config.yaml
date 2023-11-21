@@ -23,17 +23,16 @@ covariates_hapfm: 'data/3cov_hapfm.txt'
 ecotypes_grenenet: 'data/ecotypes_grenenet.csv'
 nonhet_pos: 'data/nonhet_pos_wholegenome_offset.csv'
 
-heritability: ['lowh', 
-               'mediumh',
-               'highh']
+#heritability: ['lowh', 'mediumh','highh']
+heritability: ['highh']
 
 lowh: 0.1
 mediumh: 0.5
 highh: 0.9
 
-allele_freq: ['lowfreq',
-              'mediumfreq',
-              'highfreq']
+#allele_freq: ['lowfreq','mediumfreq','highfreq']
+allele_freq: ['mediumfreq']
+
 
 lowfreq: [0, 0.05]
 mediumfreq: [0.05, 0.5]

@@ -16,6 +16,9 @@ kinship: 'data/output/greneNet_final_v1.1.recode.cXX.txt'
 covariates10: 'data/10cov_gwas'
 covariates20: 'data/20cov_gwas'
 
+#hapfm
+haplotypeDM_hapfm: 'data/output_haplotypeDM.txt'
+covariates_hapfm: 'data/3cov_hapfm.txt'
 
 ecotypes_grenenet: 'data/ecotypes_grenenet.csv'
 nonhet_pos: 'data/nonhet_pos_wholegenome_offset.csv'
@@ -37,12 +40,13 @@ mediumfreq: [0.05, 0.5]
 highfreq: [0.5, 1]
 
 # proportion of contributin snps to the trait
-pi: ['monogen','fivepoly', 'twentypoly', 'onehpoly']
+pi: ['monogen','fivepoly', 'twentypoly', 'onehpoly'] # 'onethpoly' 
 
 monogen: 1
 fivepoly: 5
 twentypoly: 20
 onehpoly: 100
+onethpoly: 1000
 
 # standard deviation of effect sizÍes of contributing loci 
 # beta: ['beta']

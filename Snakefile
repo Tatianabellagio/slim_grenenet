@@ -273,5 +273,32 @@ rule run_lfmm:
     script:
         "scripts/run_lfmm.R"
 
+rule create_pheno_hapfm:
+    input:
+        fam_file = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/gwa/geno.fam",
+    output:
+        pheno_hapfm = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/hapfm/.txt",
+    resources:
+        mem_mb=15350,
+    conda:
+        "envs/base_env.yaml"
+    script:
+        "scripts/create_pheno_hapfm.py"
 
 
+rule run_hapfm:
+    input:
+        pheno_hapfm = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/hapfm/.txt",
+        haplotypeDM=config['haplotypeDM_hapfm'],
+        covariates=config['covariates_hapfm'],
+    output:
+        output_hapfm="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/hapfm/cov3pheno1000_block_pip.txt",
+    resources:
+        mem_mb=30720,
+    benchmark:
+        "benchmarks/hapfm/arq_{allele_freq}_{pi}_{replicates_arq}_{heritability}_{selection}_optima{optima}.txt"
+    threads: 6,
+    conda:
+        "envs/hapfm.yaml"
+    script:
+        "scripts/run_hapfm.sh"

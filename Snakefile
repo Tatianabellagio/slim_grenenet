@@ -13,7 +13,7 @@ configfile: "config.yaml"
 rule all:
     input:
         expand(
-            "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/hapfm/cov3pheno1000_block_pip.txt",
+            "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/hapfm/pheno.txt",
             allele_freq=config['allele_freq'],
             pi=config["pi"],
             selection=config["selection"],
@@ -263,9 +263,9 @@ rule run_lfmm:
 
 rule create_pheno_hapfm:
     input:
-        fam_gwas = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/gwa/geno.fam",
+        fam_gwas="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/gwa/geno.fam",
     output:
-        pheno_hapfm = "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/hapfm/pheno.txt",
+        pheno_hapfm="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/hapfm/pheno.txt",
     resources:
         mem_mb=15350,
     conda:

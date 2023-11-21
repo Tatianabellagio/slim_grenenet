@@ -67,11 +67,11 @@ outdt = c(fixef(model)['env'], '1',
             fixef(model)['(Intercept)'], '4',
             summary(model)$coefficients[, "Std. Error"]['(Intercept)'], '5',
             BIC(model), '6',
-            p_value = l_ratio$'Pr(>Chi)'[2], '7'
+            p_value = l_ratio['env', 'Pr(>F)'], '7'
   )
 
 print(outdt)
-print(l_ratio)
+
 #output = format_lmer(model) # output model results
 #print(output)
 

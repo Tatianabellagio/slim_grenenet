@@ -1,4 +1,5 @@
 base_directory=$(pwd)
+echo base_directory
 pheno="${snakemake_input[pheno_hapfm]}"
 haplotypeDM="${snakemake_input[haplotypeDM]}"
 covariates="${snakemake_input[covariates]}"
@@ -16,7 +17,7 @@ ln -sf "${base_directory}/${haplotypeDM}" haplotypeDM
 ln -sf "${base_directory}/${covariates}" covariates
 
 # Check if all values in the 6th column are 0
-if awk -F ' ' '{print $1}' "geno.fam" | grep -qE '^[^0]|0[^.].*$'; then
+if grep -qE '^[^0]|0[^.0]|0\.[^0]|0\.0*[1-9]' "pheno.txt"; then
     python3 ${base_directory}/scripts/hapfm/HapFM_mapping.py -i haplotypeDM -y pheno.txt -o cov3pheno1000 -c covariates
 else
     if [ -d "output" ]; then

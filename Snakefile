@@ -13,7 +13,7 @@ configfile: "config.yaml"
 rule all:
     input:
         expand(
-            "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lmm/lmm_pc_results_20pc_10env.csv",
+            "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/hapfm/cov3pheno1000_block_pip.txt",
             allele_freq=config['allele_freq'],
             pi=config["pi"],
             selection=config["selection"],
@@ -21,18 +21,6 @@ rule all:
             replicates_arq=config["replicates_arq"],
             optima=config["optima"],
         ),
-
-        expand(
-            "results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/lfmm/p_values.csv",
-            allele_freq=config['allele_freq'],
-            pi=config["pi"],
-            selection=config["selection"],
-            heritability=config["heritability"],
-            replicates_arq=config["replicates_arq"],
-            optima=config["optima"],
-        ),
-
-
 
 rule build_population_for_sim:
     input:

@@ -10,15 +10,15 @@ registerDoParallel(cl)
 
 ## load data
 env_sites = snakemake@input[["env_sites"]]
-p_norm = snakemake@input[["p_norm"]]
+allele_freq = snakemake@input[["allele_freq"]]
 pop_structure = snakemake@input[["pop_structure"]]
 lmm_results = snakemake@output[["lmm_results"]]
 
 env_sites = read.csv(env_sites, row.names = 1, )
 print(dim(env_sites))
-p_norm = read.csv(p_norm)
-print(dim(p_norm))
-deltap = subset(p_norm, select = -chrom_pos)
+allele_freq = read.csv(allele_freq)
+print(dim(allele_freq))
+deltap = subset(allele_freq, select = -chrom_pos)
 print(dim(deltap))
 pop_strc = read.csv(pop_structure,row.names = 1)
 print(dim(pop_strc))

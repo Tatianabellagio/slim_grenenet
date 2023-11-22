@@ -282,7 +282,7 @@ rule run_hapfm:
     output:
         output_hapfm="results/arq_{allele_freq}_{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/hapfm/cov3pheno1000_block_pip.txt",
     resources:
-        mem_mb=30720,
+        mem_mb=61440,
     benchmark:
         "benchmarks/hapfm/arq_{allele_freq}_{pi}_{replicates_arq}_{heritability}_{selection}_optima{optima}.txt"
     threads: 6,

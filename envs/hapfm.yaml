@@ -1,4 +1,4 @@
-name: hapfm
+name: hapfm_test
 channels:
   - bioconda
   - conda-forge

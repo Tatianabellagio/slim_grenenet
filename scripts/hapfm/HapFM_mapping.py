@@ -22,19 +22,19 @@ parser.add_argument('-s0',type = float, action = 'store', dest = 's0',default = 
 parser.add_argument('-v',action = 'store_true', dest = 'verbose',default = False, help = "print out each MCMC iteration")
 parser.add_argument('-o',type = str, action = 'store', dest = 'output',help = "the prefix of the output files")
 
+
+
 args = parser.parse_args()
 
 HapDM = pd.read_csv(args.input,sep="\t")
 n,p = HapDM.shape
 hap_names = HapDM.columns.values.tolist()
 
-
 y = []
 with open(args.phenotype,"r") as f:
 	for line in f:
 		line = line.strip("\n")
 		y.append(float(line))
-
 
 y = np.asarray(y)
 
@@ -98,7 +98,7 @@ if __name__ == '__main__':
 				block_name_ = re.compile("(.*@.*)_[0-9]+")
 				m = block_name_.search(hap_names[i])
 				if m.group(1) in block_haplotypes:
-					block_haplotypes[m.group(1)].append(i)
+			 		block_haplotypes[m.group(1)].append(i)
 				else:
 					block_haplotypes[m.group(1)] = [i]
 					block_positions.append(m.group(1))
@@ -136,6 +136,10 @@ if __name__ == '__main__':
 			print("%f\t%f" %(trace_posterior_median[i],trace_posterior_sd_median[i]),file = OUTPUT_TRACE)
 
 
+
+
+
+
 # if args.mode == 1:
 # 	trace,alpha_trace,beta_trace,gamma_trace = gs.sampling(y,C,HapDM,args.s0,args.s1,args.se,args.pie,iters=12000,prefix=args.output)
 # 	gamma_trace.columns = hap_names
@@ -153,6 +157,7 @@ if __name__ == '__main__':
 # 	OUTPUT_BETA = open(args.output+"_beta.txt","w")
 # 	for i in range(len(hap_names)):
 # 		print("%s\t%f\t%f" %(hap_names[i],beta_trace_avg[i],beta_trace_sd[i]),file = OUTPUT_BETA)
+
 
 # elif args.mode == 2:
 # 	if args.annotation == None:
@@ -187,6 +192,8 @@ if __name__ == '__main__':
 
 # ################# PIP calculation
 
+
+
 # haplotype_burnt_gamma = np.array(gamma_trace)
 
 # haplotype_pip = np.mean(haplotype_burnt_gamma,axis = 0)
@@ -199,6 +206,7 @@ if __name__ == '__main__':
 # block_haplotypes = {}
 # block_positions = []
 
+
 # for i in range(len(hap_names)):
 # 	block_name_ = re.compile("(.*@.*)_[0-9]+")
 # 	m = block_name_.search(hap_names[i])
@@ -209,6 +217,7 @@ if __name__ == '__main__':
 # 		block_positions.append(m.group(1))
 
 # block_pip_1 = uf.pip_calculation_1(haplotype_burnt_gamma,block_haplotypes,block_positions)
+
 
 # OUTPUT_BLOCK_1 = open(args.output+"_block_pip.txt","w")
 # for i in range(len(block_pip_1)):

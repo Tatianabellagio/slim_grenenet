@@ -59,12 +59,6 @@ if __name__ == '__main__':
 
 					processes = []
 
-					def sampling_w_annotation(y,C,HapDM,annotation,sig0_initiate,sig1_initiate,sige_initiate,pie_initiate,step_size,iters,prefix):
-
-					def sampling(verbose,y,C,HapDM,sig0_initiate,iters,prefix,num,trace_container,gamma_container,beta_container,alpha_container):
-
-
-
 					if args.mode == 1:
 						for num in range(args.num):
 							p = mp.Process(target = gs.sampling, args=(args.verbose,y,C,HapDM,args.s0,12000,args.output,num,trace_container,gamma_container,beta_container,alpha_container))
@@ -107,7 +101,7 @@ if __name__ == '__main__':
 							block_name_ = re.compile("(.*@.*)_[0-9]+")
 							m = block_name_.search(hap_names[i])
 							if m.group(1) in block_haplotypes:
-						 		block_haplotypes[m.group(1)].append(i)
+								block_haplotypes[m.group(1)].append(i)
 							else:
 								block_haplotypes[m.group(1)] = [i]
 								block_positions.append(m.group(1))

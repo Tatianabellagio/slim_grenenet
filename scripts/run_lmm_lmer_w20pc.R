@@ -77,7 +77,7 @@ print(outdt)
 
 #nrow(allele_freq)
 functions_to_export <- c("lmer", "fixef")
-lmeres = foreach(ii = 1:nrow(allele_freq), .combine = rbind, .export = functions_to_export ) %dopar% {
+lmeres = foreach(ii = 1:nrow(allele_freq), .combine = rbind, .export = functions_to_export,  .errorhandling = 'remove') %dopar% {
   yy = as.numeric(unlist(allele_freq[ii,]))
   #.GlobalEnv$myfm <- myfm # fix a global env bug
   mydata = prep_lmm(yy, env_sites, envvar, pop_strc) 

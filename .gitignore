@@ -30,6 +30,7 @@ testing.ipynb
 *.snakemake/
 *.err
 *.log
+*__pycache__*
 .Rproj.user
 /results/
 /slurm-logs/

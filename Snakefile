@@ -285,7 +285,7 @@ rule run_hapfm:
         mem_mb=61440,
     benchmark:
         "benchmarks/hapfm/arq_{allele_freq}_{pi}_{replicates_arq}_{heritability}_{selection}_optima{optima}.txt"
-    threads: 6,
+    threads: 7,
     conda:
         "envs/hapfm.yaml"
     script:

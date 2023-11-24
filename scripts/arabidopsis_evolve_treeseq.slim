@@ -133,9 +133,6 @@ initialize() {
 		// standarize phenotype
 		st_phenotype = (phenotype-mean_pheno_constant)/sd_pheno_constant;
 		//calculate fitness 
-		print(st_phenotype);
-		print(optima);
-		print(variance);
 		fitness = exp(-0.5 * ((st_phenotype - asFloat(optima))^2)/asFloat(variance));
 		// set up the fitness of the population to be usen in the reproduction callback
 		
@@ -173,8 +170,9 @@ initialize() {
 
 2:999 fitnessEffect() {
 	fitness = individual.getValue("fitness");
-	print(fitness);
-	return fitness;
+	// just in case the value is a very small float number that would overflow/underflow
+	if (isNULL(fitness)){ fitness = 0;};
+		return fitness;
 }
 
 

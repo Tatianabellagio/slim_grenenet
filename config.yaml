@@ -28,7 +28,7 @@ allele_freq: ['1','2','3','4','5','6'] # full
 
 # proportion of contributin snps to the trait
 # pi: ['1','2','3','4','5','6','7'] # partial 
-pi: ['7'] # full
+pi: ['1','2','3','4','5','6','7'] # full
 
 # standard deviation of effect sizÍes of contributing loci 
 # beta: ['beta']

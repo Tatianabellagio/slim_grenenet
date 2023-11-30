@@ -37,7 +37,7 @@ pi: ['1','2','3','4','5','6','7'] # full
 beta: 2
 
 # variances to simulate different strength of selection 
-selection: [moderatesel,'strongsel']
+selection: [moderatesel,'estrongsel']
 # ['estrongsel','exstrongsel', 'strongsel', 'moderatesel']
 #'exstrongsel',
 # 'estrongsel', 

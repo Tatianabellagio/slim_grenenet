@@ -172,7 +172,7 @@ initialize() {
 	fitness = individual.getValue("fitness");
 	print(fitness);
 	// just in case the value is a very small float number that would overflow/underflow
-	if (isNULL(fitness)){ fitness = 0;};
+	if (isNULL(fitness)){ fitness = asFloat(0.0);};
 		print(fitness);
 		return fitness;
 }

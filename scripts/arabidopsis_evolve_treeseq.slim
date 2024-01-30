@@ -110,9 +110,9 @@ initialize() {
 		// for the 10th generation directly write an empty file 
 		writeFile(output_tree_gen10, '');
 		// for the 4th generation check if it already exists and then write 
-		if (fileExists(output_tree_gen4)){}
-		else {writeFile(output_tree_gen4, '');
-			  writeFile(output_pop_size_late, '');};
+		//if (fileExists(output_tree_gen4)){}
+		//else {writeFile(output_tree_gen4, '');
+		//	  writeFile(output_pop_size_late, '');};
 		sim.simulationFinished();
 		}
 }
@@ -156,11 +156,11 @@ initialize() {
 	}
 		else { 
 		// for the 10th generation directly write an empty file 
-		// writeFile(output_tree_gen10, '');
+		writeFile(output_tree_gen10, '');
 		// for the 4th generation check if it already exists and then write 
-		if (fileExists(output_tree_gen4)){}
-		else {writeFile(output_tree_gen4, '');
-		 	  writeFile(output_pop_size_late, '');};
+		// if (fileExists(output_tree_gen4)){}
+		//else {writeFile(output_tree_gen4, '');
+		// 	  writeFile(output_pop_size_late, '');};
 		sim.simulationFinished();
 		}
 }
@@ -219,21 +219,21 @@ initialize() {
 		// if all individuals died finish the simulation and wirte both files
 	else { 
 		// for the 10th generation directly write an empty file 
-		// writeFile(output_tree_gen10, '');
+		writeFile(output_tree_gen10, '');
 		// for the 4th generation check if it already exists and then write 
-		if (fileExists(output_tree_gen4)){}
-		else {writeFile(output_tree_gen4, '');
-			  writeFile(output_pop_size_late, '');};
+		//if (fileExists(output_tree_gen4)){}
+		//else {writeFile(output_tree_gen4, '');
+		//	  writeFile(output_pop_size_late, '');};
 		sim.simulationFinished();
 		}
 }
 
-4 late(){
+//4 late(){
 	// write a middle tree
-	if (sim.subpopulations[0].individualCount > 0){
-		writeFile(output_pop_size_late, asString(sim.subpopulations[0].individualCount), append = T);		////// write pop size as check 
-		sim.treeSeqOutput(output_tree_gen4);};
-}
+//	if (sim.subpopulations[0].individualCount > 0){
+//		writeFile(output_pop_size_late, asString(sim.subpopulations[0].individualCount), append = T);		////// write pop size as check 
+//		sim.treeSeqOutput(output_tree_gen4);};
+//}
 
 
 11 late() {
@@ -245,12 +245,12 @@ initialize() {
 			sim.killIndividuals(sim.subpopulations[0].sampleIndividuals(number_to_kill));
 		}
 		//output tree seq 
-		// sim.treeSeqOutput(output_tree_gen10);
+		sim.treeSeqOutput(output_tree_gen10);
 		sim.simulationFinished();
 	}
 	// if there are no individuals create an empty file for the trees file
 	else {
-		// writeFile(output_tree_gen10, '');
+		writeFile(output_tree_gen10, '');
 		sim.simulationFinished();
 	
 	}

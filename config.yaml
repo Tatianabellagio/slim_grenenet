@@ -1,7 +1,7 @@
 # og tree is the tree with the 3 mill variants, all chromosomes and genomic offset (no overlapping pos)
 og_vcf_offset: 'data/wholegenome_offset.vcf'
 og_tree_offset: 'data/og_tree_offset.trees'
-allele_freq_params: 'data/allele_freq_params.csv'
+#allele_freq_params: 'data/allele_freq_params.csv'
 heritability_params: 'data/heritability_params.csv'
 polygenicty_params: 'data/polygenicty_params.csv'
 
@@ -24,7 +24,7 @@ nonhet_pos: 'data/nonhet_pos_wholegenome_offset.csv'
 heritability: ['1','2','3','4','5'] # full 
 
 #allele_freq: ['2','4','6'] # partial 
-allele_freq: ['1','2','3','4','5','6'] # full
+#allele_freq: ['1','2','3','4','5','6'] # full
 
 # proportion of contributin snps to the trait
 # pi: ['1','2','3','4','5','6','7'] # partial 

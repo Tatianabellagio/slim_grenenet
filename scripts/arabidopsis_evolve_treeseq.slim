@@ -34,7 +34,7 @@ initialize() {
 	// for each of the individuals 
 	for (ind in sim.subpopulations[0].individuals){
 		// add 5 clones 
-		for (i in 1:10){
+		for (i in 1:9){
 			sim.subpopulations[0].addCloned(ind);
 		}
 	}
@@ -60,10 +60,23 @@ initialize() {
 	if (sim.subpopulations[0].individualCount > 1){  // bigger than 1 because sd would give null if population is one individual
 		// This callback is the one actually caclulating fitness in a vectorized way so it can be used in the fitnessEffect and reproduciton callback 
 		inds =  sim.subpopulations.individuals;
-		// calculate their additive genetic value 
+		// calculate the additive genetic value for all individuals 
 		additive = inds.sumOfMutationsOfType(m0);
-		VA = sd(additive)^2;
-		// from h2 and VA calculate VE
+		
+		//save the min max genetic value for the scaling
+		max_gv = max(additive);
+		defineConstant("max_gv_constant", max_gv);
+
+		min_gv = min(additive);
+		defineConstant("min_gv_constant", min_gv);
+		
+		additive_scaled = (additive - min_gv)/ (max_gv-min_gv);
+		// calculate the additive genetic variance 
+		VA = var(additive_scaled);
+		// correct VA because slim uses by default the sample variance instead of the population variance 
+		VA = VA * ((size(additive)-1) / size(additive));
+		// from h2 and VA calculate VE		
+		
 		VE = (VA - asFloat(h2) * VA) / asFloat(h2);    // from h2 = VA / (VA + VE)   
 		//save values for use across the simulation
 		defineConstant("VE_constant", VE);
@@ -71,18 +84,9 @@ initialize() {
 		// save it for this tick 
 		env_noise = rnorm(size(inds), 0.0, sqrt(VE));
 		//calculate phenotype
-		phenotype = additive + env_noise;
-		// standarize phenotype
-		mean_pheno = mean(phenotype);
-		sd_pheno = sd(phenotype);
-		defineConstant("mean_pheno_constant", mean_pheno);
-		defineConstant("sd_pheno_constant", sd_pheno);
-		st_phenotype = (phenotype-mean_pheno)/sd_pheno;
+		phenotype = additive_scaled + env_noise;
 		//calculate fitness 
-		fitness = exp(-0.5 * ((st_phenotype - asFloat(optima))^2)/asFloat(variance));
-		print(st_phenotype);
-		print(optima);
-		print(variance);
+		fitness = exp(-0.5 * ((phenotype - asFloat(optima))^2)/asFloat(variance));
 		// set up the fitness of the population to be usen in the reproduction callback
 		
 		sim.subpopulations[0].setValue('fitness', fitness);
@@ -93,18 +97,13 @@ initialize() {
 		// save values in files
 		// save pop size 
 		writeFile(output_pop_size_early, asString(sim.subpopulations[0].individualCount), append = T);
-		//save additive genetic variance
-		writeFile(output_va, asString(VA), append = T);
-		// save phenotipic variance
-		writeFile(output_vpheno, asString(var(st_phenotype)), append = T);
-		// save mean fitness and variance of fitness
+		//save additive genetic variance and enviornmental variance
+		writeFile(output_va, asString(VA) + ',' + asString(VE_constant), append = T);
+		// save mean and variance of fitness and phenotype
 		writeFile(output_mfitness, asString(mean(fitness)), append = T);
 		writeFile(output_vfitness, asString(var(fitness)), append = T);
-		writeFile(output_mean_pheno, asString(mean_pheno_constant), append = T);
-		writeFile(output_sd_pheno, asString(sd_pheno_constant), append = T);
-		writeFile(output_st_phenom, asString(mean(st_phenotype)), append = T);
-		writeFile(output_st_phenov, asString(var(st_phenotype)), append = T);
-
+		writeFile(output_mpheno, asString(mean(phenotype)), append = T);
+		writeFile(output_vpheno, asString(var(phenotype)), append = T);
 
 	}
 		else { 
@@ -126,15 +125,15 @@ initialize() {
 		inds =  sim.subpopulations.individuals;
 		// calculate their additive genetic value 
 		additive = inds.sumOfMutationsOfType(m0);
-		VA = sd(additive)^2;
-		// save it for this tick 
+		// scale genetic value
+		additive_scaled = (additive - min_gv_constant)/ (max_gv_constant-min_gv_constant);
+		VA = sd(additive_scaled)^2;
+		// calculate env noise with the initial VE
 		env_noise = rnorm(size(inds), 0.0, sqrt(VE_constant));
 		//calculate phenotype
-		phenotype = additive + env_noise;
-		// standarize phenotype
-		st_phenotype = (phenotype-mean_pheno_constant)/sd_pheno_constant;
+		phenotype = additive_scaled + env_noise;
 		//calculate fitness 
-		fitness = exp(-0.5 * ((st_phenotype - asFloat(optima))^2)/asFloat(variance));
+		fitness = exp(-0.5 * ((phenotype - asFloat(optima))^2)/asFloat(variance));
 		// set up the fitness of the population to be usen in the reproduction callback
 		
 		sim.subpopulations[0].setValue('fitness', fitness);
@@ -145,15 +144,13 @@ initialize() {
 		// save values in files
 		// save pop size 
 		writeFile(output_pop_size_early, asString(sim.subpopulations[0].individualCount), append = T);
-		//save additive genetic variance
-		writeFile(output_va, asString(VA), append = T);
-		// save phenotipic variance
-		writeFile(output_vpheno, asString(var(st_phenotype)), append = T);
-		// save mean fitness and variance of fitness
+		//save additive genetic variance and enviornmental variance
+		writeFile(output_va, asString(VA) + ',' + asString(VE_constant), append = T);
+		// save mean and variance of fitness and phenotype
 		writeFile(output_mfitness, asString(mean(fitness)), append = T);
 		writeFile(output_vfitness, asString(var(fitness)), append = T);
-		writeFile(output_st_phenom, asString(mean(st_phenotype)), append = T);
-		writeFile(output_st_phenov, asString(var(st_phenotype)), append = T);
+		writeFile(output_mpheno, asString(mean(phenotype)), append = T);
+		writeFile(output_vpheno, asString(var(phenotype)), append = T);
 
 
 	}
@@ -172,10 +169,10 @@ initialize() {
 
 2:999 fitnessEffect() {
 	fitness = individual.getValue("fitness");
-	print(fitness);
+	//print(fitness);
 	// just in case the value is a very small float number that would overflow/underflow
 	if (isNULL(fitness)){ fitness = asFloat(0.0);};
-		print(fitness);
+		//print(fitness);
 		return fitness;
 }
 

@@ -1,22 +1,18 @@
 #!/bin/bash
-echo 'hola'
 
-tree_seq_causalloci="$1"
-optima="$2"
-selection="$3"
-heritability_state="$4"
-output_tree_gen4="$5"
+tree_seq_causalloci="${snakemake_input[tree_seq_causalloci]}"
+optima="${snakemake_params[optima]}"
+selection="${snakemake_params[selection]}"
+heritability_state="${snakemake_params[heritability]}"
+output_tree_gen4="${snakemake_output[output_tree_gen4]}"
 #output_tree_gen10="$6"
-output_pop_size_early="$6"
-output_pop_size_late="$7"
-output_va="$8"
-output_vpheno="${9}"
-output_mfitness="${10}"
-output_vfitness="${11}"
-output_mean_pheno="${12}"
-output_sd_pheno="${13}"
-output_st_phenom="${14}"
-output_st_phenov="${15}"
+output_pop_size_early="${snakemake_output[output_pop_size_early]}"
+output_pop_size_late="${snakemake_output[output_pop_size_late]}"
+output_va="${snakemake_output[output_va]}"
+output_mfitness="${snakemake_output[output_mfitness]}"
+output_vfitness="${snakemake_output[output_vfitness]}"
+output_mpheno="${snakemake_output[output_mpheno]}"
+output_vpheno="${snakemake_output[output_vpheno]}"
 
 # Map 'selection' to its numeric value using a case statement
 case "$selection" in
@@ -82,13 +78,10 @@ slim \
     -d "output_pop_size_early='$output_pop_size_early'" \
     -d "output_pop_size_late='$output_pop_size_late'" \
     -d "output_va='$output_va'" \
-    -d "output_vpheno='$output_vpheno'" \
     -d "output_mfitness='$output_mfitness'" \
     -d "output_vfitness='$output_vfitness'" \
-    -d "output_mean_pheno='$output_mean_pheno'" \
-    -d "output_sd_pheno='$output_sd_pheno'" \
-    -d "output_st_phenom='$output_st_phenom'" \
-    -d "output_st_phenov='$output_st_phenov'" \
+    -d "output_mpheno='$output_mpheno'" \
+    -d "output_vpheno='$output_vpheno'" \
     scripts/arabidopsis_evolve_treeseq.slim 
 
 

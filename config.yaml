@@ -20,8 +20,8 @@ kinship: 'data/output/greneNet_final_v1.1.recode.cXX.txt'
 ecotypes_grenenet: 'data/ecotypes_grenenet.csv'
 nonhet_pos: 'data/nonhet_pos_wholegenome_offset.csv'
 
-#heritability: ['1','3','5'] # partial 
-heritability: ['1','2','3','4','5'] # full 
+heritability: ['1','3','5'] # partial 
+#heritability: ['1','2','3','4','5'] # full 
 
 #allele_freq: ['2','4','6'] # partial 
 #allele_freq: ['1','2','3','4','5','6'] # full
@@ -37,7 +37,7 @@ pi: ['1','2','3','4','5','6','7'] # full
 beta: 2
 
 # variances to simulate different strength of selection 
-selection: [moderatesel,'estrongsel']
+selection: ['estrongsel']
 # ['estrongsel','exstrongsel', 'strongsel', 'moderatesel']
 #'exstrongsel',
 # 'estrongsel', 
@@ -56,7 +56,8 @@ replicates_sim: [1,2,3,4,5]
 replicates_arq: [1,2,3,4,5]
 
 # number of different environments to simulate
-optima: [-4,-3,-2,-1,0,1,2,3,4]
+#optima: [-4,-3,-2,-1,0,1,2,3,4]
+optima: [0,1,2,3]
 mapenv: '{-5:0, -4:1, -3:2, -2:3, -1:4, 0:5, 1:6, 2:7, 3:8 , 4:9 ,5:10}'
 
 

@@ -10,13 +10,7 @@ og_vcf_offset = snakemake.input['og_vcf_offset']
 og_tree_offset = snakemake.input['og_tree_offset'] 
 beta = int(snakemake.params['beta'])
 
-allele_freq_params_file = snakemake.input['allele_freq_params'] 
 polygenicty_params_file = snakemake.input['polygenicty_params'] 
-
-alelle_freq_option = snakemake.params['allele_freq']
-allele_freq_params = pd.read_csv(allele_freq_params_file,header=None, usecols=[int(alelle_freq_option)])
-lower_bound = allele_freq_params.iloc[0].values[0]
-upper_bound = allele_freq_params.iloc[1].values[0]
 
 pi_option =  snakemake.params['pi']
 pi = pd.read_csv(polygenicty_params_file,header=None, usecols=[int(pi_option)]).values[0][0]
@@ -26,24 +20,29 @@ output_tree_seq_causalloci = snakemake.output["tree_seq_causalloci"]
 output_loci_effectsize = snakemake.output["loci_effectsize"]
 output_phenotypes = snakemake.output["phenotypes"]
 
-def calc_pos_sc(alt_al_per_pos, pos, n_ecotypes, lower_bound, upper_bound, pi, beta):
+def calc_pos_sc(alt_al_per_pos, pos, n_ecotypes, pi, beta):
+    # calculate the total number of alternative alleles at each position
     alt_al_count = alt_al_per_pos.sum(axis=1)
+    # create a dataframe with the positions and the frequency of the alt allele at each posiiton 
     alelle_dist = pd.DataFrame({'alt_al_count':alt_al_count, 'pos':pos})
     alelle_dist['alt_al_freq'] = alelle_dist['alt_al_count'] / (n_ecotypes*2)
-    sim_freq_pos = alelle_dist[(alelle_dist['alt_al_freq'] < upper_bound) & (alelle_dist['alt_al_freq'] >= lower_bound)]['pos']
-    selected_sites = sim_freq_pos.sample(pi).values
+    # randomly sample the causal snps based on pi
+    alelle_dist = alelle_dist.sample(pi)
+    # randomly draw the effect sizes 
     sc = np.random.normal(0, beta, pi)
-    pos_sc = pd.DataFrame({'pos': selected_sites, 'sc': sc})
-    return pos_sc
+    alelle_dist['sc'] = sc
+    return alelle_dist
 
 def calc_phenotypes(pos,pos_sc, alt_al_per_pos):
+    # create a mask including only the contributing loci 
     mask_positions = pd.Series(pos).isin(pos_sc['pos'])
+    # use this mask to mask the genotype matrix
     alt_al_per_pos_selected_sites = alt_al_per_pos[mask_positions]
+    # calculate the phenotypes by multiplying the genotype matrix by the effect sizes at each position 
     phenotypes = []
     for i in range(alt_al_per_pos_selected_sites.shape[1]):
         gen_effectsize = np.multiply(alt_al_per_pos_selected_sites[:, i] , pos_sc['sc'])
         phenotypes.append(gen_effectsize.sum())
-
     return phenotypes
 
 def keep_only_causal_sites_and_mutations(og_tree_offset, pos_sc):
@@ -87,29 +86,30 @@ def keep_only_causal_sites_and_mutations(og_tree_offset, pos_sc):
         
     return tables.tree_sequence()
 
-
-## for this im gonna use the og vcf file wth the offset to be able to map the positions correctly 
+# read the original vcf with 'offset' positions so that all the chromosomes are 'like one long chromosome'
 vcf_og = allel.read_vcf(og_vcf_offset, fields=["calldata/GT", 'variants/POS' , 'samples'])
+# extract the genotypes matrix from the vcf
 geno_og = vcf_og["calldata/GT"]
+# extract the sample names to calculate the number of different ectoypes present in the vcf file
 samples = vcf_og['samples']
-pos = vcf_og['variants/POS']
-
 n_ecotypes = len(vcf_og['samples'])
+# extract the position of all the snps
+pos = vcf_og['variants/POS']
+# convert the genotype matrix of 0 and 1 into an alternative alleles matrix with 0,1 and 2 based on the number of copies 
+# in each position 
 alt_al_per_pos = geno_og.sum(axis=2) 
 
-pos_sc = calc_pos_sc(alt_al_per_pos, pos, n_ecotypes,  lower_bound, upper_bound , pi, beta)
-
+# get the causal loci
+pos_sc = calc_pos_sc(alt_al_per_pos, pos, n_ecotypes , pi, beta)
+# calculate the phenotypes for each individual
 phenotypes = calc_phenotypes(pos,pos_sc, alt_al_per_pos)
 
-## save 
-
+## save phenotypes and details about causal loci 
 pd.Series(phenotypes).to_csv(output_phenotypes)
 pos_sc.to_csv(output_loci_effectsize)
 
-### filter tree
-
+### filter tree to only keep causal mutations 
 pre_slim_tree = keep_only_causal_sites_and_mutations(og_tree_offset, pos_sc)
 
 ## save tree
-
 pre_slim_tree.dump(output_tree_seq_causalloci)

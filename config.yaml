@@ -3,7 +3,7 @@ og_vcf_offset: 'data/wholegenome_offset.vcf'
 og_tree_offset: 'data/og_tree_offset.trees'
 #allele_freq_params: 'data/allele_freq_params.csv'
 heritability_params: 'data/heritability_params.csv'
-polygenicty_params: 'data/polygenicty_params.csv'
+polygenicity_params: 'data/polygenicity_params.csv'
 
 mapper_realid_metadataid: 'data/mapper_realid_metadataid_wholegenomeoffset.csv'
 pos_vcf_og: 'data/pos_vcf_og_nooffset.csv'

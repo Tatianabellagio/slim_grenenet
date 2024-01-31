@@ -1,11 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
 echo hola
 tree_seq_causalloci="${snakemake_input[tree_seq_causalloci]}"
 echo hola2
-optima="${snakemake.params.optima}"
-echo "optima: $optima"
 echo ${snakemake_params[lelo]}
 echo ${snakemake_params[optima]}
+
 optima=${snakemake_params[optima]}
 selection=${snakemake_params[selection]}
 heritability_state=${snakemake_params[heritability]}

@@ -56,13 +56,6 @@ rule run_slim_simulation:
         output_vfitness="results/arq_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_vfitness.txt",
         output_mpheno="results/arq_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_mpheno.txt",
         output_vpheno="results/arq_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_vpheno.txt",
-
-    params:
-        lelo="lelo",
-        optima=lambda wildcards: str(wildcards.optima),        
-        selection=lambda wildcards: str(wildcards.selection),
-        heritability=lambda wildcards: str(wildcards.heritability),
-
     resources:
         mem_mb=40960,
     conda:

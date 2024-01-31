@@ -1,16 +1,8 @@
 
-echo hola
 tree_seq_causalloci="${snakemake_input[tree_seq_causalloci]}"
-echo hola2
-
-echo "${snakemake_wildcards[optima]}"
-echo ${snakemake_wildcards[sample]}
-echo ${snakemake_params[lelo]}
-echo ${snakemake_params[optima]}
-echo "${snakemake_params[optima]}"
-optima=${snakemake_params[optima]}
-selection=${snakemake_params[selection]}
-heritability_state=${snakemake_params[heritability]}
+optima="${snakemake_wildcards[optima]}"
+selection="${snakemake_wildcards[selection]}"
+heritability_state="${snakemake_wildcards[heritability]}"
 output_tree_gen4="${snakemake_output[output_tree_gen4]}"
 #output_tree_gen10="$6"
 output_pop_size_early="${snakemake_output[output_pop_size_early]}"

@@ -67,7 +67,7 @@ rule run_slim_simulation:
         mem_mb=40960,
     conda:
         "envs/base_env.yaml"
-    shell:
+    script:
         "scripts/slim.sh"
 
 rule tree_postprocessing:

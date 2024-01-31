@@ -1,9 +1,10 @@
 #!/bin/bash
 echo hola
 tree_seq_causalloci="${snakemake_input[tree_seq_causalloci]}"
-optima="${snakemake_params[optima]}"
-selection="${snakemake_params[selection]}"
-heritability_state="${snakemake_params[heritability]}"
+echo hola2
+optima=${snakemake_params[optima]}
+selection=${snakemake_params[selection]}
+heritability_state=${snakemake_params[heritability]}
 output_tree_gen4="${snakemake_output[output_tree_gen4]}"
 #output_tree_gen10="$6"
 output_pop_size_early="${snakemake_output[output_pop_size_early]}"

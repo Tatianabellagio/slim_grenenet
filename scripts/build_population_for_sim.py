@@ -1,9 +1,7 @@
 import pandas as pd
 import tskit
 import allel
-import random
 import numpy as np
-import tsinfer
 import pyslim
 
 og_vcf_offset = snakemake.input['og_vcf_offset'] 

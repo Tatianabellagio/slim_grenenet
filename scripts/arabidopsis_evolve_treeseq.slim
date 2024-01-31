@@ -108,7 +108,7 @@ initialize() {
 	}
 		else { 
 		// for the 10th generation directly write an empty file 
-		writeFile(output_tree_gen10, '');
+		// writeFile(output_tree_gen10, '');
 		// for the 4th generation check if it already exists and then write 
 		//if (fileExists(output_tree_gen4)){}
 		//else {writeFile(output_tree_gen4, '');
@@ -156,7 +156,7 @@ initialize() {
 	}
 		else { 
 		// for the 10th generation directly write an empty file 
-		writeFile(output_tree_gen10, '');
+		// writeFile(output_tree_gen10, '');
 		// for the 4th generation check if it already exists and then write 
 		// if (fileExists(output_tree_gen4)){}
 		//else {writeFile(output_tree_gen4, '');
@@ -219,7 +219,7 @@ initialize() {
 		// if all individuals died finish the simulation and wirte both files
 	else { 
 		// for the 10th generation directly write an empty file 
-		writeFile(output_tree_gen10, '');
+		// writeFile(output_tree_gen10, '');
 		// for the 4th generation check if it already exists and then write 
 		//if (fileExists(output_tree_gen4)){}
 		//else {writeFile(output_tree_gen4, '');
@@ -245,12 +245,12 @@ initialize() {
 			sim.killIndividuals(sim.subpopulations[0].sampleIndividuals(number_to_kill));
 		}
 		//output tree seq 
-		sim.treeSeqOutput(output_tree_gen10);
+		// sim.treeSeqOutput(output_tree_gen10);
 		sim.simulationFinished();
 	}
 	// if there are no individuals create an empty file for the trees file
 	else {
-		writeFile(output_tree_gen10, '');
+		// writeFile(output_tree_gen10, '');
 		sim.simulationFinished();
 	
 	}

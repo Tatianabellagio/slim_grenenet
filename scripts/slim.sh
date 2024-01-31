@@ -1,5 +1,5 @@
 #!/bin/bash
-
+echo hola
 tree_seq_causalloci="${snakemake_input[tree_seq_causalloci]}"
 optima="${snakemake_params[optima]}"
 selection="${snakemake_params[selection]}"

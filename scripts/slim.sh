@@ -72,8 +72,6 @@ slim \
     -d "h2='$h2'" \
     -d "optima='$optima'" \
     -d "variance='$variance'" \
-    #-d "output_tree_gen4='$output_tree_gen4'" \
-    #-d "output_tree_gen10='$output_tree_gen10'" \
     -d "output_pop_size_early='$output_pop_size_early'" \
     -d "output_pop_size_late='$output_pop_size_late'" \
     -d "output_va='$output_va'" \
@@ -83,4 +81,7 @@ slim \
     -d "output_vpheno='$output_vpheno'" \
     scripts/arabidopsis_evolve_treeseq.slim 
 
+
+#-d "output_tree_gen4='$output_tree_gen4'" \
+#-d "output_tree_gen10='$output_tree_gen10'" \
 

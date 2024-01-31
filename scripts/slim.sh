@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+
 echo hola
 tree_seq_causalloci="${snakemake_input[tree_seq_causalloci]}"
 echo hola2

@@ -10,10 +10,10 @@ og_vcf_offset = snakemake.input['og_vcf_offset']
 og_tree_offset = snakemake.input['og_tree_offset'] 
 beta = int(snakemake.params['beta'])
 
-polygenicty_params_file = snakemake.input['polygenicty_params'] 
+polygenicity_params_file = snakemake.input['polygenicty_params'] 
 
 pi_option =  snakemake.params['pi']
-pi = pd.read_csv(polygenicty_params_file,header=None, usecols=[int(pi_option)]).values[0][0]
+pi = pd.read_csv(polygenicity_params_file,header=None, usecols=[int(pi_option)]).values[0][0]
 
 #get the actual values
 output_tree_seq_causalloci = snakemake.output["tree_seq_causalloci"]

@@ -121,8 +121,6 @@ rule prep_lmm:
         env_variable ="results/arq_pi{pi}_{replicates_arq}/{heritability}/{selection}/lmm/env_variable10env.csv",
         allele_freq_norm="results/arq_pi{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq_norm10env.csv",
         pop_structure ="results/arq_pi{pi}_{replicates_arq}/{heritability}/{selection}/lmm/pop_structure10env.csv",
-    params:
-        mapenv=config['mapenv'],
     resources:
         mem_mb=30720,
     conda:

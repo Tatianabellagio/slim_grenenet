@@ -62,33 +62,40 @@ initialize() {
 		inds =  sim.subpopulations.individuals;
 		// calculate the additive genetic value for all individuals 
 		additive = inds.sumOfMutationsOfType(m0);
-		
-		//save the min max genetic value for the scaling
-		max_gv = max(additive);
-		defineConstant("max_gv_constant", max_gv);
 
-		min_gv = min(additive);
-		defineConstant("min_gv_constant", min_gv);
-		
-		additive_scaled = (additive - min_gv)/ (max_gv-min_gv);
+		///// all of this is different for the standard scaler /////////////////////
+
 		// calculate the additive genetic variance 
-		VA = var(additive_scaled);
+		VA = var(additive);
 		// correct VA because slim uses by default the sample variance instead of the population variance 
 		VA = VA * ((size(additive)-1) / size(additive));
 		// from h2 and VA calculate VE		
-		
 		VE = (VA - asFloat(h2) * VA) / asFloat(h2);    // from h2 = VA / (VA + VE)   
 		//save values for use across the simulation
 		defineConstant("VE_constant", VE);
-
 		// save it for this tick 
 		env_noise = rnorm(size(inds), 0.0, sqrt(VE));
 		//calculate phenotype
-		phenotype = additive_scaled + env_noise;
+		phenotype = additive + env_noise;
+		// create and save the mean and sd of the phenotype 
+		mean_pheno = mean(phenotype);
+		sd_pheno = sd(phenotype);
+
+		// based on the standard deviation of the phenotypes we are going to calculate an adjusted vs 
+		adj_variance = variance * (sd_pheno)^2;
+		defineConstant("adj_variance_constant", adj_variance);
+
+		// and we are also going t ocalculate the new optimum, based on the phenotypes mean and sd 
+		// optima in this case will meand the number of 'theoretical sd' like 0 1 etc, that has to be adjusted
+		new_optimum  = mean_pheno + (optima*sd_pheno);
+		defineConstant("new_optimum_constant", new_optimum);
+
 		//calculate fitness 
-		fitness = exp(-0.5 * ((phenotype - asFloat(optima))^2)/asFloat(variance));
+		fitness = exp(-0.5 * ((phenotype - asFloat(new_optimum_constant))^2)/asFloat(adj_variance_constant));
+
+		///// all of this is different for the standard scaler ///////////////////
+	
 		// set up the fitness of the population to be usen in the reproduction callback
-		
 		sim.subpopulations[0].setValue('fitness', fitness);
 		//set up the fitness for each individual to be used in the fitnesseffect callback
 		for (i in 0:(size(sim.subpopulations[0].individuals)-1)) {
@@ -104,6 +111,8 @@ initialize() {
 		writeFile(output_vfitness, asString(var(fitness)), append = T);
 		writeFile(output_mpheno, asString(mean(phenotype)), append = T);
 		writeFile(output_vpheno, asString(var(phenotype)), append = T);
+		writeFile(output_new_optimum, asString(new_optimum), append = T);
+		writeFile(output_adj_variance, asString(adj_variance), append = T);
 
 	}
 		else { 
@@ -125,17 +134,19 @@ initialize() {
 		inds =  sim.subpopulations.individuals;
 		// calculate their additive genetic value 
 		additive = inds.sumOfMutationsOfType(m0);
-		// scale genetic value
-		additive_scaled = (additive - min_gv_constant)/ (max_gv_constant-min_gv_constant);
-		VA = sd(additive_scaled)^2;
+		
+		///// all of this is different for the standard scaler /////////////////////
+		VA = var(additive);
 		// calculate env noise with the initial VE
 		env_noise = rnorm(size(inds), 0.0, sqrt(VE_constant));
 		//calculate phenotype
-		phenotype = additive_scaled + env_noise;
+		phenotype = additive + env_noise;
 		//calculate fitness 
-		fitness = exp(-0.5 * ((phenotype - asFloat(optima))^2)/asFloat(variance));
-		// set up the fitness of the population to be usen in the reproduction callback
-		
+		fitness = exp(-0.5 * ((phenotype - asFloat(new_optimum_constant))^2)/asFloat(adj_variance_constant));
+		///// all of this is different for the standard scaler /////////////////////
+
+
+		// set up the fitness of the population to be usen in the reproduction callback	
 		sim.subpopulations[0].setValue('fitness', fitness);
 		//set up the fitness for each individual to be used in the fitnesseffect callback
 		for (i in 0:(size(sim.subpopulations[0].individuals)-1)) {
@@ -151,7 +162,6 @@ initialize() {
 		writeFile(output_vfitness, asString(var(fitness)), append = T);
 		writeFile(output_mpheno, asString(mean(phenotype)), append = T);
 		writeFile(output_vpheno, asString(var(phenotype)), append = T);
-
 
 	}
 		else { 

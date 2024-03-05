@@ -10,8 +10,8 @@ beta = int(snakemake.params['beta'])
 
 polygenicity_params_file = snakemake.input['polygenicity_params'] 
 
-pi_option =  snakemake.params['pi']
-pi = pd.read_csv(polygenicity_params_file,header=None, usecols=[int(pi_option)]).values[0][0]
+pi =  snakemake.params['pi'].astype(int)
+#pi = pd.read_csv(polygenicity_params_file,header=None, usecols=[int(pi_option)]).values[0][0]
 
 #get the actual values
 output_tree_seq_causalloci = snakemake.output["tree_seq_causalloci"]

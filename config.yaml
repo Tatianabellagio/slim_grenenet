@@ -28,7 +28,7 @@ heritability: ['1','3','4','5'] # partial
 
 # proportion of contributin snps to the trait
 # pi: ['1','2','3','4','5','6','7'] # partial 
-pi: ['1','1.5','2','2.5','3','4','5','6','7'] # full
+pi: ['1','2','5','10','20','50','100','500','1000'] # full
 
 # standard deviation of effect sizÍes of contributing loci 
 # beta: ['beta']

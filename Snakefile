@@ -60,8 +60,6 @@ rule run_slim_simulation:
         output_maxphenotype="results/arq_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_maxphenotype.txt",
         output_minphenotype="results/arq_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_minphenotype.txt",
 
-
-output_minphenotype
     resources:
         mem_mb=40960,
     conda:

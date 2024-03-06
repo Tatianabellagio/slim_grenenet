@@ -107,6 +107,8 @@ initialize() {
 		//save additive genetic variance and enviornmental variance
 		writeFile(output_va, asString(VA) + ',' + asString(VE_constant), append = T);
 		// save mean and variance of fitness and phenotype
+		writeFile(output_maxphenotype, asString(max(phenotype)), append = T);
+		writeFile(output_minphenotype, asString(min(phenotype)), append = T);
 		writeFile(output_mfitness, asString(mean(fitness)), append = T);
 		writeFile(output_vfitness, asString(var(fitness)), append = T);
 		writeFile(output_mpheno, asString(mean(phenotype)), append = T);

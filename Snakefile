@@ -27,7 +27,6 @@ rule build_population_for_sim:
     input:
         og_tree_offset=config["og_tree_offset"],
         og_vcf_offset=config["og_vcf_offset"],
-        polygenicity_params=config["polygenicity_params"],
     output:
         tree_seq_causalloci="results/arq_pi{pi}_{replicates_arq}/tree_seq_causalloci.trees",
         loci_effectsize="results/arq_pi{pi}_{replicates_arq}/loci_effectsize.csv",

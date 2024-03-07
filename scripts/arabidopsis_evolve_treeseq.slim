@@ -87,7 +87,7 @@ initialize() {
 
 		// and we are also going t ocalculate the new optimum, based on the phenotypes mean and sd 
 		// optima in this case will meand the number of 'theoretical sd' like 0 1 etc, that has to be adjusted
-		new_optimum  = mean_pheno + (asFloat(optima)*sd_pheno);
+		new_optimum  = max(phenotype);
 		defineConstant("new_optimum_constant", new_optimum);
 
 		//calculate fitness 

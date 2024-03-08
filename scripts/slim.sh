@@ -12,8 +12,8 @@ output_mfitness="${snakemake_output[output_mfitness]}"
 output_vfitness="${snakemake_output[output_vfitness]}"
 output_mpheno="${snakemake_output[output_mpheno]}"
 output_vpheno="${snakemake_output[output_vpheno]}"
-output_new_optimum="${snakemake_output[output_new_optimum]}"
-output_adj_variance="${snakemake_output[output_adj_variance]}"
+#output_new_optimum="${snakemake_output[output_new_optimum]}"
+#output_adj_variance="${snakemake_output[output_adj_variance]}"
 output_maxphenotype="${snakemake_output[output_maxphenotype]}"
 output_minphenotype="${snakemake_output[output_minphenotype]}"
 
@@ -83,8 +83,8 @@ slim \
     -d "output_vfitness='$output_vfitness'" \
     -d "output_mpheno='$output_mpheno'" \
     -d "output_vpheno='$output_vpheno'" \
-    -d "output_new_optimum='$output_new_optimum'" \
-    -d "output_adj_variance='$output_adj_variance'" \
+    #-d "output_new_optimum='$output_new_optimum'" \
+    #-d "output_adj_variance='$output_adj_variance'" \
     -d "output_maxphenotype='$output_maxphenotype'" \
     -d "output_minphenotype='$output_minphenotype'" \
     scripts/arabidopsis_evolve_treeseq.slim 

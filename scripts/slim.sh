@@ -83,13 +83,12 @@ slim \
     -d "output_vfitness='$output_vfitness'" \
     -d "output_mpheno='$output_mpheno'" \
     -d "output_vpheno='$output_vpheno'" \
-    #-d "output_new_optimum='$output_new_optimum'" \
-    #-d "output_adj_variance='$output_adj_variance'" \
     -d "output_maxphenotype='$output_maxphenotype'" \
     -d "output_minphenotype='$output_minphenotype'" \
     scripts/arabidopsis_evolve_treeseq.slim 
 
-
+#-d "output_new_optimum='$output_new_optimum'" \
+#-d "output_adj_variance='$output_adj_variance'" \
 #-d "output_tree_gen4='$output_tree_gen4'" \
 #-d "output_tree_gen10='$output_tree_gen10'" \
 

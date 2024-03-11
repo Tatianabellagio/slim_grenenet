@@ -55,7 +55,7 @@ rule run_slim_simulation:
         output_mpheno="results/arq_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_mpheno.txt",
         output_vpheno="results/arq_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_vpheno.txt",
         #output_new_optimum="results/arq_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_new_optimum.txt",
-        #output_adj_variance="results/arq_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_adj_variance.txt",
+        #`output_adj_variance="results/arq_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_adj_variance.txt",
         output_maxphenotype="results/arq_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_maxphenotype.txt",
         output_minphenotype="results/arq_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_minphenotype.txt",
 

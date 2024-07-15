@@ -5,3 +5,4 @@ __default__:
   nodes: 1
   ntasks: 1
   account: fc_moilab
+  partition: savio3_htc

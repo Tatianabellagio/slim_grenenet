@@ -37,6 +37,8 @@ rule build_population_for_sim:
         beta=config["beta"],
     resources:
         mem_mb=30720,
+    benchmark:
+        "benchmarks/arq_pi{pi}_{replicates_arq}/.txt"
     conda:
         "envs/base_env.yaml"
     script:
@@ -63,6 +65,8 @@ rule run_slim_simulation:
         mem_mb=40960,
     conda:
         "envs/base_env.yaml"
+    benchmark:
+        "benchmarks/arq_pi{pi}_{replicates_arq}_{heritability}_{selection}_optima{optima}_subp{replicates_sim}.txt"
     script:
         "scripts/slim.sh"
 

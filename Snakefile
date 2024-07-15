@@ -38,7 +38,7 @@ rule build_population_for_sim:
     resources:
         mem_mb=30720,
     benchmark:
-        "benchmarks/arq_pi{pi}_{replicates_arq}/.txt"
+        "benchmarks/arq_pi{pi}_{replicates_arq}.txt"
     conda:
         "envs/base_env.yaml"
     script:

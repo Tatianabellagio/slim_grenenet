@@ -1,22 +1,21 @@
-#!/bin/bash
-echo 'hola'
 
-tree_seq_causalloci="$1"
-optima="$2"
-selection="$3"
-heritability_state="$4"
-output_tree_gen4="$5"
-#output_tree_gen10="$6"
-output_pop_size_early="$6"
-output_pop_size_late="$7"
-output_va="$8"
-output_vpheno="${9}"
-output_mfitness="${10}"
-output_vfitness="${11}"
-output_mean_pheno="${12}"
-output_sd_pheno="${13}"
-output_st_phenom="${14}"
-output_st_phenov="${15}"
+tree_seq_causalloci="${snakemake_input[tree_seq_causalloci]}"
+optima="${snakemake_wildcards[optima]}"
+selection="${snakemake_wildcards[selection]}"
+heritability_state="${snakemake_wildcards[heritability]}"
+#output_tree_gen4="${snakemake_output[output_tree_gen4]}"
+#output_tree_gen10="${snakemake_output[output_tree_gen10]}"
+output_pop_size_early="${snakemake_output[output_pop_size_early]}"
+output_pop_size_late="${snakemake_output[output_pop_size_late]}"
+output_va="${snakemake_output[output_va]}"
+output_mfitness="${snakemake_output[output_mfitness]}"
+output_vfitness="${snakemake_output[output_vfitness]}"
+output_mpheno="${snakemake_output[output_mpheno]}"
+output_vpheno="${snakemake_output[output_vpheno]}"
+#output_new_optimum="${snakemake_output[output_new_optimum]}"
+#output_adj_variance="${snakemake_output[output_adj_variance]}"
+output_maxphenotype="${snakemake_output[output_maxphenotype]}"
+output_minphenotype="${snakemake_output[output_minphenotype]}"
 
 # Map 'selection' to its numeric value using a case statement
 case "$selection" in
@@ -77,18 +76,19 @@ slim \
     -d "h2='$h2'" \
     -d "optima='$optima'" \
     -d "variance='$variance'" \
-    -d "output_tree_gen4='$output_tree_gen4'" \
-    -d "output_tree_gen10='$output_tree_gen10'" \
     -d "output_pop_size_early='$output_pop_size_early'" \
     -d "output_pop_size_late='$output_pop_size_late'" \
     -d "output_va='$output_va'" \
-    -d "output_vpheno='$output_vpheno'" \
     -d "output_mfitness='$output_mfitness'" \
     -d "output_vfitness='$output_vfitness'" \
-    -d "output_mean_pheno='$output_mean_pheno'" \
-    -d "output_sd_pheno='$output_sd_pheno'" \
-    -d "output_st_phenom='$output_st_phenom'" \
-    -d "output_st_phenov='$output_st_phenov'" \
+    -d "output_mpheno='$output_mpheno'" \
+    -d "output_vpheno='$output_vpheno'" \
+    -d "output_maxphenotype='$output_maxphenotype'" \
+    -d "output_minphenotype='$output_minphenotype'" \
     scripts/arabidopsis_evolve_treeseq.slim 
 
+#-d "output_new_optimum='$output_new_optimum'" \
+#-d "output_adj_variance='$output_adj_variance'" \
+#-d "output_tree_gen4='$output_tree_gen4'" \
+#-d "output_tree_gen10='$output_tree_gen10'" \
 

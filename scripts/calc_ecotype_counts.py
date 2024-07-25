@@ -3,6 +3,7 @@ import pandas as pd
 import allel
 import os
 from collections import defaultdict
+import multiprocessing
 
 ## here all the vcfs from a particular combination of arq herit and selection and expanding all replicates and optimas
 output_vcf_offset = snakemake.input['output_vcf_offset'] 
@@ -47,29 +48,35 @@ geno_og = vcf_og['calldata/GT']
 pos_og = vcf_og['variants/POS']
 samples = vcf_og['samples']
 
-ecotypes_grenenet = pd.read_csv(ecotypes_grenenet, dtype=object)
-ecotypes_grenenet.columns= ['ecotype']
-ecotypes_grenenet = pd.concat([ecotypes_grenenet, pd.DataFrame(data = {'ecotype': ['other']}, index=[231])],axis=0)
+#ecotypes_grenenet = pd.read_csv(ecotypes_grenenet, dtype=object)
+#ecotypes_grenenet.columns= ['ecotype']
+#ecotypes_grenenet = pd.concat([ecotypes_grenenet, pd.DataFrame(data = {'ecotype': ['other']}, index=[231])],axis=0)
 
-for i in output_vcf_offset:
-    print(i)
-    name = i.split('/')[-2] + '_' + i.split('/')[-1][0:5]
-    if os.path.exists(i) and os.path.getsize(i) <= 1:
-        print('empty_vcf')
-        ecotypes_grenenet[name] = np.nan
-    elif os.path.exists(i) and os.path.getsize(i) > 1:
-        print('no empty_vcf')
-        ## import each of teh vcf 
-        vcf_new = allel.read_vcf(i, fields = ['calldata/GT', 'variants/POS'])
-        ##extract the posisions and the geno array
-        pos_new = vcf_new['variants/POS']
-        geno_new = vcf_new['calldata/GT']
-        ## for each of them create the ecotype geno mapper, depending on the positions that made it 
-        geno_og_rpos, geno_new_rpos = filtering_pos(nonhet_pos, pos_new, geno_og, geno_new)
-        ecotype_geno_mapper = get_ecotype_geno_mapper(geno_og_rpos)
-        ecotype_countsdf = get_ecotype_counts(geno_new_rpos, name)
-        print(ecotype_countsdf)
-        ## merge with previous 
-        ecotypes_grenenet = ecotypes_grenenet.merge(ecotype_countsdf, how='left', on ='ecotype')
-        print(ecotypes_grenenet)
-ecotypes_grenenet.to_csv(ecotype_counts)
+print(output_vcf_offset)
+name = output_vcf_offset.split('/')[-2] + '_' + output_vcf_offset.split('/')[-1][0:5]
+if os.path.exists(output_vcf_offset) and os.path.getsize(output_vcf_offset) <= 1:
+    pass
+elif os.path.exists(output_vcf_offset) and os.path.getsize(output_vcf_offset) > 1:
+    print('no empty_vcf')
+    ## import each of teh vcf 
+    vcf_new = allel.read_vcf(output_vcf_offset, fields = ['calldata/GT', 'variants/POS'])
+    ##extract the posisions and the geno array
+    pos_new = vcf_new['variants/POS']
+    geno_new = vcf_new['calldata/GT']
+    ## for each of them create the ecotype geno mapper, depending on the positions that made it 
+    geno_og_rpos, geno_new_rpos = filtering_pos(nonhet_pos, pos_new, geno_og, geno_new)
+    ecotype_geno_mapper = get_ecotype_geno_mapper(geno_og_rpos)
+    ecotype_countsdf = get_ecotype_counts(geno_new_rpos, name)
+    print(ecotype_countsdf)
+    ## merge with previous 
+    #ecotypes_grenenet = ecotypes_grenenet.merge(ecotype_countsdf, how='left', on ='ecotype')
+    #print(ecotypes_grenenet)
+
+
+try:
+    print(ecotype_countsdf)
+    ecotype_countsdf.to_csv(ecotype_counts)
+except NameError:
+    print('empty')
+    # Create an empty file with the same name if ecotype_countsdf is not defined
+    open(ecotype_counts, 'w').close()

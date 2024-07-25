@@ -34,7 +34,7 @@ initialize() {
 	// for each of the individuals 
 	for (ind in sim.subpopulations[0].individuals){
 		// add 5 clones 
-		for (i in 1:10){
+		for (i in 1:9){
 			sim.subpopulations[0].addCloned(ind);
 		}
 	}
@@ -73,7 +73,7 @@ initialize() {
 		st_genetic_value = (additive-mean_genetic_value_constant)/sd_genetic_value_constant;
 
 		VA = var(st_genetic_value);
-				// from h2 and VA calculate VE		
+		// from h2 and VA calculate VE		
 		VE = (VA - asFloat(h2) * VA) / asFloat(h2);    // from h2 = VA / (VA + VE)   
 		//save values for use across the simulation
 		defineConstant("VE_constant", VE);
@@ -86,8 +86,8 @@ initialize() {
 		fitness = exp(-0.5 * ((phenotype - asFloat(optima))^2)/asFloat(variance));
 
 		///// all of this is different for the standard scaler before///////////////////
-			
-		// set up the fitness of the population to be usen in the reproduction callback	
+	
+		// set up the fitness of the population to be usen in the reproduction callback
 		sim.subpopulations[0].setValue('fitness', fitness);
 		//set up the fitness for each individual to be used in the fitnesseffect callback
 		for (i in 0:(size(sim.subpopulations[0].individuals)-1)) {
@@ -176,35 +176,40 @@ initialize() {
 
 2:999 fitnessEffect() {
 	fitness = individual.getValue("fitness");
-		// just in case the value is a very small float number that would overflow/underflow
+	// just in case the value is a very small float number that would overflow/underflow
 	if (isNULL(fitness)){ fitness = asFloat(0.0);};
-	return fitness;
+		return fitness;
 }
 
 
 3:999 reproduction() {
 	// only run this if population size if greater than 0, would run into error otherwise 
 	if (sim.subpopulations[0].individualCount > 0){
-		
+
 		inds =  sim.subpopulations.individuals;
 		// loop over each of the individuals in the population
 		for (j in 0:(size(sim.subpopulations[0].individuals)-1)) {
-			//lambda from field experiment
-			offspring = rpois(1, 7.247);
-			// for each individual cehck their expected offspring size and based on that
-			// for each offspring based on a chance of 97% make it a selfer offscpring or an outcross offspring 
-			for (k in seqLen(offspring)) {
-				
-				if (runif(1) < 0.97)
-				{
-					sim.subpopulations[0].addSelfed(sim.subpopulations[0].individuals[j]);
-				}
-				else
-				{
-					//for the outcrossign event chose at random another individual from teh population 
-					mate = sim.subpopulations[0].sampleIndividuals(1);
-					sim.subpopulations[0].addCrossed(sim.subpopulations[0].individuals[j], mate);
-				}
+			// first determine if this individual is going to reproduce or not 
+			// 90% chance it will 
+			if (runif(1) < 0.9)
+			{	
+				//lambda from field experiment
+				offspring = rpois(1, 7.247);
+				// for each individual cehck their expected offspring size and based on that
+				// for each offspring based on a chance of 97% make it a selfer offscpring or an outcross offspring 
+				for (k in seqLen(offspring)) {
+					
+					if (runif(1) < 0.97)
+					{
+						sim.subpopulations[0].addSelfed(sim.subpopulations[0].individuals[j]);
+					}
+					else
+					{
+						//for the outcrossign event chose at random another individual from teh population 
+						mate = sim.subpopulations[0].sampleIndividuals(1);
+						sim.subpopulations[0].addCrossed(sim.subpopulations[0].individuals[j], mate);
+					}
+				}	
 			}
 		}
 	}

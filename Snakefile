@@ -75,6 +75,20 @@ rule run_slim_simulation:
     shell:
         "scripts/slim.sh {input} {params} {output}"
 
+rule tree_files_filling:
+    input:
+        pheno_file="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_st_phenov.txt",
+    output:
+        sim_tree="results/arq_af{allele_freq}_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_tree_output_gen4.trees",
+    resources:
+        mem_mb=30720,
+        limit_space=1,
+    conda:
+        "envs/base_env.yaml"
+    script:
+        "scripts/tree_files_filling.py"
+
+
 rule tree_postprocessing:
     input:
         og_tree_offset=config["og_tree_offset"],

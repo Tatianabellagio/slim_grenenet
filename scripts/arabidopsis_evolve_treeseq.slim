@@ -60,29 +60,34 @@ initialize() {
 	if (sim.subpopulations[0].individualCount > 1){  // bigger than 1 because sd would give null if population is one individual
 		// This callback is the one actually caclulating fitness in a vectorized way so it can be used in the fitnessEffect and reproduciton callback 
 		inds =  sim.subpopulations.individuals;
-		// calculate their additive genetic value 
+		// calculate the additive genetic value for all individuals 
 		additive = inds.sumOfMutationsOfType(m0);
-		VA = sd(additive)^2;
-		// from h2 and VA calculate VE
+
+		///// all of this is different for the standard scaler before /////////////////////
+
+		// standarize genetic value
+		mean_genetic_value = mean(additive);
+		sd_genetic_value = sd(additive);
+		defineConstant("mean_genetic_value_constant", mean_genetic_value);
+		defineConstant("sd_genetic_value_constant", sd_genetic_value);
+		st_genetic_value = (additive-mean_genetic_value_constant)/sd_genetic_value_constant;
+
+		VA = var(st_genetic_value);
+				// from h2 and VA calculate VE		
 		VE = (VA - asFloat(h2) * VA) / asFloat(h2);    // from h2 = VA / (VA + VE)   
 		//save values for use across the simulation
 		defineConstant("VE_constant", VE);
-
 		// save it for this tick 
 		env_noise = rnorm(size(inds), 0.0, sqrt(VE));
 		//calculate phenotype
-		phenotype = additive + env_noise;
-		// standarize phenotype
-		mean_pheno = mean(phenotype);
-		sd_pheno = sd(phenotype);
-		defineConstant("mean_pheno_constant", mean_pheno);
-		defineConstant("sd_pheno_constant", sd_pheno);
-		st_phenotype = (phenotype-mean_pheno)/sd_pheno;
+		phenotype = st_genetic_value + env_noise;
+
 		//calculate fitness 
-		fitness = exp(-0.5 * ((st_phenotype - asFloat(optima))^2)/asFloat(variance));
-		
-		// set up the fitness of the population to be usen in the reproduction callback
-		
+		fitness = exp(-0.5 * ((phenotype - asFloat(optima))^2)/asFloat(variance));
+
+		///// all of this is different for the standard scaler before///////////////////
+			
+		// set up the fitness of the population to be usen in the reproduction callback	
 		sim.subpopulations[0].setValue('fitness', fitness);
 		//set up the fitness for each individual to be used in the fitnesseffect callback
 		for (i in 0:(size(sim.subpopulations[0].individuals)-1)) {
@@ -91,26 +96,24 @@ initialize() {
 		// save values in files
 		// save pop size 
 		writeFile(output_pop_size_early, asString(sim.subpopulations[0].individualCount), append = T);
-		//save additive genetic variance
-		writeFile(output_va, asString(VA), append = T);
-		// save phenotipic variance
-		writeFile(output_vpheno, asString(var(st_phenotype)), append = T);
-		// save mean fitness and variance of fitness
+		//save additive genetic variance and enviornmental variance
+		writeFile(output_va, asString(VA) + ',' + asString(VE_constant), append = T);
+		// save mean and variance of fitness and phenotype
+		writeFile(output_maxphenotype, asString(max(phenotype)), append = T);
+		writeFile(output_minphenotype, asString(min(phenotype)), append = T);
 		writeFile(output_mfitness, asString(mean(fitness)), append = T);
 		writeFile(output_vfitness, asString(var(fitness)), append = T);
-		writeFile(output_mean_pheno, asString(mean_pheno_constant), append = T);
-		writeFile(output_sd_pheno, asString(sd_pheno_constant), append = T);
-		writeFile(output_st_phenom, asString(mean(st_phenotype)), append = T);
-		writeFile(output_st_phenov, asString(var(st_phenotype)), append = T);
-
+		writeFile(output_mpheno, asString(mean(phenotype)), append = T);
+		writeFile(output_vpheno, asString(var(phenotype)), append = T);
 
 	}
 		else { 
 		// for the 10th generation directly write an empty file 
-		writeFile(output_tree_gen10, '');
+		// writeFile(output_tree_gen10, '');
 		// for the 4th generation check if it already exists and then write 
-		if (fileExists(output_tree_gen4)){}
-		else {writeFile(output_tree_gen4, '');};
+		//if (fileExists(output_tree_gen4)){}
+		//else {writeFile(output_tree_gen4, '');
+		//	  writeFile(output_pop_size_late, '');};
 		sim.simulationFinished();
 		}
 }
@@ -123,17 +126,22 @@ initialize() {
 		inds =  sim.subpopulations.individuals;
 		// calculate their additive genetic value 
 		additive = inds.sumOfMutationsOfType(m0);
-		VA = sd(additive)^2;
-		// save it for this tick 
+		
+		///// all of this is different for the standard scaler before/////////////////////
+
+		st_genetic_value = (additive-mean_genetic_value_constant)/sd_genetic_value_constant;
+
+		VA = var(st_genetic_value);
+		// calculate env noise with the initial VE
 		env_noise = rnorm(size(inds), 0.0, sqrt(VE_constant));
 		//calculate phenotype
-		phenotype = additive + env_noise;
-		// standarize phenotype
-		st_phenotype = (phenotype-mean_pheno_constant)/sd_pheno_constant;
+		phenotype = st_genetic_value + env_noise;
 		//calculate fitness 
-		fitness = exp(-0.5 * ((st_phenotype - asFloat(optima))^2)/asFloat(variance));
-		// set up the fitness of the population to be usen in the reproduction callback
-		
+		fitness = exp(-0.5 * ((phenotype - asFloat(optima))^2)/asFloat(variance));
+		///// all of this is different for the standard scaler before /////////////////////
+
+
+		// set up the fitness of the population to be usen in the reproduction callback	
 		sim.subpopulations[0].setValue('fitness', fitness);
 		//set up the fitness for each individual to be used in the fitnesseffect callback
 		for (i in 0:(size(sim.subpopulations[0].individuals)-1)) {
@@ -142,24 +150,24 @@ initialize() {
 		// save values in files
 		// save pop size 
 		writeFile(output_pop_size_early, asString(sim.subpopulations[0].individualCount), append = T);
-		//save additive genetic variance
-		writeFile(output_va, asString(VA), append = T);
-		// save phenotipic variance
-		writeFile(output_vpheno, asString(var(st_phenotype)), append = T);
-		// save mean fitness and variance of fitness
+		//save additive genetic variance and enviornmental variance
+		writeFile(output_va, asString(VA) + ',' + asString(VE_constant), append = T);
+		// save mean and variance of fitness and phenotype
+		writeFile(output_maxphenotype, asString(max(phenotype)), append = T);
+		writeFile(output_minphenotype, asString(min(phenotype)), append = T);
 		writeFile(output_mfitness, asString(mean(fitness)), append = T);
 		writeFile(output_vfitness, asString(var(fitness)), append = T);
-		writeFile(output_st_phenom, asString(mean(st_phenotype)), append = T);
-		writeFile(output_st_phenov, asString(var(st_phenotype)), append = T);
-
+		writeFile(output_mpheno, asString(mean(phenotype)), append = T);
+		writeFile(output_vpheno, asString(var(phenotype)), append = T);
 
 	}
 		else { 
 		// for the 10th generation directly write an empty file 
 		// writeFile(output_tree_gen10, '');
 		// for the 4th generation check if it already exists and then write 
-		if (fileExists(output_tree_gen4)){}
-		else {writeFile(output_tree_gen4, '');};
+		// if (fileExists(output_tree_gen4)){}
+		//else {writeFile(output_tree_gen4, '');
+		// 	  writeFile(output_pop_size_late, '');};
 		sim.simulationFinished();
 		}
 }
@@ -168,6 +176,8 @@ initialize() {
 
 2:999 fitnessEffect() {
 	fitness = individual.getValue("fitness");
+		// just in case the value is a very small float number that would overflow/underflow
+	if (isNULL(fitness)){ fitness = asFloat(0.0);};
 	return fitness;
 }
 
@@ -216,18 +226,18 @@ initialize() {
 		// for the 10th generation directly write an empty file 
 		// writeFile(output_tree_gen10, '');
 		// for the 4th generation check if it already exists and then write 
-		if (fileExists(output_tree_gen4)){}
-		else {writeFile(output_tree_gen4, '');
-			  writeFile(output_pop_size_late, '');};
+		//if (fileExists(output_tree_gen4)){}
+		//else {writeFile(output_tree_gen4, '');
+		//	  writeFile(output_pop_size_late, '');};
 		sim.simulationFinished();
 		}
 }
 
-4 late(){
+3 late(){
 	// write a middle tree
 	if (sim.subpopulations[0].individualCount > 0){
 		writeFile(output_pop_size_late, asString(sim.subpopulations[0].individualCount), append = T);		////// write pop size as check 
-		sim.treeSeqOutput(output_tree_gen4);};
+		sim.treeSeqOutput(output_tree_gen_3);};
 }
 
 
@@ -240,7 +250,7 @@ initialize() {
 			sim.killIndividuals(sim.subpopulations[0].sampleIndividuals(number_to_kill));
 		}
 		//output tree seq 
-		// sim.treeSeqOutput(output_tree_gen10);
+		sim.treeSeqOutput(output_tree_gen10);
 		sim.simulationFinished();
 	}
 	// if there are no individuals create an empty file for the trees file

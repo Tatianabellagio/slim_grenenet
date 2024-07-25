@@ -34,7 +34,7 @@ initialize() {
 	// for each of the individuals 
 	for (ind in sim.subpopulations[0].individuals){
 		// add 5 clones 
-		for (i in 1:10){
+		for (i in 1:9){
 			sim.subpopulations[0].addCloned(ind);
 		}
 	}
@@ -189,6 +189,10 @@ initialize() {
 		inds =  sim.subpopulations.individuals;
 		// loop over each of the individuals in the population
 		for (j in 0:(size(sim.subpopulations[0].individuals)-1)) {
+			// first determine if this individual is going to reproduce or not 
+			// 90% chance it will 
+			if (runif(1) < 0.9)
+			{	
 				//lambda from field experiment
 				offspring = rpois(1, 7.247);
 				// for each individual cehck their expected offspring size and based on that
@@ -208,6 +212,7 @@ initialize() {
 				}	
 			}
 		}
+	}
 	self.active = 0;
 }
 

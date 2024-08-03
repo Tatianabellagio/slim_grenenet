@@ -24,7 +24,10 @@ def calc_pos_sc(alt_al_per_pos, pos, n_ecotypes, pi, beta):
     # randomly sample the causal snps based on pi
     alelle_dist = alelle_dist.sample(pi)
     # the effect sizes are from the the inverse distribution of allele frequencies  
-    alelle_dist['sc'] = 1 - alelle_dist['alt_al_freq']
+    #alelle_dist['sc'] = 1 - alelle_dist['alt_al_freq']
+    ## the effect sizes are from a normal distribution 
+    sc = np.random.normal(0, 2, pi)
+    alelle_dist['sc'] = sc
     return alelle_dist
 
 def calc_phenotypes(pos,pos_sc, alt_al_per_pos):

@@ -70,28 +70,13 @@ rule run_slim_simulation:
     script:
         "scripts/slim.sh"
 
-rule tree_files_filling:
-    input:
-        pheno_file="results/arq_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_minphenotype.txt",
-    output:
-        sim_treegen3="results/arq_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_tree_output_gen3.trees",
-        sim_treegen10="results/arq_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_tree_output_gen10.trees",
-    resources:
-        mem_mb=30720,
-        limit_space=1,
-    conda:
-        "envs/base_env.yaml"
-    script:
-        "scripts/tree_files_filling.py"
-
-
 rule tree_postprocessing:
     input:
         og_tree_offset=config["og_tree_offset"],
         mapper_ids=config['mapper_realid_metadataid'],
-        sim_treegen3="results/arq_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_tree_output_gen3.trees",
+        output_sim_tree="results/arq_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_tree_output_gen4.trees",
     output:
-        output_vcf=temp("results/arq_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_vcf_gen3.vcf"),
+        output_vcf=temp("results/arq_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_vcfgen4_output.vcf"),
     resources:
         mem_mb=30720,
         limit_space=1,
@@ -99,6 +84,22 @@ rule tree_postprocessing:
         "envs/base_env.yaml"
     script:
         "scripts/tree_postprocessing.py"
+
+rule calc_ecotype_counts:
+    input:
+        nonhet_pos=config['nonhet_pos'],
+        og_vcf_offset=config["og_vcf_offset"],
+        ecotypes_grenenet=config['ecotypes_grenenet'],
+        output_vcf_offset="results/arq_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_vcfgen4_output.vcf",
+    output:
+        ecotype_counts="results/arq_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_ecotype_counts10env.csv",
+    resources:
+        mem_mb=30720,
+    threads: 20,
+    conda:
+        "envs/base_env.yaml"
+    script:
+        "scripts/calc_ecotype_counts.py"
 
 rule gen_allele_freq:
     input:
@@ -200,21 +201,3 @@ rule run_gwa:
         "envs/gwas.yaml"
     script:
         "scripts/gwas_gemma.sh"
-
-
-
-#rule calc_ecotype_counts:
-#    input:
-#        nonhet_pos=config['nonhet_pos'],
-#        og_vcf_offset=config["og_vcf_offset"],
-#        ecotypes_grenenet=config['ecotypes_grenenet'],
-#        output_vcf_offset="results/arq_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_vcfgen4_output.vcf",
-#    output:
-#        ecotype_counts="results/arq_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_ecotype_counts10env.csv",
-#    resources:
-#        mem_mb=30720,
-#    threads: 20,
-#    conda:
-#        "envs/base_env.yaml"
-#    script:
-#        "scripts/calc_ecotype_counts.py"

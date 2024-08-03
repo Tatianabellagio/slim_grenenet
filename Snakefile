@@ -18,7 +18,6 @@ rule all:
             replicates_arq=config["replicates_arq"],    
             selection=config["selection"],
             heritability=config["heritability"],
-            replicates_arq=config["replicates_arq"],
         ),
 
 

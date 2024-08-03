@@ -13,13 +13,12 @@ configfile: "config.yaml"
 rule all:
     input:
         expand(
-            "results/arq_pi{pi}_{replicates_arq}/{heritability}/{selection}/optima{optima}/subp{replicates_sim}_pop_size_early.txt",
+            "results/arq_pi{pi}_{replicates_arq}/{heritability}/{selection}/allele_counts_gen3.csv",
             pi=config["pi"],
+            replicates_arq=config["replicates_arq"],    
             selection=config["selection"],
             heritability=config["heritability"],
             replicates_arq=config["replicates_arq"],
-            optima=config["optima"],
-            replicates_sim=config["replicates_sim"],    
         ),
 
 

@@ -84,7 +84,6 @@ rule tree_files_filling:
     script:
         "scripts/tree_files_filling.py"
 
-
 rule tree_postprocessing:
     input:
         og_tree_offset=config["og_tree_offset"],
@@ -104,13 +103,13 @@ rule gen_allele_freq:
     input:
         pos_vcf_og_offset=config['pos_vcf_og_offset'],
         output_vcf = expand(
-            "results/arq_pi{{pi}}_{{replicates_arq}}/{{heritability}}/{{selection}}/optima{optima}/subp{replicates_sim}_vcfgen4_output.vcf",
+            "results/arq_pi{{pi}}_{{replicates_arq}}/{{heritability}}/{{selection}}/optima{optima}/subp{replicates_sim}_vcf_gen3.vcf",
             optima=config["optima"],
             replicates_sim=config["replicates_sim"],    
         ),
     output:
-        allele_counts ="results/arq_pi{pi}_{replicates_arq}/{heritability}/{selection}/allele_counts10env.csv",
-        allele_freq ="results/arq_pi{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq10env.csv",
+        allele_counts ="results/arq_pi{pi}_{replicates_arq}/{heritability}/{selection}/allele_counts_gen3.csv",
+        allele_freq ="results/arq_pi{pi}_{replicates_arq}/{heritability}/{selection}/allele_freq_gen3.csv",
     resources:
         mem_mb=30720,
     conda:

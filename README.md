@@ -1,4 +1,4 @@
-# SLiM Simulation Pipeline for Population Genetics Analysis
+# Polygenic and monogenic adaptation drive evolutionary rescue at different magnitudes of environmental change
 
 This repository contains a Snakemake pipeline for running population genetics simulations using SLiM. The pipeline is designed to simulate evolutionary scenarios and analyze the resulting data.
 

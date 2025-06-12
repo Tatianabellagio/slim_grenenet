@@ -1,5 +1,6 @@
-output_vcf="${snakemake_input[output_vcf]}"
-output_vcf_fixpos="${snakemake_output[output_vcf_fixpos]}"
+#!/bin/bash
+output_vcf="$1"
+output_vcf_fixpos="$2"
 
 awk -F'\t' 'BEGIN{OFS="\t"}
     $1 ~ /^#/ {print}
@@ -24,3 +25,4 @@ awk -F'\t' 'BEGIN{OFS="\t"}
         $2=pos;
         print
     }' $output_vcf > $output_vcf_fixpos
+

@@ -1,80 +1,43 @@
 import pandas as pd
 import tskit
 import allel
-import random
 import numpy as np
-import tsinfer
 import pyslim
 
 og_vcf_offset = snakemake.input['og_vcf_offset'] 
 og_tree_offset = snakemake.input['og_tree_offset'] 
+beta = int(snakemake.params['beta'])
 
-pi_option =  snakemake.params['pi']
-pi = int(snakemake.params[pi_option])
-print(pi)
-
-beta_option = snakemake.params['beta']
-beta = int(snakemake.params[beta_option])
-print(beta)
-
-alelle_freq_option = snakemake.params['allele_freq']
-allele_freq = snakemake.params[alelle_freq_option]
-lower_bound = float(allele_freq[0])
-upper_bound = float(allele_freq[1])
-
+pi =  int(snakemake.params['pi'])
 
 #get the actual values
-optima_qty = str(snakemake.params['optima_qty']) 
-
 output_tree_seq_causalloci = snakemake.output["tree_seq_causalloci"]
 output_loci_effectsize = snakemake.output["loci_effectsize"]
 output_phenotypes = snakemake.output["phenotypes"]
-output_optima_values = snakemake.output["optima_values"]
-output_variance_values = snakemake.output["variance_values"]
 
-def calc_pos_sc(alt_al_per_pos, pos, n_ecotypes, allele_freq, pi, beta):
+def calc_pos_sc(alt_al_per_pos, pos, n_ecotypes, pi, beta):
+    # calculate the total number of alternative alleles at each position
     alt_al_count = alt_al_per_pos.sum(axis=1)
+    # create a dataframe with the positions and the frequency of the alt allele at each posiiton 
     alelle_dist = pd.DataFrame({'alt_al_count':alt_al_count, 'pos':pos})
     alelle_dist['alt_al_freq'] = alelle_dist['alt_al_count'] / (n_ecotypes*2)
-    sim_freq_pos = alelle_dist[(alelle_dist['alt_al_freq'] < upper_bound) & (alelle_dist['alt_al_freq'] >= lower_bound)]['pos']
-    selected_sites = sim_freq_pos.sample(pi).values
-    print(selected_sites)
-    sc = np.random.normal(0, beta, pi)
-    pos_sc = pd.DataFrame({'pos': selected_sites, 'sc': sc})
-    return pos_sc
+    # randomly sample the causal snps based on pi
+    alelle_dist = alelle_dist.sample(pi)
+    # the effect sizes are from the the inverse distribution of allele frequencies  
+    alelle_dist['sc'] = 1 - alelle_dist['alt_al_freq']
+    return alelle_dist
 
 def calc_phenotypes(pos,pos_sc, alt_al_per_pos):
+    # create a mask including only the contributing loci 
     mask_positions = pd.Series(pos).isin(pos_sc['pos'])
+    # use this mask to mask the genotype matrix
     alt_al_per_pos_selected_sites = alt_al_per_pos[mask_positions]
+    # calculate the phenotypes by multiplying the genotype matrix by the effect sizes at each position 
     phenotypes = []
     for i in range(alt_al_per_pos_selected_sites.shape[1]):
         gen_effectsize = np.multiply(alt_al_per_pos_selected_sites[:, i] , pos_sc['sc'])
         phenotypes.append(gen_effectsize.sum())
     return phenotypes
-
-def calc_optima(phenotypes):
-    max_pheno = max(phenotypes)
-    min_pheno = min(phenotypes)
-
-    length = max_pheno - min_pheno
-    step = length/(int(optima_qty) - 1)
-    optima = [round(min_pheno + i * step, 4) for i in range(0, int(optima_qty))]
-    return optima
-
-def calc_variances(phenotypes, optima):
-    range_pheno =  max(phenotypes) - min(phenotypes)
-    dist_between_env = range_pheno / len(optima)
-    ## Strong selection, fitness 0 in the adyacent environemnt
-    sd1 = dist_between_env / 3
-    variance1 = sd1**2
-    ## moderate selection, fitness 0 in the other extremee environemnt 
-    sd2 = (dist_between_env * 4) / 3 ## 3 sd will be in between 4  environments 
-    variance2 = sd2**2
-    ## weak selection, half fitness in the other extreme environment 
-    sd3 = (dist_between_env * 8) / 3
-    variance3 = sd3**2
-    variances = [sd1, sd2, sd3]
-    return variances
 
 def keep_only_causal_sites_and_mutations(og_tree_offset, pos_sc):
     ts = tskit.load(og_tree_offset)
@@ -117,47 +80,30 @@ def keep_only_causal_sites_and_mutations(og_tree_offset, pos_sc):
         
     return tables.tree_sequence()
 
-
-## for this im gonna use the og vcf file wth the offset to be able to map the positions correctly 
+# read the original vcf with 'offset' positions so that all the chromosomes are 'like one long chromosome'
 vcf_og = allel.read_vcf(og_vcf_offset, fields=["calldata/GT", 'variants/POS' , 'samples'])
+# extract the genotypes matrix from the vcf
 geno_og = vcf_og["calldata/GT"]
+# extract the sample names to calculate the number of different ectoypes present in the vcf file
 samples = vcf_og['samples']
-pos = vcf_og['variants/POS']
-
 n_ecotypes = len(vcf_og['samples'])
+# extract the position of all the snps
+pos = vcf_og['variants/POS']
+# convert the genotype matrix of 0 and 1 into an alternative alleles matrix with 0,1 and 2 based on the number of copies 
+# in each position 
 alt_al_per_pos = geno_og.sum(axis=2) 
 
-pos_sc = calc_pos_sc(alt_al_per_pos, pos, n_ecotypes, allele_freq, pi, beta)
-
+# get the causal loci
+pos_sc = calc_pos_sc(alt_al_per_pos, pos, n_ecotypes , pi, beta)
+# calculate the phenotypes for each individual
 phenotypes = calc_phenotypes(pos,pos_sc, alt_al_per_pos)
 
-optima = calc_optima(phenotypes)
-
-variances = calc_variances(phenotypes, optima)
-
-variances
-
-pd.DataFrame(index =  ['strongsel','moderatesel','lowsel'],data = { 'var': variances}).to_csv('sel_var.csv')
-
-pd.DataFrame(data = {'selection': ['strongsel','moderatesel','lowsel'], 'var': variances}).to_csv('sel_var.csv')
-
-## save 
-
+## save phenotypes and details about causal loci 
 pd.Series(phenotypes).to_csv(output_phenotypes)
 pos_sc.to_csv(output_loci_effectsize)
 
-with open(output_optima_values, 'w') as file:
-    for element in optima:
-        file.write(str(element) + '\n')  # Write element followed by a newline
-
-with open(output_variance_values, 'w') as file:
-    for element in variances:
-        file.write(str(round(element,4)) + '\n')  # Write element followed by a newline
-
-### filter tree
-
+### filter tree to only keep causal mutations 
 pre_slim_tree = keep_only_causal_sites_and_mutations(og_tree_offset, pos_sc)
 
 ## save tree
-
 pre_slim_tree.dump(output_tree_seq_causalloci)

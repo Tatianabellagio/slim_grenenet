@@ -24,3 +24,4 @@ phenotypes_og = pd.DataFrame(phenotypes_og)
 
 # write csv fro p=original phenotypes
 phenotypes_og.to_csv(output_pheno_og_path, index=False)
+ 

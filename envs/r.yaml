@@ -1,9 +1,17 @@
-name: pipeline_slim
+name: r_env_
 channels:
   - conda-forge
   - bioconda
   - defaults
+  - r 
 dependencies:
-  - r-base=4.1
-  - r-lfmm=1.1
-
+  - r-base=4.2.3 
+  - r-doParallel=1.0.17
+  - r-iterators=1.0.14
+  - r-foreach=1.5.2
+  - r-data.table=1.14.8
+  - r-dplyr=1.1.3
+  - r-nlme=3.1_163
+  - r-mumin=1.47.5
+  - r-lme4=1.1_34
+  - r-lmertest=3.1_3

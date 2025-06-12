@@ -42,5 +42,7 @@ testing.ipynb
 
 # Ignore any file with 'samplefile' in its name
 *samplefile*
-
+*.png
+*.pdf
+*.svg
 

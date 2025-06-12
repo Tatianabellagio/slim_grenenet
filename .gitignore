@@ -37,3 +37,10 @@ testing.ipynb
 /profiles/slurm/__pycache__/
 /to_transfer/
 /data/
+# Ignore all .ipynb_checkpoints folders and their contents
+**/.ipynb_checkpoints/
+
+# Ignore any file with 'samplefile' in its name
+*samplefile*
+
+

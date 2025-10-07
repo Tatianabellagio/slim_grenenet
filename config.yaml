@@ -20,7 +20,7 @@ kinship: 'data/output/greneNet_final_v1.1.recode.cXX.txt'
 ecotypes_grenenet: 'data/ecotypes_grenenet.csv'
 nonhet_pos: 'data/nonhet_pos_wholegenome_offset.csv'
 
-heritability: ['1','3','4','5'] # partial 
+heritability: ['1','2','3','4','5'] # partial 
 #heritability: ['1','2','3','4','5'] # full 
 
 #allele_freq: ['2','4','6'] # partial 

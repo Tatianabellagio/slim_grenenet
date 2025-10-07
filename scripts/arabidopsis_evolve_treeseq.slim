@@ -63,7 +63,7 @@ initialize() {
 		// calculate the additive genetic value for all individuals 
 		additive = inds.sumOfMutationsOfType(m0);
 
-		///// all of this is different for the standard scaler before /////////////////////
+		///// 
 
 		// standarize genetic value
 		mean_genetic_value = mean(additive);
@@ -84,8 +84,8 @@ initialize() {
 
 		//calculate fitness 
 		fitness = exp(-0.5 * ((phenotype - asFloat(optima))^2)/asFloat(variance));
-
-		///// all of this is different for the standard scaler before///////////////////
+		fitness_va = exp(-0.5 * ((st_genetic_value - asFloat(optima))^2)/asFloat(variance));
+		///// 
 	
 		// set up the fitness of the population to be usen in the reproduction callback
 		sim.subpopulations[0].setValue('fitness', fitness);
@@ -94,6 +94,8 @@ initialize() {
 			inds[i].setValue('fitness', fitness[i]);
 		}
 		// save values in files
+		writeFile(output_fitness_va_mean, asString(mean(fitness_va)), append = T);
+		writeFile(output_fitness_va_var, asString(var(fitness_va)), append = T);
 		// save pop size 
 		writeFile(output_pop_size_early, asString(sim.subpopulations[0].individualCount), append = T);
 		//save additive genetic variance and enviornmental variance
@@ -138,7 +140,7 @@ initialize() {
 		phenotype = st_genetic_value + env_noise;
 		//calculate fitness 
 		fitness = exp(-0.5 * ((phenotype - asFloat(optima))^2)/asFloat(variance));
-		///// all of this is different for the standard scaler before /////////////////////
+		fitness_va = exp(-0.5 * ((st_genetic_value - asFloat(optima))^2)/asFloat(variance));
 
 
 		// set up the fitness of the population to be usen in the reproduction callback	
@@ -148,6 +150,8 @@ initialize() {
 			inds[i].setValue('fitness', fitness[i]);
 		}
 		// save values in files
+		writeFile(output_fitness_va_mean, asString(mean(fitness_va)), append = T);
+		writeFile(output_fitness_va_var, asString(var(fitness_va)), append = T);
 		// save pop size 
 		writeFile(output_pop_size_early, asString(sim.subpopulations[0].individualCount), append = T);
 		//save additive genetic variance and enviornmental variance

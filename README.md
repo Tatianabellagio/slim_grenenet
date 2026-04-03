@@ -1,24 +1,56 @@
 # slim_grenenet
 
-Snakemake pipeline for simulating and analyzing the [GrENE-Net](http://grene-net.org/) evolve-and-resequence experiment in *Arabidopsis thaliana* using [SLiM](https://messerlab.org/slim/). The pipeline models 231 ecotypes evolving across 32 environments over 6 generations, with 12 replicates per environment, tracking allele frequency dynamics under 30 different genetic architectures (varying polygenicity, effect sizes, and initial allele frequencies). Results are used to benchmark methods for detecting causal loci underlying local adaptation.
+Snakemake + SLiM pipeline for forward-in-time population genetic simulations studying how genetic architecture influences evolutionary rescue under rapid environmental change.
+
+The central question: does polygenic or monogenic trait architecture better enable populations to adapt and avoid extinction when the environment shifts? The simulations are seeded with real genomic variation from 231 *Arabidopsis thaliana* ecotypes (GrENE-Net founder population, ~3.2M SNPs) to ensure a biologically realistic genomic structure, but the question being tested is about the general relationship between polygenicity, heritability, and population survival — not a direct replay of the GrENE-Net experiment.
 
 ## Publication
 
-Bellagio T et al. (2025). *Simulating the GrENE-Net experiment.* bioRxiv. [doi: 10.1101/2025.06.13.659553](https://www.biorxiv.org/content/10.1101/2025.06.13.659553v1)
+Bellagio T & Exposito-Alonso M (2025). *Polygenic and monogenic adaptation drive evolutionary rescue at different magnitudes of environmental change.* bioRxiv. [doi: 10.1101/2025.06.13.659553](https://www.biorxiv.org/content/10.1101/2025.06.13.659553v1)
+
+---
+
+## What the simulations test
+
+A quantitative trait under stabilizing selection is simulated across a full factorial design:
+
+| Parameter | Levels |
+|-----------|--------|
+| Polygenicity (number of loci) | 1, 2, 5, 10, 20, 50, 100, 500, 1000 |
+| Heritability (h²) | 0.1, 0.3, 0.5, 0.7, 0.9 |
+| Magnitude of environmental shift | 0–7 phenotypic standard deviations |
+| Independent genetic architectures per polygenicity level | 30 |
+| Replicates per combination | 5 |
+
+Total: **47,250 simulations**, each tracking a population for 10 generations. At each generation, population size, genotypes, phenotypes, fitness values, and full tree sequences are recorded.
+
+Key findings:
+- Under small to moderate environmental shifts, high polygenicity increases evolutionary rescue probability.
+- Under extreme shifts, polygenic traits lead predictably to extinction, while monogenic traits can occasionally produce a single winning adaptive genotype.
+
+---
+
+## Biological grounding
+
+- Population size: 2,310 individuals (carrying capacity 900), based on GrENE-Net field observations
+- 97% selfing rate (*A. thaliana*)
+- Recombination rate ~4 cM/Mb
+- Initial allele frequencies sampled from the *A. thaliana* site frequency spectrum
+- Effect sizes inversely proportional to allele frequency (or drawn from N(0,2) — both give the same qualitative results)
 
 ---
 
 ## Repository structure
 
 ```
-Snakefile              # Main pipeline definition
-config.yaml            # Pipeline parameters (environments, replicates, architectures)
+Snakefile              # Pipeline definition — runs all simulation combinations
+config.yaml            # Parameters (polygenicity levels, heritability, shifts, replicates)
 envs/                  # Conda environment specifications
-scripts/               # Analysis and helper scripts
+scripts/               # Analysis scripts and helpers
+extra.slim             # Additional SLiM model components
 results/               # Pipeline outputs (generated)
 log/                   # Snakemake logs
 profiles/              # Cluster execution profiles (SLURM, local)
-extra.slim             # Additional SLiM model components
 ```
 
 ---
@@ -33,14 +65,12 @@ extra.slim             # Additional SLiM model components
    conda activate snakemake
    ```
 
-3. Edit `config.yaml` to set parameters for your run
+3. Provide the starting VCF (GrENE-Net founder population) and edit `config.yaml`
 
-4. Run the pipeline:
+4. Run:
    ```bash
    snakemake --use-conda --cores <N>
-   ```
-   On a cluster (SLURM), use the provided profile:
-   ```bash
+   # On a cluster:
    snakemake --use-conda --profile profiles/slurm
    ```
 
@@ -48,6 +78,7 @@ extra.slim             # Additional SLiM model components
 
 ## Tools & dependencies
 
-- [SLiM](https://messerlab.org/slim/) — forward-time population genetics simulator
+- [SLiM](https://messerlab.org/slim/) — forward-time population genetics simulator with tree-sequence recording
 - [Snakemake](https://snakemake.readthedocs.io/) — workflow management
+- [tskit](https://tskit.dev/) / [msprime](https://msprime.readthedocs.io/) — tree sequence analysis
 - Python 3, R

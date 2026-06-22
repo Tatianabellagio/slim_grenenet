@@ -2,7 +2,7 @@
 
 Snakemake + SLiM pipeline for forward-in-time population genetic simulations studying how genetic architecture influences evolutionary rescue under rapid environmental change.
 
-The central question: does polygenic or monogenic trait architecture better enable populations to adapt and avoid extinction when the environment shifts? The simulations are seeded with real genomic variation from 231 *Arabidopsis thaliana* ecotypes (GrENE-Net founder population, ~3.2M SNPs) to ensure a biologically realistic genomic structure, but the question being tested is about the general relationship between polygenicity, heritability, and population survival, not a direct replay of the GrENE-Net experiment.
+The central question: which trait architecture — polygenic or monogenic — better enables populations to adapt and avoid extinction when the environment shifts? The simulations are seeded with real genomic variation from 231 *Arabidopsis thaliana* ecotypes (the GrENE-Net founder population, ~3.2M SNPs) to give a biologically realistic genomic background. The goal, though, is to test the general relationship between polygenicity, heritability, and population survival.
 
 The simulations are also fast, despite this realistic genomic background, thanks to tree-sequence structures: the real founder VCF is converted once into a tree sequence (via `tsinfer`) carrying only the adaptive mutations, so SLiM tracks just those loci forward in time rather than the full ~3.2M-SNP genome.
 
